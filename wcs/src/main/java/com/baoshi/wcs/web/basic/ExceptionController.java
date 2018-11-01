@@ -11,6 +11,8 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.client.UnknownHttpStatusCodeException;
 
+import java.util.Date;
+
 @ControllerAdvice
 public class ExceptionController {
 
@@ -33,6 +35,7 @@ public class ExceptionController {
     @ExceptionHandler(RuntimeException.class)
     @ResponseBody
     public ApiResponse<Object> baseException(RuntimeException ex){
+        logger.error("ex :{}",ex);
         ApiResponse<Object> errorResponse = new ApiResponse<>();
         errorResponse.setMsg("用户信息错误");
         errorResponse.setCode(HttpStatus.INTERNAL_SERVER_ERROR.value());
