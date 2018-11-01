@@ -1,21 +1,30 @@
 package com.baoshi.wcs.common;
 
+import com.alibaba.fastjson.JSON;
+
 import java.io.Serializable;
 
-public class ApiResponse<T> implements Serializable {
+public final class ApiResponse<T> implements Serializable {
 
     String msg;
 
-    String status;
+    int code;
 
     T data;
 
-    public void success(T data,String msg){
-        this.data = data;
-        status = "success";
-        msg = msg;
+    public ApiResponse() {
     }
 
+    public ApiResponse(String msg, int code, T data) {
+        this.msg = msg;
+        this.code = code;
+        this.data = data;
+    }
+
+    @Override
+    public String toString() {
+        return JSON.toJSONString(this);
+    }
 
     public String getMsg() {
         return msg;
@@ -25,12 +34,12 @@ public class ApiResponse<T> implements Serializable {
         this.msg = msg;
     }
 
-    public String getStatus() {
-        return status;
+    public int getCode() {
+        return code;
     }
 
-    public void setStatus(String status) {
-        this.status = status;
+    public void setCode(int code) {
+        this.code = code;
     }
 
     public T getData() {
