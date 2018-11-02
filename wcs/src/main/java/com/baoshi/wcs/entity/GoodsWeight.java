@@ -1,11 +1,13 @@
 package com.baoshi.wcs.entity;
 
+import com.baoshi.wcs.entity.base.BaseEntity;
 import org.apache.ibatis.type.Alias;
 
 import java.io.Serializable;
-//@Alias(value = "goodsWeight")
-public class GoodsWeight implements Serializable {
+import java.util.Date;
 
+//@Alias(value = "goodsWeight")
+public class GoodsWeight extends BaseEntity implements Serializable {
     String barCode;
 
     Double weight;
