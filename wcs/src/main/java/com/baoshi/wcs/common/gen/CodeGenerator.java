@@ -64,8 +64,12 @@ public class CodeGenerator {
 
         // 包配置
         PackageConfig pc = new PackageConfig();
-        pc.setModuleName(scanner("模块名"));
+//        pc.setModuleName(scanner("模块名"));
         pc.setParent("com.baoshi.wcs");
+        pc.setController("web.controller");
+        pc.setMapper("dao");
+        pc.setEntity("entity");
+        pc.setService("service");
         mpg.setPackageInfo(pc);
 
         // 自定义配置
@@ -80,7 +84,8 @@ public class CodeGenerator {
             @Override
             public String outputFile(TableInfo tableInfo) {
                 // 自定义输入文件名称
-                return projectPath + "/src/main/resources/mapper/" + pc.getModuleName()
+                return projectPath + "/src/main/resources/mapper/"
+//                        + pc.getModuleName()
                         + "/" + tableInfo.getEntityName() + "Mapper" + StringPool.DOT_XML;
             }
         });
@@ -92,10 +97,10 @@ public class CodeGenerator {
         StrategyConfig strategy = new StrategyConfig();
         strategy.setNaming(NamingStrategy.underline_to_camel);
         strategy.setColumnNaming(NamingStrategy.underline_to_camel);
-//        strategy.setSuperEntityClass("com.baomidou.ant.common.BaseEntity");
+        strategy.setSuperEntityClass("com.baoshi.wcs.entity.base.BaseEntity");
         strategy.setEntityLombokModel(false);
         strategy.setRestControllerStyle(true);
-//        strategy.setSuperControllerClass("com.baomidou.ant.common.BaseController");
+        strategy.setSuperControllerClass("com.baoshi.wcs.web.basic.BaseController");
         strategy.setInclude(scanner("表名"));
         strategy.setSuperEntityColumns("id");
         strategy.setControllerMappingHyphenStyle(true);

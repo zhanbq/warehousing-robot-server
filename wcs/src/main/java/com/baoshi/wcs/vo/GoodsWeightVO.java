@@ -7,6 +7,7 @@ import javax.validation.constraints.NotEmpty;
 
 public class GoodsWeightVO implements Serializable {
 
+    private static final long serialVersionUID = -2508360618947273381L;
     /**
      * 物流单号
      */

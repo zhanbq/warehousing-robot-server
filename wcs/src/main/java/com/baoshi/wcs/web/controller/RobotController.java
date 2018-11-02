@@ -20,7 +20,11 @@ public class RobotController {
     @Autowired
     private GoodsWeightService goodsWeightService;
 
-
+    /**
+     *
+     * @param goodsWeightVO
+     * @return
+     */
     @RequestMapping(value = "/goods/weight", method = RequestMethod.POST)
     @ResponseBody
     public String weigt(@RequestBody GoodsWeightVO goodsWeightVO){

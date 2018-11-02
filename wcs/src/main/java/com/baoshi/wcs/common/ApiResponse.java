@@ -4,6 +4,10 @@ import com.alibaba.fastjson.JSON;
 
 import java.io.Serializable;
 
+/**
+ * 通用返回值
+ * @param <T>
+ */
 public final class ApiResponse<T> implements Serializable {
 
     String msg;

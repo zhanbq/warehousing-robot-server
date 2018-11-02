@@ -4,7 +4,6 @@ package com.baoshi.wcs.dao;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.baoshi.wcs.entity.GoodsWeight;
 
-import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
 
 @Repository
