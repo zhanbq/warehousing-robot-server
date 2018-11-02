@@ -2,7 +2,7 @@ package com.baoshi.wcs.web.controller;
 
 import com.alibaba.fastjson.JSON;
 import com.baoshi.wcs.entity.GoodsWeight;
-import com.baoshi.wcs.common.ApiResponse;
+import com.baoshi.wcs.common.response.ApiResponse;
 import com.baoshi.wcs.service.GoodsWeightService;
 import com.baoshi.wcs.vo.GoodsWeightVO;
 

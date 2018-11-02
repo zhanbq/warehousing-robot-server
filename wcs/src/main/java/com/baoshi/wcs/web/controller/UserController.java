@@ -8,14 +8,14 @@ import com.baoshi.wcs.web.basic.BaseController;
 
 /**
  * <p>
- *  前端控制器
+ * 用户表 前端控制器
  * </p>
  *
  * @author jobob
  * @since 2018-11-02
  */
 @RestController
-@RequestMapping("/warehouse")
-public class WarehouseController extends BaseController {
+@RequestMapping("/user")
+public class UserController extends BaseController {
 
 }

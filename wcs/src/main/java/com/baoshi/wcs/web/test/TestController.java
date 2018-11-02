@@ -1,6 +1,6 @@
 package com.baoshi.wcs.web.test;
 
-import com.baoshi.wcs.common.ApiResponse;
+import com.baoshi.wcs.common.response.ApiResponse;
 import com.baoshi.wcs.common.exception.UserException;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;

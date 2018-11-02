@@ -1,17 +1,13 @@
 package com.baoshi.wcs.web.basic;
 
-import com.baoshi.wcs.common.ApiResponse;
+import com.baoshi.wcs.common.response.ApiResponse;
 import com.baoshi.wcs.common.exception.BaseException;
-import com.baoshi.wcs.common.exception.UserException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.client.UnknownHttpStatusCodeException;
-
-import java.util.Date;
 
 @ControllerAdvice
 public class ExceptionController {
@@ -20,6 +16,7 @@ public class ExceptionController {
     @ExceptionHandler(Exception.class)
     @ResponseBody
     public ApiResponse<Object> handlerException(Exception ex){
+        logger.error("ex :",ex);
         ApiResponse<Object> errorResponse = new ApiResponse<>();
         if (ex instanceof org.springframework.web.servlet.NoHandlerFoundException) {
             errorResponse.setCode(HttpStatus.OK.value());
@@ -35,9 +32,9 @@ public class ExceptionController {
     @ExceptionHandler(RuntimeException.class)
     @ResponseBody
     public ApiResponse<Object> baseException(RuntimeException ex){
-        logger.error("ex :{}",ex);
+        logger.error("ex :",ex);
         ApiResponse<Object> errorResponse = new ApiResponse<>();
-        errorResponse.setMsg("用户信息错误");
+        errorResponse.setMsg("程序开小差了");
         errorResponse.setCode(HttpStatus.INTERNAL_SERVER_ERROR.value());
         return errorResponse;
     }
@@ -45,6 +42,7 @@ public class ExceptionController {
     @ExceptionHandler(BaseException.class)
     @ResponseBody
     public ApiResponse<Object> buserException(BaseException ex){
+        logger.error("ex :",ex);
         ApiResponse<Object> errorResponse = new ApiResponse<>();
         errorResponse.setMsg(ex.getMsg());
         errorResponse.setCode(HttpStatus.INTERNAL_SERVER_ERROR.value());

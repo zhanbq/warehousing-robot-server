@@ -1,19 +1,18 @@
 package com.baoshi.wcs.common.gen;
 
+import com.baomidou.mybatisplus.annotation.DbType;
 import com.baomidou.mybatisplus.core.exceptions.MybatisPlusException;
 import com.baomidou.mybatisplus.core.toolkit.StringPool;
 import com.baomidou.mybatisplus.core.toolkit.StringUtils;
 import com.baomidou.mybatisplus.generator.AutoGenerator;
 import com.baomidou.mybatisplus.generator.InjectionConfig;
-import com.baomidou.mybatisplus.generator.config.DataSourceConfig;
-import com.baomidou.mybatisplus.generator.config.FileOutConfig;
-import com.baomidou.mybatisplus.generator.config.GlobalConfig;
-import com.baomidou.mybatisplus.generator.config.PackageConfig;
-import com.baomidou.mybatisplus.generator.config.StrategyConfig;
-import com.baomidou.mybatisplus.generator.config.TemplateConfig;
+import com.baomidou.mybatisplus.generator.config.*;
+import com.baomidou.mybatisplus.generator.config.converts.MySqlTypeConvert;
 import com.baomidou.mybatisplus.generator.config.po.TableInfo;
+import com.baomidou.mybatisplus.generator.config.rules.IColumnType;
 import com.baomidou.mybatisplus.generator.config.rules.NamingStrategy;
 import com.baomidou.mybatisplus.generator.engine.FreemarkerTemplateEngine;
+import com.baoshi.wcs.common.gen.MybatisPlusConfig.MySqlGenCodeTypeConvert;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -51,6 +50,10 @@ public class CodeGenerator {
         gc.setOutputDir(projectPath + "/src/main/java");
         gc.setAuthor("jobob");
         gc.setOpen(false);
+        gc.setBaseColumnList(true);
+        gc.setBaseResultMap(true);
+        gc.setServiceName("%sService");
+
         mpg.setGlobalConfig(gc);
 
         // 数据源配置
@@ -60,6 +63,7 @@ public class CodeGenerator {
         dsc.setDriverName("com.mysql.jdbc.Driver");
         dsc.setUsername("root");
         dsc.setPassword("root");
+        dsc.setTypeConvert(new MySqlGenCodeTypeConvert());
         mpg.setDataSource(dsc);
 
         // 包配置
@@ -98,11 +102,12 @@ public class CodeGenerator {
         strategy.setNaming(NamingStrategy.underline_to_camel);
         strategy.setColumnNaming(NamingStrategy.underline_to_camel);
         strategy.setSuperEntityClass("com.baoshi.wcs.entity.base.BaseEntity");
+        strategy.setSuperEntityColumns(new String[]{"id","create_time","update_time","creator","updator","version"});
         strategy.setEntityLombokModel(false);
         strategy.setRestControllerStyle(true);
         strategy.setSuperControllerClass("com.baoshi.wcs.web.basic.BaseController");
         strategy.setInclude(scanner("表名"));
-        strategy.setSuperEntityColumns("id");
+//        strategy.setSuperEntityColumns("id");
         strategy.setControllerMappingHyphenStyle(true);
         strategy.setTablePrefix(pc.getModuleName() + "_");
         mpg.setStrategy(strategy);

@@ -1,22 +1,16 @@
 package com.baoshi.wcs.entity;
 
+import com.baoshi.wcs.entity.base.BaseEntity;
 import org.apache.ibatis.type.Alias;
 
 import java.io.Serializable;
+import java.util.Date;
+
 //@Alias(value = "goodsWeight")
-public class GoodsWeight implements Serializable {
-    Long id;
+public class GoodsWeight extends BaseEntity implements Serializable {
     String barCode;
 
     Double weight;
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
 
     public String getBarCode() {
         return barCode;
