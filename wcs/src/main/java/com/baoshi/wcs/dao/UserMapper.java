@@ -2,6 +2,7 @@ package com.baoshi.wcs.dao;
 
 import com.baoshi.wcs.entity.User;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import org.springframework.stereotype.Repository;
 
 /**
  * <p>
@@ -11,6 +12,7 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
  * @author jobob
  * @since 2018-11-02
  */
+@Repository
 public interface UserMapper extends BaseMapper<User> {
 
 }
