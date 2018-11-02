@@ -2,7 +2,7 @@ package com.baoshi.wcs.web.controller;
 
 import com.alibaba.fastjson.JSON;
 import com.baoshi.wcs.entity.GoodsWeight;
-import com.baoshi.wcs.common.ApiResponse;
+import com.baoshi.wcs.common.response.ApiResponse;
 import com.baoshi.wcs.service.GoodsWeightService;
 import com.baoshi.wcs.vo.GoodsWeightVO;
 
@@ -20,7 +20,11 @@ public class RobotController {
     @Autowired
     private GoodsWeightService goodsWeightService;
 
-
+    /**
+     *
+     * @param goodsWeightVO
+     * @return
+     */
     @RequestMapping(value = "/goods/weight", method = RequestMethod.POST)
     @ResponseBody
     public String weigt(@RequestBody GoodsWeightVO goodsWeightVO){
