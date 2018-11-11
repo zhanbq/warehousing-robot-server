@@ -40,7 +40,7 @@ public class ExceptionController extends AbstractErrorController {
 //        }
         HttpStatus status = this.getStatus(request);
         if(HttpStatus.NOT_FOUND.value() == status.value()){
-            //404 
+            //404
         }
         return errorResponse;
     }

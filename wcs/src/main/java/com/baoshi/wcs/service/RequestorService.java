@@ -1,16 +1,16 @@
 package com.baoshi.wcs.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
-import com.baoshi.wcs.entity.GoodsWeight;
+import com.baoshi.wcs.entity.Requestor;
 
 /**
  * <p>
- * 货物/包裹信息表 服务类
+ * 调用方/请求方请信息 服务类
  * </p>
  *
  * @author jobob
  * @since 2018-11-11
  */
-public interface GoodsWeightService extends IService<GoodsWeight> {
+public interface RequestorService extends IService<Requestor> {
 
 }

@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.baoshi.wcs.dao.StoreroomMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.baoshi.wcs.entity.Storeroom">
+    <result column="id" property="id" />
+    <result column="create_time" property="createTime" />
+    <result column="creator" property="creator" />
+    <result column="version" property="version" />
+        <result column="warehouse_code" property="warehouseCode" />
+        <result column="work_area" property="workArea" />
+        <result column="goods_owner" property="goodsOwner" />
+        <result column="lane_way" property="laneWay" />
+        <result column="storeroom_code" property="storeroomCode" />
+        <result column="storeroom_type" property="storeroomType" />
+        <result column="backup_field_one" property="backupFieldOne" />
+        <result column="backup_field_two" property="backupFieldTwo" />
+        <result column="backup_field_three" property="backupFieldThree" />
+        <result column="modify_time" property="modifyTime" />
+        <result column="modifier" property="modifier" />
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id,
+        create_time,
+        creator,
+        version,
+        warehouse_code, work_area, goods_owner, lane_way, storeroom_code, storeroom_type, backup_field_one, backup_field_two, backup_field_three, modify_time, modifier
+    </sql>
+
+</mapper>

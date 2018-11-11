@@ -1,16 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.baoshi.wcs.dao.UserMapper">
+<mapper namespace="com.baoshi.wcs.dao.RequestorMapper">
 
     <!-- 通用查询映射结果 -->
-    <resultMap id="BaseResultMap" type="com.baoshi.wcs.entity.User">
+    <resultMap id="BaseResultMap" type="com.baoshi.wcs.entity.Requestor">
     <result column="id" property="id" />
     <result column="create_time" property="createTime" />
     <result column="creator" property="creator" />
     <result column="version" property="version" />
-        <result column="username" property="username" />
-        <result column="password" property="password" />
-        <result column="user_type" property="userType" />
+        <result column="requestor" property="requestor" />
+        <result column="event_code" property="eventCode" />
+        <result column="req_date" property="reqDate" />
         <result column="modify_time" property="modifyTime" />
         <result column="modifier" property="modifier" />
     </resultMap>
@@ -21,7 +21,7 @@
         create_time,
         creator,
         version,
-        username, password, user_type, modify_time, modifier
+        requestor, event_code, req_date, modify_time, modifier
     </sql>
 
 </mapper>
