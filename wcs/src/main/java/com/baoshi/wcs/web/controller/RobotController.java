@@ -32,7 +32,6 @@ public class RobotController {
         GoodsWeight goodsWeight = new GoodsWeight();
         goodsWeight.setBarCode(goodsWeightVO.getBarCode());
         goodsWeight.setWeight(goodsWeightVO.getWeight());
-        Boolean isSuccess = goodsWeightService.saveOne(goodsWeight);
         ApiResponse<Boolean> apiResponse = new ApiResponse<>();
         return JSON.toJSONString(apiResponse);
     }

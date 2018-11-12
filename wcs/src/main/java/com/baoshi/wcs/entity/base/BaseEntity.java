@@ -1,8 +1,13 @@
 package com.baoshi.wcs.entity.base;
 
+import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableId;
+
 import java.util.Date;
 
 public class BaseEntity {
+
+    @TableId(value = "id",type = IdType.AUTO)
     Integer id;
 
     /**

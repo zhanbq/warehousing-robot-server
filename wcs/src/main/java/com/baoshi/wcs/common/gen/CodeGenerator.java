@@ -71,7 +71,7 @@ public class CodeGenerator {
 //        pc.setModuleName(scanner("模块名"));
         pc.setParent("com.baoshi.wcs");
         pc.setController("web.controller");
-        pc.setMapper("dao");
+        pc.setMapper("container_storeroom");
         pc.setEntity("entity");
         pc.setService("service");
         mpg.setPackageInfo(pc);
