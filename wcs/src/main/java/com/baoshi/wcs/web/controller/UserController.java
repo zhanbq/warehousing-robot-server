@@ -2,6 +2,7 @@ package com.baoshi.wcs.web.controller;
 
 
 import com.baoshi.wcs.common.response.ApiResponse;
+import com.baoshi.wcs.common.response.WCSApiResponse;
 import com.baoshi.wcs.entity.User;
 import com.baoshi.wcs.service.UserService;
 import com.baoshi.wcs.web.basic.BaseController;
@@ -27,8 +28,8 @@ public class UserController extends BaseController {
     UserService userService;
 
     @GetMapping("/hello")
-    public ApiResponse<Object> hello(){
-        ApiResponse<Object> response = new ApiResponse<>();
+    public WCSApiResponse<Object> hello(){
+        WCSApiResponse<Object> response = new WCSApiResponse<>();
         response.setCode(1);
         User user = new User();
 //        user.setId();

@@ -38,6 +38,15 @@ public class Requestor extends BaseEntity {
 
     private Integer modifier;
 
+    public Requestor(String requestor, String eventCode, Date reqDate) {
+        this.requestor = requestor;
+        this.eventCode = eventCode;
+        this.reqDate = reqDate;
+    }
+
+    public Requestor() {
+    }
+
     public String getRequestor() {
         return requestor;
     }
