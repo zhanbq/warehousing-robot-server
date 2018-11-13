@@ -55,15 +55,6 @@ public class Storeroom extends BaseEntity {
 
     private String backupFieldThree;
 
-    /**
-     * 修改时间
-     */
-    private Date modifyTime;
-
-    /**
-     * 修改人id
-     */
-    private Integer modifier;
 
     public String getWarehouseCode() {
         return warehouseCode;
@@ -128,20 +119,6 @@ public class Storeroom extends BaseEntity {
     public void setBackupFieldThree(String backupFieldThree) {
         this.backupFieldThree = backupFieldThree;
     }
-    public Date getModifyTime() {
-        return modifyTime;
-    }
-
-    public void setModifyTime(Date modifyTime) {
-        this.modifyTime = modifyTime;
-    }
-    public Integer getModifier() {
-        return modifier;
-    }
-
-    public void setModifier(Integer modifier) {
-        this.modifier = modifier;
-    }
 
     @Override
     public String toString() {
@@ -155,8 +132,6 @@ public class Storeroom extends BaseEntity {
         ", backupFieldOne=" + backupFieldOne +
         ", backupFieldTwo=" + backupFieldTwo +
         ", backupFieldThree=" + backupFieldThree +
-        ", modifyTime=" + modifyTime +
-        ", modifier=" + modifier +
         "}";
     }
 }

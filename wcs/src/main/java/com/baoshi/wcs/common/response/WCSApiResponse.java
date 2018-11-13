@@ -14,6 +14,8 @@ public class WCSApiResponse<T> extends ApiResponse<T> {
 
     private static final long serialVersionUID = 3571818710910772372L;
 
+    private String serverMsg;
+
     Requestor4ResponseVO requestor;
 
     public void buildRequestor(String requestor, String eventCode, Date reqDate){
@@ -25,16 +27,24 @@ public class WCSApiResponse<T> extends ApiResponse<T> {
         return requestor;
     }
 
-    public void setRequestor(Requestor4ResponseVO requestor) {
+    public void setRequestorVO(Requestor4ResponseVO requestor) {
         this.requestor = requestor;
     }
 
-    public void setRequestor(Requestor requestor) {
+    public void setRequestorVO(Requestor requestor) {
         Requestor4ResponseVO requestor4ResponseVO = new Requestor4ResponseVO();
         requestor4ResponseVO.setRequestor(requestor.getRequestor());
         requestor4ResponseVO.setEventCode(requestor.getEventCode());
         requestor4ResponseVO.setReqDate(requestor.getReqDate());
         requestor4ResponseVO.setResDate(new Date());
         this.requestor = requestor4ResponseVO;
+    }
+
+    public String getServerMsg() {
+        return serverMsg;
+    }
+
+    public void setServerMsg(String serverMsg) {
+        this.serverMsg = serverMsg;
     }
 }

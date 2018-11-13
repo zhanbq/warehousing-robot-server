@@ -48,30 +48,42 @@ public class LogRecordAspect {
         HttpServletRequest request = sra.getRequest();
         WCSApiResponse response = new WCSApiResponse();
         Requestor requestor = this.getReqeestorInfo(request);
-        response.setRequestor(requestor);
-        boolean saveRes = requestorService.save(requestor);
-        if (!saveRes) {
-            response.setCode(HttpStatus.INTERNAL_SERVER_ERROR.value());
-            response.setMsg("请求方数据保存失败");
-            return response;
-        }
+
         // result的值就是被拦截方法的返回值
         Object result = null;
         try {
             result = pjp.proceed();
         } catch (Throwable ex) {
-            logger.error("ex :", ex);
+            logger.error("aop ex :", ex);
             if (ex instanceof org.springframework.web.servlet.NoHandlerFoundException) {
                 response.setCode(HttpStatus.NOT_FOUND.value());
                 response.setMsg("服务路径访问错误.");
             } else {
                 response.setCode(HttpStatus.INTERNAL_SERVER_ERROR.value());
-                response.setMsg("程序开小差了");
+                response.setMsg("服务内部错误");
             }
+            response.setRequestorVO(requestor);
+            response.setServerMsg(ex.getMessage());
+            return response;
         }
+
+        boolean saveRes = requestorService.save(requestor);
+//        if (!saveRes) {
+//            response.setCode(HttpStatus.INTERNAL_SERVER_ERROR.value());
+//            response.setMsg("请求方数据保存失败");
+//            return response;
+//        }
+
+        if (result instanceof WCSApiResponse) {
+            //如果返回的类型是WCSApiResponse 则强转  代替之前声明的WCSApiResponse
+            response = (WCSApiResponse) result;
+
+        }else{
+            response.setData(result);
+        }
+        response.setRequestorVO(requestor);
         return response;
     }
-
 
 
     private Requestor getReqeestorInfo(HttpServletRequest request) {
@@ -121,7 +133,7 @@ public class LogRecordAspect {
     }
 
 
-    private void resolveRequest(){
+    private void resolveRequest() {
         //        String url = request.getRequestURL().toString();
 //        String method = request.getMethod();
 //        String uri = request.getRequestURI();

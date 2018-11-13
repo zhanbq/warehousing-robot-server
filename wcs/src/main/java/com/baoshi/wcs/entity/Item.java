@@ -62,12 +62,6 @@ public class Item extends BaseEntity {
      */
     private Integer quantity;
 
-    private Date modifyTime;
-
-    /**
-     * 修改人
-     */
-    private Integer modifier;
 
     public String getSkuCode() {
         return skuCode;
@@ -132,20 +126,6 @@ public class Item extends BaseEntity {
     public void setQuantity(Integer quantity) {
         this.quantity = quantity;
     }
-    public Date getModifyTime() {
-        return modifyTime;
-    }
-
-    public void setModifyTime(Date modifyTime) {
-        this.modifyTime = modifyTime;
-    }
-    public Integer getModifier() {
-        return modifier;
-    }
-
-    public void setModifier(Integer modifier) {
-        this.modifier = modifier;
-    }
 
     @Override
     public String toString() {
@@ -159,8 +139,6 @@ public class Item extends BaseEntity {
         ", width=" + width +
         ", height=" + height +
         ", quantity=" + quantity +
-        ", modifyTime=" + modifyTime +
-        ", modifier=" + modifier +
         "}";
     }
 }

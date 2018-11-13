@@ -102,7 +102,7 @@ public class CodeGenerator {
         strategy.setNaming(NamingStrategy.underline_to_camel);
         strategy.setColumnNaming(NamingStrategy.underline_to_camel);
         strategy.setSuperEntityClass("com.baoshi.wcs.entity.base.BaseEntity");
-        strategy.setSuperEntityColumns(new String[]{"id","create_time","update_time","creator","updator","version"});
+        strategy.setSuperEntityColumns(new String[]{"id","create_time","update_time","creator","updator","version","modify_time","modifier"});
         strategy.setEntityLombokModel(false);
         strategy.setRestControllerStyle(true);
         strategy.setSuperControllerClass("com.baoshi.wcs.web.basic.BaseController");
