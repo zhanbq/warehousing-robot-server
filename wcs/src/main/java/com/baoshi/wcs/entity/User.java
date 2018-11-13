@@ -31,16 +31,6 @@ public class User extends BaseEntity {
      */
     private String userType;
 
-    /**
-     * 修改时间
-     */
-    private Date modifyTime;
-
-    /**
-     * 修改人id
-     */
-    private Integer modifier;
-
     public String getUsername() {
         return username;
     }
@@ -62,29 +52,5 @@ public class User extends BaseEntity {
     public void setUserType(String userType) {
         this.userType = userType;
     }
-    public Date getModifyTime() {
-        return modifyTime;
-    }
 
-    public void setModifyTime(Date modifyTime) {
-        this.modifyTime = modifyTime;
-    }
-    public Integer getModifier() {
-        return modifier;
-    }
-
-    public void setModifier(Integer modifier) {
-        this.modifier = modifier;
-    }
-
-    @Override
-    public String toString() {
-        return "User{" +
-        "username=" + username +
-        ", password=" + password +
-        ", userType=" + userType +
-        ", modifyTime=" + modifyTime +
-        ", modifier=" + modifier +
-        "}";
-    }
 }

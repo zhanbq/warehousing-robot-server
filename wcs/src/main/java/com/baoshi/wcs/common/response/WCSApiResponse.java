@@ -7,6 +7,9 @@ import org.springframework.beans.BeanUtils;
 
 import java.util.Date;
 
+import io.swagger.annotations.ApiModel;
+
+@ApiModel(value = "com.baoshi.wcs.common.response.WCSApiResponse", description = "通用返回对象")
 public class WCSApiResponse<T> extends ApiResponse<T> {
 
     private static final long serialVersionUID = 3571818710910772372L;

@@ -31,16 +31,13 @@ public class ExceptionController extends AbstractErrorController {
     public ApiResponse<Object> handlerException(HttpServletRequest request,Exception ex){
         logger.error("ex :",ex);
         ApiResponse<Object> errorResponse = new ApiResponse<>();
-//        if (ex instanceof org.springframework.web.servlet.NoHandlerFoundException) {
-//            errorResponse.setCode(HttpStatus.NOT_FOUND.value());
+        if (ex instanceof org.springframework.web.servlet.NoHandlerFoundException) {
+            errorResponse.setCode(HttpStatus.NOT_FOUND.value());
 //            errorResponse.setMsg("哎呦,你想去哪里");
-//        } else {
-//            errorResponse.setCode(HttpStatus.INTERNAL_SERVER_ERROR.value());
-//            errorResponse.setMsg("程序开小差了");
-//        }
-        HttpStatus status = this.getStatus(request);
-        if(HttpStatus.NOT_FOUND.value() == status.value()){
-            //404
+            errorResponse.setMsg("服务路径访问错误.");
+        } else {
+            errorResponse.setCode(HttpStatus.INTERNAL_SERVER_ERROR.value());
+            errorResponse.setMsg("程序开小差了");
         }
         return errorResponse;
     }

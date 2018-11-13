@@ -42,16 +42,6 @@ public class Container extends BaseEntity {
      */
     private BigDecimal height;
 
-    /**
-     * 修改人
-     */
-    private String modifier;
-
-    /**
-     * 修改时间
-     */
-    private Date modifyTime;
-
     public String getCode() {
         return code;
     }
@@ -87,31 +77,5 @@ public class Container extends BaseEntity {
     public void setHeight(BigDecimal height) {
         this.height = height;
     }
-    public String getModifier() {
-        return modifier;
-    }
 
-    public void setModifier(String modifier) {
-        this.modifier = modifier;
-    }
-    public Date getModifyTime() {
-        return modifyTime;
-    }
-
-    public void setModifyTime(Date modifyTime) {
-        this.modifyTime = modifyTime;
-    }
-
-    @Override
-    public String toString() {
-        return "Container{" +
-        "code=" + code +
-        ", type=" + type +
-        ", length=" + length +
-        ", width=" + width +
-        ", height=" + height +
-        ", modifier=" + modifier +
-        ", modifyTime=" + modifyTime +
-        "}";
-    }
 }
