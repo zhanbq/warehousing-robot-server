@@ -1,7 +1,9 @@
 package com.baoshi.wcs.entity;
 
+import com.alibaba.fastjson.JSON;
 import com.baoshi.wcs.entity.base.BaseEntity;
 
+import java.math.BigDecimal;
 import java.util.Date;
 
 /**
@@ -45,6 +47,21 @@ public class Storeroom extends BaseEntity {
      * 库位类型
      */
     private String storeroomType;
+
+    /**
+     * 库位状态  0 空库位; 1 未装满 3 满库位
+     */
+    private String status;
+
+    /**
+     * 改库位 绑定的容器类型 一个库位 只存放一种类型的库位
+     */
+    private String containerType;
+
+    /**
+     * 一个库位能放的容器数量
+     */
+    private BigDecimal containerAmount;
 
     /**
      * 备用字段1
@@ -120,18 +137,32 @@ public class Storeroom extends BaseEntity {
         this.backupFieldThree = backupFieldThree;
     }
 
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
+    public String getContainerType() {
+        return containerType;
+    }
+
+    public void setContainerType(String containerType) {
+        this.containerType = containerType;
+    }
+
+    public BigDecimal getContainerAmount() {
+        return containerAmount;
+    }
+
+    public void setContainerAmount(BigDecimal containerAmount) {
+        this.containerAmount = containerAmount;
+    }
+
     @Override
     public String toString() {
-        return "Storeroom{" +
-        "warehouseCode=" + warehouseCode +
-        ", workArea=" + workArea +
-        ", goodsOwner=" + goodsOwner +
-        ", laneWay=" + laneWay +
-        ", storeroomCode=" + storeroomCode +
-        ", storeroomType=" + storeroomType +
-        ", backupFieldOne=" + backupFieldOne +
-        ", backupFieldTwo=" + backupFieldTwo +
-        ", backupFieldThree=" + backupFieldThree +
-        "}";
+        return JSON.toJSONString(this);
     }
 }

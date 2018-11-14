@@ -1,5 +1,8 @@
 package com.baoshi.wcs.common.enumeration;
 
+/**
+ * 服务请求事件类型
+ */
 public enum EventCodeEnum {
 
     UNKNOWN_EVENT(0,"未知事件");

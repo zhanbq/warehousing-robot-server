@@ -48,6 +48,11 @@ public class StoreroomController extends BaseController {
         return response;
     }
 
+    /**
+     * 入库上架
+     * @param storageVO
+     * @return
+     */
     @PostMapping("/storage")
     public WCSApiResponse save(@RequestBody StorageVO storageVO){
         WCSApiResponse<Object> res = new WCSApiResponse<>();

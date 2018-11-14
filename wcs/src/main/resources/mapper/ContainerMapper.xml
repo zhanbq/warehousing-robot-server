@@ -5,16 +5,22 @@
     <!-- 通用查询映射结果 -->
     <resultMap id="BaseResultMap" type="com.baoshi.wcs.entity.Container">
     <result column="id" property="id" />
-    <result column="creator" property="creator" />
-    <result column="create_time" property="createTime" />
+    <!--<result column="creator" property="creator" />-->
+    <!--<result column="create_time" property="createTime" />-->
     <result column="version" property="version" />
         <result column="code" property="code" />
         <result column="type" property="type" />
         <result column="length" property="length" />
         <result column="width" property="width" />
         <result column="height" property="height" />
-        <result column="modifier" property="modifier" />
-        <result column="modify_time" property="modifyTime" />
+        <result column="internal_length" property="internalLength" />
+        <result column="internal_width" property="internalWidth" />
+        <result column="internal_height" property="internalHeight" />
+        <result column="total_volume" property="totalVolume" />
+        <result column="internal_volume" property="internalVolume" />
+
+        <!--<result column="modifier" property="modifier" />-->
+        <!--<result column="modify_time" property="modifyTime" />-->
     </resultMap>
 
     <!-- 通用查询结果列 -->

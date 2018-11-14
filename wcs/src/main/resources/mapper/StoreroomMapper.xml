@@ -5,8 +5,8 @@
     <!-- 通用查询映射结果 -->
     <resultMap id="BaseResultMap" type="com.baoshi.wcs.entity.Storeroom">
     <result column="id" property="id" />
-    <result column="create_time" property="createTime" />
-    <result column="creator" property="creator" />
+    <!--<result column="create_time" property="createTime" />-->
+    <!--<result column="creator" property="creator" />-->
     <result column="version" property="version" />
         <result column="warehouse_code" property="warehouseCode" />
         <result column="work_area" property="workArea" />
@@ -14,11 +14,14 @@
         <result column="lane_way" property="laneWay" />
         <result column="storeroom_code" property="storeroomCode" />
         <result column="storeroom_type" property="storeroomType" />
+        <result column="status" property="status"/>
         <result column="backup_field_one" property="backupFieldOne" />
         <result column="backup_field_two" property="backupFieldTwo" />
         <result column="backup_field_three" property="backupFieldThree" />
-        <result column="modify_time" property="modifyTime" />
-        <result column="modifier" property="modifier" />
+        <result column="container_type" property="containerType" />
+        <result column="container_amount" property="containerAmount" />
+        <!--<result column="modify_time" property="modifyTime" />-->
+        <!--<result column="modifier" property="modifier" />-->
     </resultMap>
 
     <!-- 通用查询结果列 -->

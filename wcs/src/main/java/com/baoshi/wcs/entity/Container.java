@@ -42,6 +42,31 @@ public class Container extends BaseEntity {
      */
     private BigDecimal height;
 
+    /**
+     * 容器内部长度
+     */
+    private BigDecimal internalLength;
+
+    /**
+     * 容器内部宽度
+     */
+    private BigDecimal internalWidth;
+
+    /**
+     * 容器的总体积
+     */
+    private BigDecimal totalVolume;
+
+    /**
+     * 内部可用的容纳包裹票的容积
+     */
+    private BigDecimal internalVolume;
+
+    /**
+     * 容器内部高度
+     */
+    private BigDecimal internalHeight;
+
     public String getCode() {
         return code;
     }
@@ -78,4 +103,43 @@ public class Container extends BaseEntity {
         this.height = height;
     }
 
+    public BigDecimal getInternalLength() {
+        return internalLength;
+    }
+
+    public void setInternalLength(BigDecimal internalLength) {
+        this.internalLength = internalLength;
+    }
+
+    public BigDecimal getInternalWidth() {
+        return internalWidth;
+    }
+
+    public void setInternalWidth(BigDecimal internalWidth) {
+        this.internalWidth = internalWidth;
+    }
+
+    public BigDecimal getInternalHeight() {
+        return internalHeight;
+    }
+
+    public void setInternalHeight(BigDecimal internalHeight) {
+        this.internalHeight = internalHeight;
+    }
+
+    public BigDecimal getTotalVolume() {
+        return totalVolume;
+    }
+
+    public void setTotalVolume(BigDecimal totalVolume) {
+        this.totalVolume = totalVolume;
+    }
+
+    public BigDecimal getInternalVolume() {
+        return internalVolume;
+    }
+
+    public void setInternalVolume(BigDecimal internalVolume) {
+        this.internalVolume = internalVolume;
+    }
 }

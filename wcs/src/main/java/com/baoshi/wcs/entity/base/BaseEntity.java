@@ -13,22 +13,22 @@ public class BaseEntity {
     /**
      * 创建时间
      */
-//    Date createTime;
+    Date createTime;
 
     /**
      * 修改时间
      */
-//    Date modifyTime;
+    Date modifyTime;
 
     /**
      * 创建人
      */
-//    Integer creator;
+    Integer creator;
 
     /**
      * 修改人
      */
-//    Integer modifier;
+    Integer modifier;
 
     /**
      * 版本号
