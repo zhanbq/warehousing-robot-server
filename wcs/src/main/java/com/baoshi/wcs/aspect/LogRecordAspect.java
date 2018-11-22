@@ -1,14 +1,11 @@
 package com.baoshi.wcs.aspect;
 
-import com.alibaba.fastjson.JSON;
 import com.baoshi.wcs.common.enumeration.EventCodeEnum;
 import com.baoshi.wcs.common.enumeration.RequestorEnum;
-import com.baoshi.wcs.common.response.ApiResponse;
 import com.baoshi.wcs.common.response.WCSApiResponse;
 import com.baoshi.wcs.common.utils.DateUtil;
 import com.baoshi.wcs.entity.Requestor;
 import com.baoshi.wcs.service.RequestorService;
-
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
@@ -23,12 +20,11 @@ import org.springframework.web.context.request.RequestAttributes;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
+import javax.servlet.http.HttpServletRequest;
 import java.text.ParseException;
 import java.util.Date;
 
-import javax.servlet.http.HttpServletRequest;
-
-@Aspect   //定义一个切面
+@Aspect
 @Configuration
 public class LogRecordAspect {
     private static final Logger logger = LoggerFactory.getLogger(LogRecordAspect.class);
@@ -36,7 +32,9 @@ public class LogRecordAspect {
     @Autowired
     RequestorService requestorService;
 
-    // 定义切点Pointcut
+    /**
+     * 定义切点Pointcut
+     */
     @Pointcut("execution(* com.baoshi.wcs.web.controller.*Controller.*(..))")
     public void excudeService() {
     }
@@ -68,17 +66,12 @@ public class LogRecordAspect {
         }
 
         boolean saveRes = requestorService.save(requestor);
-//        if (!saveRes) {
-//            response.setCode(HttpStatus.INTERNAL_SERVER_ERROR.value());
-//            response.setMsg("请求方数据保存失败");
-//            return response;
-//        }
 
         if (result instanceof WCSApiResponse) {
             //如果返回的类型是WCSApiResponse 则强转  代替之前声明的WCSApiResponse
             response = (WCSApiResponse) result;
 
-        }else{
+        } else {
             response.setData(result);
         }
         response.setRequestorVO(requestor);
@@ -133,12 +126,12 @@ public class LogRecordAspect {
     }
 
 
-    private void resolveRequest() {
-        //        String url = request.getRequestURL().toString();
-//        String method = request.getMethod();
-//        String uri = request.getRequestURI();
-//        String queryString = request.getQueryString();
-//        logger.info("请求开始, 各个参数, url: {}, method: {}, uri: {}, params: {}", url, method, uri, queryString);
-    }
+//    private void resolveRequest() {
+//        //        String url = request.getRequestURL().toString();
+////        String method = request.getMethod();
+////        String uri = request.getRequestURI();
+////        String queryString = request.getQueryString();
+////        logger.info("请求开始, 各个参数, url: {}, method: {}, uri: {}, params: {}", url, method, uri, queryString);
+//    }
 
 }
