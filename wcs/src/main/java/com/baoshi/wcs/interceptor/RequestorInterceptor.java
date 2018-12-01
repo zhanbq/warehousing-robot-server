@@ -1,21 +1,13 @@
 package com.baoshi.wcs.interceptor;
 
-import com.alibaba.fastjson.JSON;
 import com.baoshi.wcs.common.enumeration.EventCodeEnum;
 import com.baoshi.wcs.common.enumeration.RequestorEnum;
 import com.baoshi.wcs.common.utils.DateUtil;
 import com.baoshi.wcs.entity.Requestor;
 import com.baoshi.wcs.service.RequestorService;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.util.JSONPObject;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.configurationprocessor.json.JSONObject;
-import org.springframework.util.ReflectionUtils;
 import org.springframework.util.StringUtils;
-import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.HandlerInterceptor;
-import org.springframework.web.servlet.ModelAndView;
 
 import java.util.Date;
 

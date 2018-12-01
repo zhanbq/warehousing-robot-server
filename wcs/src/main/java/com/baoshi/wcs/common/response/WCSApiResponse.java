@@ -5,12 +5,13 @@ import com.baoshi.wcs.vo.Requestor4ResponseVO;
 
 import org.springframework.beans.BeanUtils;
 
+import java.io.Serializable;
 import java.util.Date;
 
 import io.swagger.annotations.ApiModel;
 
 @ApiModel(value = "com.baoshi.wcs.common.response.WCSApiResponse", description = "通用返回对象")
-public class WCSApiResponse<T> extends ApiResponse<T> {
+public class WCSApiResponse<T> extends ApiResponse<T> implements Serializable {
 
     private static final long serialVersionUID = 3571818710910772372L;
 
