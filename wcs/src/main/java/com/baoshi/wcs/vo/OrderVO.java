@@ -67,18 +67,26 @@ public class OrderVO implements Serializable {
         this.orderDetailList = orderDetailList;
     }
 
-    public static void main(String[] args) {
-        OrderVO orderVO = new OrderVO();
-        orderVO.setOwner("123");
-        orderVO.setWaveNo("1dsad");
-        orderVO.setWaveType("dsadsa");
-        ArrayList<OrderDetailPojo> orderDetailPojos = new ArrayList<>();
-        OrderDetailPojo orderDetailPojo = new OrderDetailPojo();
-        orderDetailPojo.setConsignAddr("北京");
-        orderDetailPojo.setConsigneeName("李四");
-
-        orderDetailPojos.add(orderDetailPojo);
-        orderVO.setOrderDetailList(orderDetailPojos);
-        System.out.println(JSON.toJSONString(orderVO));
+    public String getOrderNo() {
+        return orderNo;
     }
+
+    public void setOrderNo(String orderNo) {
+        this.orderNo = orderNo;
+    }
+
+//    public static void main(String[] args) {
+//        OrderVO orderVO = new OrderVO();
+//        orderVO.setOwner("123");
+//        orderVO.setWaveNo("1dsad");
+//        orderVO.setWaveType("dsadsa");
+//        ArrayList<OrderDetailPojo> orderDetailPojos = new ArrayList<>();
+//        OrderDetailPojo orderDetailPojo = new OrderDetailPojo();
+//        orderDetailPojo.setConsignAddr("北京");
+//        orderDetailPojo.setConsigneeName("李四");
+//
+//        orderDetailPojos.add(orderDetailPojo);
+//        orderVO.setOrderDetailList(orderDetailPojos);
+//        System.out.println(JSON.toJSONString(orderVO));
+//    }
 }

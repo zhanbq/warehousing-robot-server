@@ -9,7 +9,7 @@ public class GoodsWeightVO implements Serializable {
 
     private static final long serialVersionUID = -2508360618947273381L;
     /**
-     * 物流单号
+     * 物流单号=快递单号
      */
     @NotEmpty(groups = {GoodsWeightValidator.class})
     String barCode;

@@ -20,12 +20,12 @@ public class OrderDetailPojo implements Serializable {
     /**
      * 收货人地址
      */
-    String consignAddr;
+    String consigneeAddr;
 
     /**
      * 收货人电话
      */
-    String consignPhnoe;
+    String consigneePhnoe;
 
     /**
      * 商品名称
@@ -54,16 +54,6 @@ public class OrderDetailPojo implements Serializable {
         this.invoiceNo = invoiceNo;
     }
 
-    public OrderDetailPojo(String consigneeName, String consignAddr, String consignPhnoe, String itemName, String itemSkuCode, String itemBarCode, String itemAmount) {
-        this.consigneeName = consigneeName;
-        this.consignAddr = consignAddr;
-        this.consignPhnoe = consignPhnoe;
-        this.itemName = itemName;
-        this.itemSkuCode = itemSkuCode;
-        this.itemBarCode = itemBarCode;
-        this.itemAmount = itemAmount;
-    }
-
     public String getInvoiceNo() {
         return invoiceNo;
     }
@@ -80,20 +70,20 @@ public class OrderDetailPojo implements Serializable {
         this.consigneeName = consigneeName;
     }
 
-    public String getConsignAddr() {
-        return consignAddr;
+    public String getConsigneeAddr() {
+        return consigneeAddr;
     }
 
-    public void setConsignAddr(String consignAddr) {
-        this.consignAddr = consignAddr;
+    public void setConsigneeAddr(String consigneeAddr) {
+        this.consigneeAddr = consigneeAddr;
     }
 
-    public String getConsignPhnoe() {
-        return consignPhnoe;
+    public String getConsigneePhnoe() {
+        return consigneePhnoe;
     }
 
-    public void setConsignPhnoe(String consignPhnoe) {
-        this.consignPhnoe = consignPhnoe;
+    public void setConsigneePhnoe(String consigneePhnoe) {
+        this.consigneePhnoe = consigneePhnoe;
     }
 
     public String getItemName() {

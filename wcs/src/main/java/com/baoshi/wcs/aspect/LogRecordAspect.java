@@ -73,6 +73,7 @@ public class LogRecordAspect {
 
         } else {
             response.setData(result);
+            response.setCode(HttpStatus.OK.value());
         }
         response.setRequestorVO(requestor);
         return response;
