@@ -25,7 +25,7 @@ public class OrderDetailPojo implements Serializable {
     /**
      * 收货人电话
      */
-    String consigneePhnoe;
+    String consigneePhone;
 
     /**
      * 商品名称
@@ -45,7 +45,7 @@ public class OrderDetailPojo implements Serializable {
     /**
      * 商品数量
      */
-    String itemAmount;
+    int itemAmount;
 
     public OrderDetailPojo() {
     }
@@ -78,12 +78,12 @@ public class OrderDetailPojo implements Serializable {
         this.consigneeAddr = consigneeAddr;
     }
 
-    public String getConsigneePhnoe() {
-        return consigneePhnoe;
+    public String getConsigneePhone() {
+        return consigneePhone;
     }
 
-    public void setConsigneePhnoe(String consigneePhnoe) {
-        this.consigneePhnoe = consigneePhnoe;
+    public void setConsigneePhone(String consigneePhone) {
+        this.consigneePhone = consigneePhone;
     }
 
     public String getItemName() {
@@ -110,11 +110,11 @@ public class OrderDetailPojo implements Serializable {
         this.itemBarCode = itemBarCode;
     }
 
-    public String getItemAmount() {
+    public int getItemAmount() {
         return itemAmount;
     }
 
-    public void setItemAmount(String itemAmount) {
+    public void setItemAmount(int itemAmount) {
         this.itemAmount = itemAmount;
     }
 }

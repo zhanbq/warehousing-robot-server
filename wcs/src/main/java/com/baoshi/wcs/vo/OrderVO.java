@@ -75,18 +75,38 @@ public class OrderVO implements Serializable {
         this.orderNo = orderNo;
     }
 
-//    public static void main(String[] args) {
-//        OrderVO orderVO = new OrderVO();
-//        orderVO.setOwner("123");
-//        orderVO.setWaveNo("1dsad");
-//        orderVO.setWaveType("dsadsa");
-//        ArrayList<OrderDetailPojo> orderDetailPojos = new ArrayList<>();
-//        OrderDetailPojo orderDetailPojo = new OrderDetailPojo();
-//        orderDetailPojo.setConsignAddr("北京");
-//        orderDetailPojo.setConsigneeName("李四");
-//
-//        orderDetailPojos.add(orderDetailPojo);
-//        orderVO.setOrderDetailList(orderDetailPojos);
-//        System.out.println(JSON.toJSONString(orderVO));
-//    }
+    public static void main(String[] args) {
+        OrderVO orderVO = new OrderVO();
+        orderVO.setOwner("123");
+        orderVO.setWaveNo("1dsad");
+        orderVO.setWaveType("dsadsa");
+        orderVO.setOrderNo("od-dsadmkl132mkl");
+        ArrayList<OrderDetailPojo> orderDetailPojos = new ArrayList<>();
+        OrderDetailPojo orderDetailPojo = new OrderDetailPojo();
+        orderDetailPojo.setConsigneeAddr("北京");
+        orderDetailPojo.setConsigneeName("李四");
+        orderDetailPojo.setConsigneePhone("15788889999");
+
+        orderDetailPojo.setInvoiceNo("123123123");
+
+        orderDetailPojo.setItemAmount(137);
+        orderDetailPojo.setItemBarCode("dsae213da13d4r5");
+        orderDetailPojo.setItemName("旺仔小馒头");
+        orderDetailPojo.setItemSkuCode("12315-123dsa-cxdass");
+        OrderDetailPojo orderDetailPojo2 = new OrderDetailPojo();
+        orderDetailPojo2.setConsigneeAddr("成都");
+        orderDetailPojo2.setConsigneeName("小明");
+        orderDetailPojo2.setConsigneePhone("15766667777");
+
+        orderDetailPojo2.setInvoiceNo("123123123");
+
+        orderDetailPojo2.setItemAmount(123);
+        orderDetailPojo2.setItemBarCode("dsae213da13d4r5");
+        orderDetailPojo2.setItemName("旺仔小馒头");
+        orderDetailPojo2.setItemSkuCode("12315-123dsa-cxdass");
+        orderDetailPojos.add(orderDetailPojo);
+        orderDetailPojos.add(orderDetailPojo2);
+        orderVO.setOrderDetailList(orderDetailPojos);
+        System.out.println(JSON.toJSONString(orderVO));
+    }
 }
