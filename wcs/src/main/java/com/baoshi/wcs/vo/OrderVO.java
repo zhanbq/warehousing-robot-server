@@ -1,7 +1,8 @@
 package com.baoshi.wcs.vo;
 
-import com.alibaba.fastjson.JSON;
 import com.baoshi.wcs.pojo.OrderDetailPojo;
+import org.apache.cxf.endpoint.Client;
+import org.apache.cxf.jaxws.endpoint.dynamic.JaxWsDynamicClientFactory;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -76,37 +77,56 @@ public class OrderVO implements Serializable {
     }
 
     public static void main(String[] args) {
-        OrderVO orderVO = new OrderVO();
-        orderVO.setOwner("123");
-        orderVO.setWaveNo("1dsad");
-        orderVO.setWaveType("dsadsa");
-        orderVO.setOrderNo("od-dsadmkl132mkl");
-        ArrayList<OrderDetailPojo> orderDetailPojos = new ArrayList<>();
-        OrderDetailPojo orderDetailPojo = new OrderDetailPojo();
-        orderDetailPojo.setConsigneeAddr("北京");
-        orderDetailPojo.setConsigneeName("李四");
-        orderDetailPojo.setConsigneePhone("15788889999");
+//        OrderVO orderVO = new OrderVO();
+//        orderVO.setOwner("123");
+//        orderVO.setWaveNo("1dsad");
+//        orderVO.setWaveType("dsadsa");
+//        orderVO.setOrderNo("od-dsadmkl132mkl");
+//        ArrayList<OrderDetailPojo> orderDetailPojos = new ArrayList<>();
+//        OrderDetailPojo orderDetailPojo = new OrderDetailPojo();
+//        orderDetailPojo.setConsigneeAddr("北京");
+//        orderDetailPojo.setConsigneeName("李四");
+//        orderDetailPojo.setConsigneePhone("15788889999");
+//
+//        orderDetailPojo.setInvoiceNo("123123123");
+//
+//        orderDetailPojo.setItemAmount(137);
+//        orderDetailPojo.setItemBarCode("dsae213da13d4r5");
+//        orderDetailPojo.setItemName("旺仔小馒头");
+//        orderDetailPojo.setItemSkuCode("12315-123dsa-cxdass");
+//        OrderDetailPojo orderDetailPojo2 = new OrderDetailPojo();
+//        orderDetailPojo2.setConsigneeAddr("成都");
+//        orderDetailPojo2.setConsigneeName("小明");
+//        orderDetailPojo2.setConsigneePhone("15766667777");
+//
+//        orderDetailPojo2.setInvoiceNo("123123123");
+//
+//        orderDetailPojo2.setItemAmount(123);
+//        orderDetailPojo2.setItemBarCode("dsae213da13d4r5");
+//        orderDetailPojo2.setItemName("旺仔小馒头");
+//        orderDetailPojo2.setItemSkuCode("12315-123dsa-cxdass");
+//        orderDetailPojos.add(orderDetailPojo);
+//        orderDetailPojos.add(orderDetailPojo2);
+//        orderVO.setOrderDetailList(orderDetailPojos);
+//        System.out.println(JSON.toJSONString(orderVO));
+        JaxWsDynamicClientFactory dcf = JaxWsDynamicClientFactory.newInstance();
+        String wsUrl = "http://demo.kucangbao.com/kcb-1.0/cxf/warehouse?wsdl";
+        Client client = dcf.createClient(wsUrl);
+        String method = "requestStock";//webservice的方法名
+        Object[] result = null;
 
-        orderDetailPojo.setInvoiceNo("123123123");
-
-        orderDetailPojo.setItemAmount(137);
-        orderDetailPojo.setItemBarCode("dsae213da13d4r5");
-        orderDetailPojo.setItemName("旺仔小馒头");
-        orderDetailPojo.setItemSkuCode("12315-123dsa-cxdass");
-        OrderDetailPojo orderDetailPojo2 = new OrderDetailPojo();
-        orderDetailPojo2.setConsigneeAddr("成都");
-        orderDetailPojo2.setConsigneeName("小明");
-        orderDetailPojo2.setConsigneePhone("15766667777");
-
-        orderDetailPojo2.setInvoiceNo("123123123");
-
-        orderDetailPojo2.setItemAmount(123);
-        orderDetailPojo2.setItemBarCode("dsae213da13d4r5");
-        orderDetailPojo2.setItemName("旺仔小馒头");
-        orderDetailPojo2.setItemSkuCode("12315-123dsa-cxdass");
-        orderDetailPojos.add(orderDetailPojo);
-        orderDetailPojos.add(orderDetailPojo2);
-        orderVO.setOrderDetailList(orderDetailPojos);
-        System.out.println(JSON.toJSONString(orderVO));
+        String reqXml="<?xml version=\"1.0\" encoding=\"UTF-8\"?>";
+        reqXml=reqXml+"<requestStock>";
+        reqXml=reqXml+"<tid>20140905155513001</tid>";
+        reqXml=reqXml+"<cid>5f8572e81f074a26bd5006c222546edb</cid>";
+        reqXml=reqXml+"<pwd>19a1cce91b6e48a1bf038ac979ab7e64</pwd>";
+        reqXml=reqXml+"<outerid>200522428</outerid>";
+        reqXml=reqXml+"</requestStock>";
+        try {
+            result = client.invoke(method, reqXml);//调用webservice
+            System.out.println(result[0]);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }
