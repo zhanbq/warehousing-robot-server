@@ -1,5 +1,6 @@
 package com.baoshi.wcs.vo;
 
+import com.alibaba.fastjson.JSON;
 import com.baoshi.wcs.pojo.OrderDetailPojo;
 import org.apache.cxf.endpoint.Client;
 import org.apache.cxf.jaxws.endpoint.dynamic.JaxWsDynamicClientFactory;
@@ -110,20 +111,30 @@ public class OrderVO implements Serializable {
 //        orderVO.setOrderDetailList(orderDetailPojos);
 //        System.out.println(JSON.toJSONString(orderVO));
         JaxWsDynamicClientFactory dcf = JaxWsDynamicClientFactory.newInstance();
-        String wsUrl = "http://demo.kucangbao.com/kcb-1.0/cxf/warehouse?wsdl";
-        Client client = dcf.createClient(wsUrl);
-        String method = "requestStock";//webservice的方法名
-        Object[] result = null;
+//        String wsUrl = "http://demo.kucangbao.com/kcb-1.0/cxf/warehouse?wsdl";
 
-        String reqXml="<?xml version=\"1.0\" encoding=\"UTF-8\"?>";
-        reqXml=reqXml+"<requestStock>";
-        reqXml=reqXml+"<tid>20140905155513001</tid>";
-        reqXml=reqXml+"<cid>5f8572e81f074a26bd5006c222546edb</cid>";
-        reqXml=reqXml+"<pwd>19a1cce91b6e48a1bf038ac979ab7e64</pwd>";
-        reqXml=reqXml+"<outerid>200522428</outerid>";
-        reqXml=reqXml+"</requestStock>";
+        String wsUrl = "http://test3.kucangbao.com/kcb-1.0/cxf/warehouse?wsdl";
+        Client client = dcf.createClient(wsUrl);
+        String method = "getOrders";//webservice的方法名
+        Object[] result = null;
+        String reqXml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" +
+                "<getOrders>\n" +
+                "<tid>20140318155513001</tid>\n" +
+                "<cid>d03821229a964f189effdbb9360fdc13</cid>\n" +
+                "<pwd>36ef934cdc6544f1b8e59eda75c14fde</pwd>\n" +
+                "<warehouseid>cf3c23f41a6142fa9e4d011b71ed8018</warehouseid>\n" +
+                "<ordercode>20190104185721368</ordercode>\n" +
+                "</getOrders>";
+//        String reqXml="<?xml version=\"1.0\" encoding=\"UTF-8\"?>";
+//        reqXml=reqXml+"<getOrders>";
+//        reqXml=reqXml+"<tid>20140905155513001</tid>";
+//        reqXml=reqXml+"<cid>5f8572e81f074a26bd5006c222546edb</cid>";
+//        reqXml=reqXml+"<pwd>19a1cce91b6e48a1bf038ac979ab7e64</pwd>";
+//        reqXml=reqXml+"<outerid>200522428</outerid>";
+//        reqXml=reqXml+"</getOrders>";
         try {
             result = client.invoke(method, reqXml);//调用webservice
+            System.out.println(JSON.toJSONString(result));
             System.out.println(result[0]);
         } catch (Exception e) {
             e.printStackTrace();

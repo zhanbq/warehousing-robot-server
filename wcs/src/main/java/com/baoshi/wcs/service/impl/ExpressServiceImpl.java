@@ -52,4 +52,9 @@ public class ExpressServiceImpl extends ServiceImpl<ExpressMapper, Express> impl
 
         return res;
     }
+
+    @Override
+    public void checkExpressCode(String expressCode) {
+
+    }
 }

@@ -15,4 +15,6 @@ import com.baoshi.wcs.vo.OrderVO;
 public interface ExpressService extends IService<Express> {
 
     boolean saveBatchExpressList(OrderVO orderVO);
+
+    void checkExpressCode(String expressCode);
 }
