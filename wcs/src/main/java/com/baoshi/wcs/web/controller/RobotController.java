@@ -14,6 +14,7 @@ import com.baoshi.wcs.web.basic.BaseController;
 import org.apache.cxf.endpoint.Client;
 import org.apache.cxf.jaxws.endpoint.dynamic.JaxWsDynamicClientFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.StringUtils;
@@ -32,6 +33,18 @@ public class RobotController extends BaseController {
     @Autowired
     private GoodsWeightService goodsWeightService;
 
+    @Value("${com.wcs.wms.url}")
+    private String wmsServiceUrl;
+
+    @Value("${com.wcs.wms.cid}")
+    private String wmsServiceCid;
+
+    @Value("${com.wcs.wms.pwd}")
+    private String wmsServicePwd;
+
+    @Value("${com.wcs.wms.warehouseid}")
+    private String wmsServiceWarehouseId;
+
     private static final String goodsWeightKey = "2C7FACD3AFC3FFE547FC54CDA076A25D";
 
     private static ExecutorService executor = new ThreadPoolExecutor(1, 1,
@@ -44,7 +57,7 @@ public class RobotController extends BaseController {
      */
     @RequestMapping(value = "/goods/weight", method = RequestMethod.POST)
     @ResponseBody
-    public Object weigt(@RequestBody GoodsWeightVO goodsWeightVO){
+    public Object weigt(@RequestBody GoodsWeightVO goodsWeightVO) throws InterruptedException, ExecutionException, TimeoutException {
         WCSApiResponse<Boolean> apiResponse = new WCSApiResponse<>();
         if(StringUtils.isEmpty(goodsWeightVO)){
             apiResponse.setCode(HttpStatus.INTERNAL_SERVER_ERROR.value());
@@ -87,37 +100,53 @@ public class RobotController extends BaseController {
         goodsWeight.setBarCode(barCode);
         goodsWeight.setWeight(goodsWeightVO.getWeight());
         boolean saveRes = goodsWeightService.save(goodsWeight);
-        if(saveRes){
-            apiResponse.success(saveRes,"barcode 验证成功,并保存成功,已发送包裹重量至WMS");
-        }
 
-        Runnable goodsWeight2WMS = new Runnable() {
+        Callable<String> goodsWeight2WMS = new Callable<String>() {
             @Override
-            public void run() {
+            public String call() throws Exception {
                 JaxWsDynamicClientFactory dcf = JaxWsDynamicClientFactory.newInstance();
-                String wsUrl = "http://test3.kucangbao.com/kcb-1.0/cxf/warehouse?wsdl";
+//                String wsUrl = "http://test3.kucangbao.com/kcb-1.0/cxf/warehouse?wsdl";
+                String wsUrl = wmsServiceUrl;
                 Client client = dcf.createClient(wsUrl);
-                String method = "getOrders";//webservice的方法名
+                String method = "setOrderWeight";//webservice的方法名
                 Object[] result = null;
                 String reqXml = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>\n" +
                         "<setOrderWeight>\n" +
                         "<tid>20140318155513001</tid>\n" +
-                        "<cid>9a49554856d04de384c645019634c1d8</cid>\n" +
-                        "<pwd>c18c9035e3d746faaf6661a0bda6c6b1</pwd>\n" +
-                        "<warehouseid>cf3c23f41a6142fa9e4d011b71ed8018</warehouseid>\n" +
-                        "<expresscode>"+barCode+"</expresscode>\n" +
+                        "<cid>" + wmsServiceCid + "</cid>\n" +
+                        "<pwd>"+wmsServicePwd+"</pwd>\n" +
+                        "<warehouseid>"+wmsServiceWarehouseId+"</warehouseid>\n" +
+                        "<sendcode>"+barCode+"</sendcode>\n" +
                         "<weight>"+weight+"</weight>\n" +
                         "<unit>g</unit>\n" +
                         "</setOrderWeight>";
+                Object[] res = null;
                 try {
-                    client.invoke(method, reqXml);//调用webservice
+                    //调用webservice
+                    res = client.invoke(method, reqXml);
                 } catch (Exception e) {
                     e.printStackTrace();
                     logger.error("保存 wms 扫码称重 异常 :{}",e);
                 }
+                return res[0].toString();
             }
+
         };
-        executor.submit(goodsWeight2WMS);
+        if(saveRes) {
+
+            Future<String> future = executor.submit(goodsWeight2WMS);
+            String res = future.get(5, TimeUnit.SECONDS);
+            WMSServiceResponse resp = Xml2BeanUtil.getBaseWMSResp(res);
+            if (resp != null) {
+                String goodsweihgtRc = resp.getRc();
+                if (!"0000".equals(goodsweihgtRc)) {
+                    apiResponse.setCode(HttpStatus.INTERNAL_SERVER_ERROR.value());
+                    apiResponse.setServerMsg("保存快递单号 重量失败  wms 状态码: " + rc + " msg: " + resp.getRm());
+                    return apiResponse;
+                }
+            }
+            apiResponse.success(saveRes,"barcode 验证成功,并保存成功, 快递单号和重量成功推送到WMS");
+        }
         return apiResponse;
     }
 
@@ -126,16 +155,17 @@ public class RobotController extends BaseController {
         JaxWsDynamicClientFactory dcf = JaxWsDynamicClientFactory.newInstance();
 //        String wsUrl = "http://demo.kucangbao.com/kcb-1.0/cxf/warehouse?wsdl";
 
-        String wsUrl = "http://test3.kucangbao.com/kcb-1.0/cxf/warehouse?wsdl";
+//        String wsUrl = "http://test3.kucangbao.com/kcb-1.0/cxf/warehouse?wsdl";
+        String wsUrl = wmsServiceUrl;
         Client client = dcf.createClient(wsUrl);
         String method = "getOrders";//webservice的方法名
         Object[] result = null;
         String reqXml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" +
                 "<getOrders>\n" +
                 "<tid>20140318155513001</tid>\n" +
-                "<cid>d03821229a964f189effdbb9360fdc13</cid>\n" +
-                "<pwd>36ef934cdc6544f1b8e59eda75c14fde</pwd>\n" +
-                "<warehouseid>cf3c23f41a6142fa9e4d011b71ed8018</warehouseid>\n" +
+                "<cid>"+wmsServiceCid+"</cid>\n" +
+                "<pwd>"+wmsServicePwd+"</pwd>\n" +
+                "<warehouseid>"+wmsServiceWarehouseId+"</warehouseid>\n" +
                 "<sendcode>"+barcode+"</sendcode>\n" +
                 "</getOrders>";
         WMSServiceResponse<List<Order>> orderDetails = null;

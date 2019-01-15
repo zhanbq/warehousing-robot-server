@@ -77,13 +77,13 @@ public class OrderVO implements Serializable {
         this.orderNo = orderNo;
     }
 
-//    public static void main(String[] args) {
-//        JaxWsDynamicClientFactory dcf = JaxWsDynamicClientFactory.newInstance();
-//
-//        String wsUrl = "http://test3.kucangbao.com/kcb-1.0/cxf/warehouse?wsdl";
-//        Client client = dcf.createClient(wsUrl);
-//        String method = "getOrders";//webservice的方法名
-//        Object[] result = null;
+    public static void main(String[] args) {
+        JaxWsDynamicClientFactory dcf = JaxWsDynamicClientFactory.newInstance();
+
+        String wsUrl = "http://baoshi.kucangbao.com/kcb-1.0/cxf/warehouse?wsdl";
+        Client client = dcf.createClient(wsUrl);
+        String method = "setOrderWeight";//webservice的方法名
+        Object[] result = null;
 //        String reqXml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" +
 //                "<getOrders>\n" +
 //                "<tid>20140318155513001</tid>\n" +
@@ -92,13 +92,22 @@ public class OrderVO implements Serializable {
 //                "<warehouseid>cf3c23f41a6142fa9e4d011b71ed8018</warehouseid>\n" +
 //                "<sendcode>75124050026194</sendcode>\n" +
 //                "</getOrders>";
-//
-//        try {
-//            result = client.invoke(method, reqXml);//调用webservice
-//            System.out.println(JSON.toJSONString(result));
-//            System.out.println(result[0]);
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//        }
-//    }
+        String reqXml = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>\n" +
+                "<setOrderWeight>\n" +
+                "<tid>20140318155513001</tid>\n" +
+                "<cid>33d231fa134e47e3bc112ae06eaedc5c</cid>\n" +
+                "<pwd>37de5907f2964e52846d9d2213eea3b4</pwd>\n" +
+                "<warehouseid>fac5d7fd03e044698a9df1dcaab08006</warehouseid>\n" +
+                "<sendcode>75124050026194</sendcode>\n" +
+                "<weight>2.3</weight>\n" +
+                "<unit>kg</unit>\n" +
+                "</setOrderWeight>";
+        try {
+            result = client.invoke(method, reqXml);//调用webservice
+            System.out.println(JSON.toJSONString(result));
+            System.out.println(result[0]);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 }
