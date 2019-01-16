@@ -45,6 +45,9 @@ public class RobotController extends BaseController {
     @Value("${com.wcs.wms.warehouseid}")
     private String wmsServiceWarehouseId;
 
+    @Value("${com.wcs.wms.unit}")
+    private String wmsServiceUnit;
+
     private static final String goodsWeightKey = "2C7FACD3AFC3FFE547FC54CDA076A25D";
 
     private static ExecutorService executor = new ThreadPoolExecutor(1, 1,
@@ -118,7 +121,7 @@ public class RobotController extends BaseController {
                         "<warehouseid>"+wmsServiceWarehouseId+"</warehouseid>\n" +
                         "<sendcode>"+barCode+"</sendcode>\n" +
                         "<weight>"+weight+"</weight>\n" +
-                        "<unit>g</unit>\n" +
+                        "<unit>"+wmsServiceUnit+"</unit>\n" +
                         "</setOrderWeight>";
                 Object[] res = null;
                 try {
