@@ -98,8 +98,8 @@ public class OrderVO implements Serializable {
 //                "<cid>33d231fa134e47e3bc112ae06eaedc5c</cid>\n" +
 //                "<pwd>37de5907f2964e52846d9d2213eea3b4</pwd>\n" +
 //                "<warehouseid>fac5d7fd03e044698a9df1dcaab08006</warehouseid>\n" +
-//                "<sendcode>75124050026194</sendcode>\n" +
-//                "<weight>2.3</weight>\n" +
+//                "<sendcode>3833880982655</sendcode>\n" +
+//                "<weight>0.49</weight>\n" +
 //                "<unit>kg</unit>\n" +
 //                "</setOrderWeight>";
 //        try {

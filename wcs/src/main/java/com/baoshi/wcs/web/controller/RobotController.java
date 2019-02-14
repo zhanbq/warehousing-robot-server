@@ -96,6 +96,7 @@ public class RobotController extends BaseController {
         if(!"0000".equals(rc)){
             apiResponse.setCode(HttpStatus.INTERNAL_SERVER_ERROR.value());
             apiResponse.setServerMsg("验证barcode失败 wms 状态码: "+rc+" msg: "+ wmsServiceResponse.getRm() );
+            logger.error("快递单号验证失败:{}",JSON.toJSONString(wmsServiceResponse));
             return apiResponse;
         }
 
@@ -140,11 +141,13 @@ public class RobotController extends BaseController {
             Future<String> future = executor.submit(goodsWeight2WMS);
             String res = future.get(5, TimeUnit.SECONDS);
             WMSServiceResponse resp = Xml2BeanUtil.getBaseWMSResp(res);
+            logger.info("推送快递单号重量返回：{}",JSON.toJSONString(resp));
             if (resp != null) {
                 String goodsweihgtRc = resp.getRc();
                 if (!"0000".equals(goodsweihgtRc)) {
                     apiResponse.setCode(HttpStatus.INTERNAL_SERVER_ERROR.value());
                     apiResponse.setServerMsg("保存快递单号 重量失败  wms 状态码: " + rc + " msg: " + resp.getRm());
+                    logger.error("快单号-重量推送失败:{}",JSON.toJSONString(resp));
                     return apiResponse;
                 }
             }
