@@ -61,6 +61,7 @@ public class RobotController extends BaseController {
     @RequestMapping(value = "/goods/weight", method = RequestMethod.POST)
     @ResponseBody
     public Object weigt(@RequestBody GoodsWeightVO goodsWeightVO) throws InterruptedException, ExecutionException, TimeoutException {
+        logger.info("扫码称重入参, goodsWeightVO: {}",JSON.toJSONString(goodsWeightVO));
         WCSApiResponse<Boolean> apiResponse = new WCSApiResponse<>();
         if(StringUtils.isEmpty(goodsWeightVO)){
             apiResponse.setCode(HttpStatus.INTERNAL_SERVER_ERROR.value());
