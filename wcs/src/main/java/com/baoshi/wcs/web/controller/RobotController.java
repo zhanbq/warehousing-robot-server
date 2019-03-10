@@ -183,6 +183,7 @@ public class RobotController extends BaseController {
             return orderDetails;
         } catch (Exception e) {
             e.printStackTrace();
+            logger.error("校验快递单号失败");
         }
         return orderDetails;
     }
