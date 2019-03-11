@@ -6,10 +6,8 @@ import com.baoshi.wcs.common.utils.Xml2BeanUtil;
 import com.baoshi.wcs.common.wms.Order;
 import com.baoshi.wcs.common.wms.WMSServiceResponse;
 import com.baoshi.wcs.entity.GoodsWeight;
-import com.baoshi.wcs.common.response.ApiResponse;
 import com.baoshi.wcs.service.GoodsWeightService;
 import com.baoshi.wcs.vo.GoodsWeightVO;
-
 import com.baoshi.wcs.web.basic.BaseController;
 import org.apache.cxf.endpoint.Client;
 import org.apache.cxf.jaxws.endpoint.dynamic.JaxWsDynamicClientFactory;

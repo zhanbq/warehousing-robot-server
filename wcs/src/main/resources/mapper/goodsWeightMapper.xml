@@ -6,7 +6,7 @@
     <resultMap id="BaseResultMap" type="com.baoshi.wcs.entity.GoodsWeight">
     <result column="id" property="id" />
     <result column="create_time" property="createTime" />
-    <result column="update_time" property="updateTime" />
+    <result column="modify_time" property="modifyTime" />
     <result column="creator" property="creator" />
     <result column="version" property="version" />
         <result column="bar_code" property="barCode" />
@@ -18,10 +18,16 @@
     <sql id="Base_Column_List">
         id,
         create_time,
-        update_time,
+        modify_time,
         creator,
         version,
         bar_code, weight, modifier
     </sql>
+
+    <select id="getLastGoodsweight" resultMap="BaseResultMap">
+
+        select <include refid="Base_Column_List"></include>
+        FROM goods_weight ORDER BY id DESC LIMIT 0,1
+    </select>
 
 </mapper>

@@ -143,6 +143,28 @@
 <!-- jQuery (Bootstrap 的 JavaScript 插件需要引入 jQuery) -->
 <script src="https://code.jquery.com/jquery.js"></script>
 <!-- 包括所有已编译的插件 -->
-<script src="js/bootstrap.min.js"></script>
+<!--<script src="js/bootstrap.min.js"></script>-->
+<script>
+
+    // var wcsDomain = "http://47.100.250.212";
+    var wcsDomain = "http://localhost";
+    var uri = "/admin/last_goodsweight";
+    var getLastGoodsweight = function () {
+        $.ajax({
+            url: wcsDomain + uri,
+            type:'get',
+            dataType : "jsonp",
+            cache:"false",
+            success: function (data) {
+                console.log(JSON.stringify(data))
+            },
+            error:function (data) {
+                console.log(JSON.stringify(data))
+            }
+        });
+    }
+    getLastGoodsweight();
+
+</script>
 </body>
 </html>

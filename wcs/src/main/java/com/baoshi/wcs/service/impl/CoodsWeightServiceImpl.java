@@ -11,4 +11,12 @@ import org.springframework.stereotype.Service;
 @Service
 public class CoodsWeightServiceImpl extends ServiceImpl<GoodsWeightMapper,GoodsWeight> implements GoodsWeightService {
 
+    @Autowired
+    GoodsWeightMapper goodsWeightMapper;
+
+    @Override
+    public GoodsWeight etLastGoodsweight(String robotKey) {
+
+        return goodsWeightMapper.getLastGoodsweight(robotKey);
+    }
 }

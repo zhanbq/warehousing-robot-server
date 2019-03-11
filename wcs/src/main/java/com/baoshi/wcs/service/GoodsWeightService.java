@@ -13,4 +13,6 @@ import com.baoshi.wcs.entity.GoodsWeight;
  */
 public interface GoodsWeightService extends IService<GoodsWeight> {
 
+
+    GoodsWeight etLastGoodsweight(String robotKey);
 }
