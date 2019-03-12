@@ -1,6 +1,7 @@
 package com.baoshi.wcs.web.controller;
 
 import com.alibaba.fastjson.JSON;
+import com.baoshi.wcs.common.config.WMSWebserviceProperties;
 import com.baoshi.wcs.common.response.WCSApiResponse;
 import com.baoshi.wcs.common.utils.Xml2BeanUtil;
 import com.baoshi.wcs.common.wms.Order;
@@ -15,33 +16,32 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
+import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.concurrent.*;
 
 @Controller
 @RequestMapping("/robot")
+
 public class RobotController extends BaseController {
 
     @Autowired
     private GoodsWeightService goodsWeightService;
 
     @Value("${com.wcs.wms.url}")
-    private String wmsServiceUrl;
+    private static String wmsServiceUrl;
 
     @Value("${com.wcs.wms.cid}")
-    private String wmsServiceCid;
+    private static String wmsServiceCid;
 
     @Value("${com.wcs.wms.pwd}")
-    private String wmsServicePwd;
+    private static String wmsServicePwd;
 
     @Value("${com.wcs.wms.warehouseid}")
-    private String wmsServiceWarehouseId;
+    private static String wmsServiceWarehouseId;
 
     @Value("${com.wcs.wms.unit}")
     private String wmsServiceUnit;
@@ -51,6 +51,16 @@ public class RobotController extends BaseController {
     private static ExecutorService executor = new ThreadPoolExecutor(1, 1,
             0L, TimeUnit.MILLISECONDS,
             new LinkedBlockingQueue<Runnable>());
+
+    private static Client client = null;
+    static {
+        client = initClient();
+    }
+    private static Client initClient(){
+        JaxWsDynamicClientFactory dcf = JaxWsDynamicClientFactory.newInstance();
+        Client client = dcf.createClient(WMSWebserviceProperties.getUrl());
+        return client;
+    }
     /**
      *
      * @param goodsWeightVO
@@ -107,10 +117,10 @@ public class RobotController extends BaseController {
         Callable<String> goodsWeight2WMS = new Callable<String>() {
             @Override
             public String call() throws Exception {
-                JaxWsDynamicClientFactory dcf = JaxWsDynamicClientFactory.newInstance();
+//                JaxWsDynamicClientFactory dcf = JaxWsDynamicClientFactory.newInstance();
 //                String wsUrl = "http://test3.kucangbao.com/kcb-1.0/cxf/warehouse?wsdl";
-                String wsUrl = wmsServiceUrl;
-                Client client = dcf.createClient(wsUrl);
+//                String wsUrl = wmsServiceUrl;
+//                Client client = dcf.createClient(wsUrl);
                 String method = "setOrderWeight";//webservice的方法名
                 Object[] result = null;
                 String reqXml = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>\n" +
@@ -131,6 +141,7 @@ public class RobotController extends BaseController {
                     e.printStackTrace();
                     logger.error("保存 wms 扫码称重 异常 :{}",e);
                 }
+
                 return res[0].toString();
             }
 
@@ -157,12 +168,12 @@ public class RobotController extends BaseController {
 
 
     private WMSServiceResponse<List<Order>>  checkBarcode2Wms(String barcode){
-        JaxWsDynamicClientFactory dcf = JaxWsDynamicClientFactory.newInstance();
+//        JaxWsDynamicClientFactory dcf = JaxWsDynamicClientFactory.newInstance();
 //        String wsUrl = "http://demo.kucangbao.com/kcb-1.0/cxf/warehouse?wsdl";
 
 //        String wsUrl = "http://test3.kucangbao.com/kcb-1.0/cxf/warehouse?wsdl";
-        String wsUrl = wmsServiceUrl;
-        Client client = dcf.createClient(wsUrl);
+//        String wsUrl = wmsServiceUrl;
+//        Client client = dcf.createClient(wsUrl);
         String method = "getOrders";//webservice的方法名
         Object[] result = null;
         String reqXml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" +
@@ -184,5 +195,44 @@ public class RobotController extends BaseController {
             logger.error("校验快递单号失败");
         }
         return orderDetails;
+    }
+
+
+    /**
+     * 查询最新的扫码重量数据
+     * @return
+     */
+    @GetMapping("/last_goodsweight")
+    @ResponseBody
+    public Object getLastGoodsweight(String robotKey){
+        robotKey = "2C7FACD3AFC3FFE547FC54CDA076A25D";
+        WCSApiResponse<String> apiResponse = new WCSApiResponse<>();
+        if(StringUtils.isEmpty(robotKey)){
+            apiResponse.setCode(HttpStatus.INTERNAL_SERVER_ERROR.value());
+            apiResponse.setServerMsg("机器key 不能为空");
+        }
+
+
+        GoodsWeight goodsWeight = goodsWeightService.etLastGoodsweight(robotKey);
+        WMSServiceResponse<List<Order>> wmsServiceResponse = checkBarcode2Wms(goodsWeight.getBarCode());
+        logger.info("实时回显 快递单 验证 结果: {}",JSON.toJSONString(wmsServiceResponse));
+        String rc = wmsServiceResponse.getRc();
+        if(!"0000".equals(rc)){
+            apiResponse.setCode(HttpStatus.INTERNAL_SERVER_ERROR.value());
+            apiResponse.setServerMsg("实时回显 验证barcode失败 wms 状态码: "+rc+" msg: "+ wmsServiceResponse.getRm() );
+            logger.error("实时回显 快递单号验证失败:{}",JSON.toJSONString(wmsServiceResponse));
+            return apiResponse;
+        }
+        List<Order> res = wmsServiceResponse.getData();
+        if(CollectionUtils.isEmpty(res)){
+            apiResponse.setCode(HttpStatus.INTERNAL_SERVER_ERROR.value());
+            apiResponse.setServerMsg("实时回显 查询快递详情错误: "+rc+" msg: "+ wmsServiceResponse.getRm() );
+            logger.error("实时回显 查询快递详情错误:{}",JSON.toJSONString(wmsServiceResponse));
+            return apiResponse;
+        }
+        Order orders = res.get(0);
+        apiResponse.success(JSON.toJSONString(orders));
+        return apiResponse;
+
     }
 }
