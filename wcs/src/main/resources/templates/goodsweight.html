@@ -148,8 +148,8 @@
 
 <script>
     var id = null;
-    var noticeAudio = "/static/chess.mp3";
-
+    var noticeAudio = "http://att.chinauui.com/day_151230/20151230_f29cb48ee8404b354fe4MUfUEi242m4v.mp3";
+    var audio = new Audio(noticeAudio);
     var wcsDomain = "http://47.100.250.212";
     // var wcsDomain = "http://localhost";
     var uri = "/robot/last_goodsweight";
@@ -165,7 +165,7 @@
                 var data = res.data;
                 var resid = data.gw.id;
                 if(resid != id){
-                    var audio = new Audio(noticeAudio);
+
                     audio.play(); //播放
                     $("#cname").html(data.order.tousername);
                     $("#weight").html(data.gw.weight+"KG");
