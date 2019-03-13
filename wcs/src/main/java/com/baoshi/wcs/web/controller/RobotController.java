@@ -20,7 +20,9 @@ import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.*;
 
 @Controller
@@ -32,16 +34,16 @@ public class RobotController extends BaseController {
     private GoodsWeightService goodsWeightService;
 
     @Value("${com.wcs.wms.url}")
-    private static String wmsServiceUrl;
+    private String wmsServiceUrl;
 
     @Value("${com.wcs.wms.cid}")
-    private static String wmsServiceCid;
+    private String wmsServiceCid;
 
     @Value("${com.wcs.wms.pwd}")
-    private static String wmsServicePwd;
+    private String wmsServicePwd;
 
     @Value("${com.wcs.wms.warehouseid}")
-    private static String wmsServiceWarehouseId;
+    private String wmsServiceWarehouseId;
 
     @Value("${com.wcs.wms.unit}")
     private String wmsServiceUnit;
@@ -206,7 +208,7 @@ public class RobotController extends BaseController {
     @ResponseBody
     public Object getLastGoodsweight(String robotKey){
         robotKey = "2C7FACD3AFC3FFE547FC54CDA076A25D";
-        WCSApiResponse<String> apiResponse = new WCSApiResponse<>();
+        WCSApiResponse<Object> apiResponse = new WCSApiResponse<>();
         if(StringUtils.isEmpty(robotKey)){
             apiResponse.setCode(HttpStatus.INTERNAL_SERVER_ERROR.value());
             apiResponse.setServerMsg("机器key 不能为空");
@@ -230,8 +232,11 @@ public class RobotController extends BaseController {
             logger.error("实时回显 查询快递详情错误:{}",JSON.toJSONString(wmsServiceResponse));
             return apiResponse;
         }
-        Order orders = res.get(0);
-        apiResponse.success(JSON.toJSONString(orders));
+        Order order = res.get(0);
+        Map<Object, Object> resMap = new HashMap<>();
+        resMap.put("order",order);
+        resMap.put("gw",goodsWeight);
+        apiResponse.success(resMap);
         return apiResponse;
 
     }

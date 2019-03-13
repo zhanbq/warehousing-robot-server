@@ -46,21 +46,21 @@ public class BaseEntity {
         this.id = id;
     }
 
-//    public Date getCreateTime() {
-//        return createTime;
-//    }
-//
-//    public void setCreateTime(Date createTime) {
-//        this.createTime = createTime;
-//    }
-//
-//    public Date getModifyTime() {
-//        return modifyTime;
-//    }
-//
-//    public void setModifyTime(Date modifyTime) {
-//        this.modifyTime = modifyTime;
-//    }
+    public Date getCreateTime() {
+        return createTime;
+    }
+
+    public void setCreateTime(Date createTime) {
+        this.createTime = createTime;
+    }
+
+    public Date getModifyTime() {
+        return modifyTime;
+    }
+
+    public void setModifyTime(Date modifyTime) {
+        this.modifyTime = modifyTime;
+    }
 //
 //    public Integer getCreator() {
 //        return creator;

@@ -34,8 +34,7 @@
                         </div>
                         <div class="list-group-item"></div>
                         <div class="list-group-item">
-                            <h1 class="list-group-item-heading">
-                                丁**技
+                            <h1 class="list-group-item-heading" id="cname">
                             </h1>
                         </div>
                         <div class="list-group-item"></div>
@@ -49,8 +48,7 @@
                     </div>
                     <div class="list-group-item"></div>
                     <div class="list-group-item">
-                        <h1 class="list-group-item-heading">
-                            2.54KG
+                        <h1 class="list-group-item-heading" id="weight">
                         </h1>
                         <p class="list-group-item-text">
                         </p>
@@ -68,8 +66,7 @@
                         </div>
                         <div class="list-group-item"></div>
                         <div class="list-group-item">
-                            <h1 class="list-group-item-heading">
-                                1223232424242
+                            <h1 class="list-group-item-heading" id="sendcode">
                             </h1>
                             <p class="list-group-item-text">
                             </p>
@@ -87,7 +84,7 @@
                         <div class="list-group-item"></div>
                         <div class="list-group-item">
                             <h1 class="list-group-item-heading">
-                                0.023m³
+                                ***m³
                             </h1>
                             <p class="list-group-item-text">
 
@@ -107,8 +104,8 @@
                         </div>
                         <div class="list-group-item"></div>
                         <div class="list-group-item">
-                            <h1 class="list-group-item-heading">
-                                中通
+                            <h1 class="list-group-item-heading" id="expresscode">
+
                             </h1>
                             <p class="list-group-item-text">
                             </p>
@@ -120,13 +117,13 @@
                 </div>
                 <div class="col-md-6 column">
                     <div class="list-group">
-                        <div class="list-group-item active">
+                        <div class="list-group-item active" >
                             操作时间
                         </div>
                         <div class="list-group-item"></div>
                         <div class="list-group-item">
                             <h1 class="list-group-item-heading">
-                                <span class="">2019/01/25</span> <span class="">09:35:42</span>
+                                <span class="" id="operation_time"></span>
                             </h1>
 
                         </div>
@@ -139,15 +136,22 @@
         </div>
     </div>
 </div>
-
 <!-- jQuery (Bootstrap 的 JavaScript 插件需要引入 jQuery) -->
 <script src="https://code.jquery.com/jquery.js"></script>
 <!-- 包括所有已编译的插件 -->
 <!--<script src="js/bootstrap.min.js"></script>-->
-<script>
+</body>
+</html>
 
-    // var wcsDomain = "http://47.100.250.212";
-    var wcsDomain = "http://localhost";
+
+
+
+<script>
+    var id = null;
+    var noticeAudio = "/static/chess.mp3";
+
+    var wcsDomain = "http://47.100.250.212";
+    // var wcsDomain = "http://localhost";
     var uri = "/robot/last_goodsweight";
     var getLastGoodsweight = function () {
         $.ajax({
@@ -155,16 +159,28 @@
             type:'get',
             dataType : "jsonp",
             cache:"false",
-            success: function (data) {
-                console.log(JSON.stringify(data))
+            success: function (res) {
+
+                // console.log(JSON.stringify(res.data))
+                var data = res.data;
+                var resid = data.gw.id;
+                if(resid != id){
+                    var audio = new Audio(noticeAudio);
+                    audio.play(); //播放
+                    $("#cname").html(data.order.tousername);
+                    $("#weight").html(data.gw.weight+"KG");
+                    $("#sendcode").html(data.order.sendcode);
+                    $("#expresscode").html(data.order.expresscode);
+                    $("#operation_time").html(data.gw.createTime);
+                    id = resid;
+                }
             },
             error:function (data) {
-                console.log(JSON.stringify(data))
+                console.log(JSON.stringify(res.data))
+
             }
         });
     }
-    getLastGoodsweight();
 
+    setInterval("getLastGoodsweight()",500);
 </script>
-</body>
-</html>
