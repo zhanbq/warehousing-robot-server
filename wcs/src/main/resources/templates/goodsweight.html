@@ -147,12 +147,12 @@
 
 
 <script>
-    var id = null;
+    var gwId = null;
     var noticeAudio = "http://att.chinauui.com/day_151230/20151230_f29cb48ee8404b354fe4MUfUEi242m4v.mp3";
     var audio = new Audio(noticeAudio);
-    var wcsDomain = "http://47.100.250.212";
-    // var wcsDomain = "http://localhost";
-    var uri = "/robot/last_goodsweight";
+    // var wcsDomain = "http://47.100.250.212";
+    var wcsDomain = "http://localhost";
+    var uri = "/robot/last_goodsweight?gwid="+gwId;
     var getLastGoodsweight = function () {
         $.ajax({
             url: wcsDomain + uri,
@@ -164,7 +164,7 @@
                 // console.log(JSON.stringify(res.data))
                 var data = res.data;
                 var resid = data.gw.id;
-                if(resid != id){
+                if(resid != gwId){
 
                     audio.play(); //播放
                     $("#cname").html(data.order.tousername);
@@ -172,7 +172,7 @@
                     $("#sendcode").html(data.order.sendcode);
                     $("#expresscode").html(data.order.expresscode);
                     $("#operation_time").html(data.gw.createTime);
-                    id = resid;
+                    gwId = resid;
                 }
             },
             error:function (data) {

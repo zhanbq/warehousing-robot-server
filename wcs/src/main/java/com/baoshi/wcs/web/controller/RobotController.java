@@ -135,6 +135,7 @@ public class RobotController extends BaseController {
                         "<weight>"+weight+"</weight>\n" +
                         "<unit>"+wmsServiceUnit+"</unit>\n" +
                         "</setOrderWeight>";
+                logger.debug("推送重量 报文 ,{}",reqXml);
                 Object[] res = null;
                 try {
                     //调用webservice
@@ -186,6 +187,7 @@ public class RobotController extends BaseController {
                 "<warehouseid>"+wmsServiceWarehouseId+"</warehouseid>\n" +
                 "<sendcode>"+barcode+"</sendcode>\n" +
                 "</getOrders>";
+        logger.debug("根据快递单号barcode 查询 快递详情 请求报文,{}",reqXml);
         WMSServiceResponse<List<Order>> orderDetails = null;
         try {
             result = client.invoke(method, reqXml);//调用webservice
@@ -201,21 +203,32 @@ public class RobotController extends BaseController {
 
 
     /**
-     * 查询最新的扫码重量数据
+     * 查询最新的扫码重量数据,用于扫码量房界面 实时回显数据
      * @return
      */
     @GetMapping("/last_goodsweight")
     @ResponseBody
-    public Object getLastGoodsweight(String robotKey){
-        robotKey = "2C7FACD3AFC3FFE547FC54CDA076A25D";
+    public Object getLastGoodsweight(String robotId,String gwId){
+        robotId = "2C7FACD3AFC3FFE547FC54CDA076A25D";
         WCSApiResponse<Object> apiResponse = new WCSApiResponse<>();
-        if(StringUtils.isEmpty(robotKey)){
+        if(StringUtils.isEmpty(robotId)){
             apiResponse.setCode(HttpStatus.INTERNAL_SERVER_ERROR.value());
             apiResponse.setServerMsg("机器key 不能为空");
         }
+        if(StringUtils.isEmpty(gwId)){
+            apiResponse.setCode(HttpStatus.INTERNAL_SERVER_ERROR.value());
+            apiResponse.setServerMsg("扫码称重id 不能为空");
+        }
 
+        /**
+         * 根据robotId查询 对应机器最新的一条数据
+         */
+        GoodsWeight goodsWeight = goodsWeightService.etLastGoodsweight(robotId);
 
-        GoodsWeight goodsWeight = goodsWeightService.etLastGoodsweight(robotKey);
+        if(robotId.equals(goodsWeight.getId())){
+            //TODO 需要缓存gwid 避免每次直接查数据库
+        }
+
         WMSServiceResponse<List<Order>> wmsServiceResponse = checkBarcode2Wms(goodsWeight.getBarCode());
         logger.info("实时回显 快递单 验证 结果: {}",JSON.toJSONString(wmsServiceResponse));
         String rc = wmsServiceResponse.getRc();
