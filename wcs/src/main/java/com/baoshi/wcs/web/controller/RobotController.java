@@ -78,16 +78,24 @@ public class RobotController extends BaseController {
             apiResponse.setServerMsg("数据不能为空");
             return apiResponse;
         }
-        if(StringUtils.isEmpty(goodsWeightVO.getKey())){
+        //TODO key值不校验
+//        if(StringUtils.isEmpty(goodsWeightVO.getKey())){
+//            apiResponse.setCode(HttpStatus.INTERNAL_SERVER_ERROR.value());
+//            apiResponse.setServerMsg("key不能为空");
+//            return apiResponse;
+//        }
+//        if(! goodsWeightKey.equals(goodsWeightVO.getKey())){
+//            apiResponse.setCode(HttpStatus.INTERNAL_SERVER_ERROR.value());
+//            apiResponse.setServerMsg("错误的key值");
+//            return apiResponse;
+//        }
+
+
+        if(StringUtils.isEmpty(goodsWeightVO.getRobotId())){
             apiResponse.setCode(HttpStatus.INTERNAL_SERVER_ERROR.value());
-            apiResponse.setServerMsg("key不能为空");
-            return apiResponse;
+            apiResponse.setServerMsg("数据不能为空");
         }
-        if(! goodsWeightKey.equals(goodsWeightVO.getKey())){
-            apiResponse.setCode(HttpStatus.INTERNAL_SERVER_ERROR.value());
-            apiResponse.setServerMsg("错误的key值");
-            return apiResponse;
-        }
+
         String barCode = goodsWeightVO.getBarCode();
         if(StringUtils.isEmpty(barCode)){
             apiResponse.setCode(HttpStatus.INTERNAL_SERVER_ERROR.value());

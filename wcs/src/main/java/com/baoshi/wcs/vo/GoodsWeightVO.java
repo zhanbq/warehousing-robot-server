@@ -22,6 +22,8 @@ public class GoodsWeightVO implements Serializable {
 
     String key;
 
+    String robotId;
+
     public String getKey() {
         return key;
     }
@@ -44,6 +46,14 @@ public class GoodsWeightVO implements Serializable {
 
     public void setWeight(Double weight) {
         this.weight = weight;
+    }
+
+    public String getRobotId() {
+        return robotId;
+    }
+
+    public void setRobotId(String robotId) {
+        this.robotId = robotId;
     }
 
     public interface GoodsWeightValidator{

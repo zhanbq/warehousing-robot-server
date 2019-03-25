@@ -12,6 +12,9 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+/**
+ * 后台界面页面跳转
+ */
 @RequestMapping("/admin")
 @Controller
 public class AdminController {
