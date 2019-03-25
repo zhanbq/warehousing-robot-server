@@ -7,7 +7,9 @@ import com.baoshi.wcs.common.utils.Xml2BeanUtil;
 import com.baoshi.wcs.common.wms.Order;
 import com.baoshi.wcs.common.wms.WMSServiceResponse;
 import com.baoshi.wcs.entity.GoodsWeight;
+import com.baoshi.wcs.entity.RobotInfo;
 import com.baoshi.wcs.service.GoodsWeightService;
+import com.baoshi.wcs.service.RobotInfoService;
 import com.baoshi.wcs.vo.GoodsWeightVO;
 import com.baoshi.wcs.web.basic.BaseController;
 import org.apache.cxf.endpoint.Client;
@@ -47,6 +49,9 @@ public class RobotController extends BaseController {
 
     @Value("${com.wcs.wms.unit}")
     private String wmsServiceUnit;
+
+    @Autowired
+    RobotInfoService robotInfoService;
 
     private static final String goodsWeightKey = "2C7FACD3AFC3FFE547FC54CDA076A25D";
 
@@ -93,7 +98,17 @@ public class RobotController extends BaseController {
 
         if(StringUtils.isEmpty(goodsWeightVO.getRobotId())){
             apiResponse.setCode(HttpStatus.INTERNAL_SERVER_ERROR.value());
-            apiResponse.setServerMsg("数据不能为空");
+            apiResponse.setServerMsg("robotId 数据不能为空");
+            return apiResponse;
+        }
+
+        RobotInfo robotInfo = robotInfoService.getById(goodsWeightVO.getRobotId());
+
+        if(robotInfo == null){
+            logger.error("机器id错误 : id {}",JSON.toJSONString(goodsWeightVO.getRobotId()));
+            apiResponse.setCode(HttpStatus.INTERNAL_SERVER_ERROR.value());
+            apiResponse.setServerMsg("机器id错误");
+            return apiResponse;
         }
 
         String barCode = goodsWeightVO.getBarCode();
