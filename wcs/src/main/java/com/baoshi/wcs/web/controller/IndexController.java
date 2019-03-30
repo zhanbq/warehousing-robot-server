@@ -1,15 +1,10 @@
 package com.baoshi.wcs.web.controller;
 
-import com.baoshi.wcs.WcsApplication;
 import com.baoshi.wcs.common.response.WCSApiResponse;
-
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
-
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
 
 @RestController
 public class IndexController {

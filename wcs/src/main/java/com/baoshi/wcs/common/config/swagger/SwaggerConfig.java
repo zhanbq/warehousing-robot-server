@@ -1,3 +1,4 @@
+/*
 package com.baoshi.wcs.common.config.swagger;
 
 import org.springframework.context.annotation.Bean;
@@ -36,4 +37,4 @@ public class SwaggerConfig  {
                 new Contact("zhanbq", "www.example.com", "zhanbq@gmail.com"),
                 "License of API", "API license URL", Collections.emptyList());
     }
-}
+}*/
