@@ -6,12 +6,14 @@
     <resultMap id="BaseResultMap" type="com.baoshi.wcs.entity.RobotInfo">
     <result column="id" property="id" />
         <result column="status" property="status" />
+        <result column="code" property="code" />
+        <result column="name" property="name" />
     </resultMap>
 
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
         id,
-        status
+        status, code, name
     </sql>
 
 </mapper>

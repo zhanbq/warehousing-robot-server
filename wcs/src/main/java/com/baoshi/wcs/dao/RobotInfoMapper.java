@@ -10,7 +10,7 @@ import org.springframework.stereotype.Repository;
  * </p>
  *
  * @author jobob
- * @since 2019-03-26
+ * @since 2019-03-30
  */
 @Repository
 public interface RobotInfoMapper extends BaseMapper<RobotInfo> {

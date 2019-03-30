@@ -24,5 +24,10 @@ public class AdminController {
         return "goodsweight";
     }
 
+    @RequestMapping("/test")
+    public String test(){
+        return "test";
+    }
+
 
 }

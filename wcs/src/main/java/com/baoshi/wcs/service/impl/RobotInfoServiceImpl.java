@@ -12,7 +12,7 @@ import org.springframework.stereotype.Service;
  * </p>
  *
  * @author jobob
- * @since 2019-03-26
+ * @since 2019-03-30
  */
 @Service
 public class RobotInfoServiceImpl extends ServiceImpl<RobotInfoMapper, RobotInfo> implements RobotInfoService {
