@@ -137,6 +137,7 @@ public class RobotController extends BaseController {
         GoodsWeight goodsWeight = new GoodsWeight();
         goodsWeight.setBarCode(barCode);
         goodsWeight.setWeight(goodsWeightVO.getWeight());
+        goodsWeight.setGwRobotId(goodsWeightVO.getId());
         boolean saveRes = goodsWeightService.save(goodsWeight);
 
         Callable<String> goodsWeight2WMS = new Callable<String>() {
