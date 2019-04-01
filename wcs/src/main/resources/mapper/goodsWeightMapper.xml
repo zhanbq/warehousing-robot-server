@@ -4,14 +4,15 @@
 
     <!-- 通用查询映射结果 -->
     <resultMap id="BaseResultMap" type="com.baoshi.wcs.entity.GoodsWeight">
-    <result column="id" property="id" />
-    <result column="create_time" property="createTime" />
-    <result column="modify_time" property="modifyTime" />
-    <result column="creator" property="creator" />
-    <result column="version" property="version" />
-        <result column="bar_code" property="barCode" />
-        <result column="weight" property="weight" />
-        <result column="modifier" property="modifier" />
+        <result column="id" property="id"/>
+        <result column="create_time" property="createTime"/>
+        <result column="modify_time" property="modifyTime"/>
+        <result column="creator" property="creator"/>
+        <result column="version" property="version"/>
+        <result column="bar_code" property="barCode"/>
+        <result column="weight" property="weight"/>
+        <result column="modifier" property="modifier"/>
+        <result column="gw_robot_id" property="gwRobotId"/>
     </resultMap>
 
     <!-- 通用查询结果列 -->
@@ -21,13 +22,18 @@
         modify_time,
         creator,
         version,
-        bar_code, weight, modifier
+        bar_code, weight, modifier,gw_robot_id
     </sql>
 
-    <select id="getLastGoodsweight" resultMap="BaseResultMap">
+    <select id="getLastGoodsweight" parameterType="string" resultMap="BaseResultMap">
 
-        select <include refid="Base_Column_List"></include>
-        FROM goods_weight ORDER BY id DESC LIMIT 0,1
+        select
+        <include refid="Base_Column_List"></include>
+        FROM goods_weight
+        <if test=" gwRobotId != null and gwRobotId != '' ">
+          where gw_robot_id = #{gwRobotId}
+        </if>
+        ORDER BY id DESC LIMIT 0,1
     </select>
 
 </mapper>

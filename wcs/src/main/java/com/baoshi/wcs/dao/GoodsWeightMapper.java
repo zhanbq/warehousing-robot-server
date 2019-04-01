@@ -2,6 +2,7 @@ package com.baoshi.wcs.dao;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.baoshi.wcs.entity.GoodsWeight;
+import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
 
 /**
@@ -15,5 +16,5 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface GoodsWeightMapper extends BaseMapper<GoodsWeight> {
 
-    GoodsWeight getLastGoodsweight(String robotKey);
+    GoodsWeight getLastGoodsweight(@Param("gwRobotId") String robotKey);
 }

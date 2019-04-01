@@ -5,6 +5,7 @@ import com.baoshi.wcs.entity.GoodsWeight;
 import com.baoshi.wcs.dao.GoodsWeightMapper;
 import com.baoshi.wcs.service.GoodsWeightService;
 
+import org.apache.ibatis.annotations.Param;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -15,8 +16,8 @@ public class CoodsWeightServiceImpl extends ServiceImpl<GoodsWeightMapper,GoodsW
     GoodsWeightMapper goodsWeightMapper;
 
     @Override
-    public GoodsWeight etLastGoodsweight(String robotKey) {
+    public GoodsWeight getLastGoodsweight(String gwRobotId) {
 
-        return goodsWeightMapper.getLastGoodsweight(robotKey);
+        return goodsWeightMapper.getLastGoodsweight(gwRobotId);
     }
 }

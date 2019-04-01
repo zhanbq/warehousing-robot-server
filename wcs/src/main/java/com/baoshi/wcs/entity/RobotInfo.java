@@ -11,7 +11,7 @@ import com.baoshi.wcs.entity.base.BaseStringIdEntity;
  * @author jobob
  * @since 2019-03-30
  */
-public class RobotInfo extends BaseStringIdEntity {
+public class RobotInfo {
 
     private static final long serialVersionUID = 1L;
 

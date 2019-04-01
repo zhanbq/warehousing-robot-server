@@ -29,6 +29,11 @@ public class GoodsWeight extends BaseEntity {
      */
     private Integer modifier;
 
+    /**
+     * 扫码称重机id
+     */
+    String gwRobotId;
+
     public String getBarCode() {
         return barCode;
     }
@@ -49,6 +54,14 @@ public class GoodsWeight extends BaseEntity {
 
     public void setModifier(Integer modifier) {
         this.modifier = modifier;
+    }
+
+    public String getGwRobotId() {
+        return gwRobotId;
+    }
+
+    public void setGwRobotId(String gwRobotId) {
+        this.gwRobotId = gwRobotId;
     }
 
     @Override
