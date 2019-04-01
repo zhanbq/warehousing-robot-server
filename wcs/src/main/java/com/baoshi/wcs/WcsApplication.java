@@ -9,6 +9,10 @@ import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
 @MapperScan("com.baoshi.wcs.dao")
 public class WcsApplication {
 
+	/**
+	 *  nohup java -jar wcs.jar --spring.profiles.active=dev &
+	 * @param args
+	 */
 	public static void main(String[] args) {
 		SpringApplication.run(WcsApplication.class, args);
 	}
