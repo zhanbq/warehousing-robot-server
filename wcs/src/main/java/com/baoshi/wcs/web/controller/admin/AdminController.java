@@ -9,6 +9,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
@@ -29,5 +30,8 @@ public class AdminController {
         return "test";
     }
 
-
+    @RequestMapping("/vue/{name}")
+    public String vue(@PathVariable("name")String name){
+        return "vue/" + name;
+    }
 }

@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html xmlns:v-on="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8" />
+    <title>事件处理 v-on示例1</title>
+    <script src="../static/js/vuejs-2.5.16.js"></script>
+</head>
+<body>
+<div id="app">
+    {{message}}
+    <button v-on:click="fun1('good')">点击改变</button>
+</div>
+<script>
+    new Vue({
+        el:'#app', //表示当前vue对象接管了div区域
+        data:{
+            message:'hello world' //注意不要写分号结尾
+        },
+        methods:{
+            fun1:function(msg){
+                this.message=msg;
+            }
+        }
+    });
+</script>
+</body>
+</html>
