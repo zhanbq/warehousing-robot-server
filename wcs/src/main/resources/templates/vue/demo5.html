@@ -16,12 +16,12 @@
 
 	<body>
 		<div id="app">
-			<form @submit.prevent action="http://www.itheima.com" method="post" >
+			<!--<form @submit.prevent action="http://www.itheima.com" method="post" >-->
+				<!--<input type="submit" value="提交">-->
+			<!--</form>-->
+			<form action="http://www.itheima.com" method="post" onsubmit="return checkForm()">
 				<input type="submit" value="提交">
 			</form>
-			<!--<form action="http://www.itheima.com" method="post" onsubmit="return checkForm()">
-				<input type="submit" value="提交">
-			</form>-->
 			<hr/>
 			<div @mouseover="fun1" id="div">
 				<textarea @mouseover.stop="fun2($event)">这是一个文件域</textarea>
