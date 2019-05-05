@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8" />
+		<title>wcs设备制作</title>
+		<script src="../../static/js/vuejs-2.5.16.js"></script>
+		<!-- 引入样式 -->
+		<link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css">
+		<!-- 引入组件库 -->
+		<script src="https://unpkg.com/element-ui/lib/index.js"></script>
+	</head>
+	<body>
+	<div id="app">
+		<el-form ref="form" :model="form" label-width="80px">
+			<el-form-item label="设备名称">
+				<el-input v-model="form.name"></el-input>
+			</el-form-item>
+			<el-form-item label="设备编号">
+				<el-input v-model="form.name"></el-input>
+			</el-form-item>
+			<el-form-item label="巷道">
+				<el-input v-model="form.name"></el-input>
+			</el-form-item>
+			<el-form-item label="容器堆叠">
+				<el-input v-model="form.name"></el-input>
+			</el-form-item>
+			<el-form-item label="设备类型">
+				<el-select v-model="form.region" placeholder="请选择设备类型">
+					<el-option label="分播墙" value="shanghai"></el-option>
+					<el-option label="自动立库" value="beijing"></el-option>
+				</el-select>
+			</el-form-item>
+
+			<el-form-item label="可承载容器">
+				<el-checkbox-group v-model="form.type">
+					<el-checkbox label="托盘" name="type"></el-checkbox>
+					<el-checkbox label="料筐" name="type"></el-checkbox>
+					<el-checkbox label="层板" name="type"></el-checkbox>
+				</el-checkbox-group>
+			</el-form-item>
+			<el-form-item label="层数">
+				<el-input v-model="form.name"></el-input>
+
+			</el-form-item>
+
+			<el-form-item
+					v-for="(domain, index) in form.domains"
+					:label="'层高' + (index+1)"
+					:key="domain.key"
+					:prop="'domains.' + index + '.value'"
+					:rules="{
+      required: true, message: '域名不能为空', trigger: 'blur'
+    }"
+			>
+				<el-input v-model="domain.value"></el-input><el-button @click.prevent="removeDomain(domain)">删除</el-button>
+
+			</el-form-item>
+			<el-form-item>
+				<el-button @click="addDomain">添加层高</el-button>
+			</el-form-item>
+
+
+
+			<el-form-item label="设备名称">
+				<el-input v-model="form.name"></el-input>
+			</el-form-item>
+			<el-form-item>
+				<el-button type="primary" @click="onSubmit">立即创建</el-button>
+				<el-button @click="resetForm('form')">重置</el-button>
+				<el-button>取消</el-button>
+			</el-form-item>
+		</el-form>
+	</div>
+	</body>
+	<script>
+        var Main = {
+            data() {
+                return {
+                    form: {
+                        name: '',
+                        region: '',
+                        date1: '',
+                        date2: '',
+                        delivery: false,
+                        type: [],
+                        resource: '',
+                        desc: '',
+                        domains: [{
+                            value: ''
+                        }]
+                    }
+                }
+            },
+            methods: {
+                onSubmit() {
+                    console.log('submit!');
+                },
+                resetForm(formName) {
+                    this.$refs[formName].resetFields();
+                },
+                removeDomain(item) {
+                    var index = this.form.domains.indexOf(item)
+                    if (index !== -1) {
+                        this.form.domains.splice(index, 1)
+                    }
+                },
+                addDomain() {
+                    this.form.domains.push({
+                        value: '',
+                        key: Date.now()
+                    });
+                }
+            }
+        }
+        var Ctor = Vue.extend(Main)
+        new Ctor().$mount('#app')
+	</script>
+</html>
