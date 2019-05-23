@@ -29,7 +29,6 @@ import java.util.concurrent.*;
 
 @Controller
 @RequestMapping("/robot")
-
 public class RobotController extends BaseController {
 
     @Autowired
@@ -251,8 +250,11 @@ public class RobotController extends BaseController {
          */
         GoodsWeight goodsWeight = goodsWeightService.getLastGoodsweight(gwRobotId);
 
-        if(gwRobotId.equals(goodsWeight.getId())){
-            //TODO 需要缓存gwid 避免每次直接查数据库
+        if(goodsWeight == null){
+            apiResponse.setCode(200);
+            apiResponse.setServerMsg("数据为空");
+            apiResponse.setData(null);
+            return apiResponse;
         }
 
         WMSServiceResponse<List<Order>> wmsServiceResponse = checkBarcode2Wms(goodsWeight.getBarCode());

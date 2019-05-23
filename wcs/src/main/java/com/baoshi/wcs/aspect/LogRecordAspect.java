@@ -65,7 +65,7 @@ public class LogRecordAspect {
             return response;
         }
 
-        boolean saveRes = requestorService.save(requestor);
+//        boolean saveRes = requestorService.save(requestor);
 
         if (result instanceof WCSApiResponse) {
             //如果返回的类型是WCSApiResponse 则强转  代替之前声明的WCSApiResponse
