@@ -4,6 +4,7 @@
 		<meta charset="utf-8" />
 		<title>wcs设备制作</title>
 		<script src="../../static/js/vuejs-2.5.16.js"></script>
+		<script src="../../static/js/axios-0.18.0.js"></script>
 		<!-- 引入样式 -->
 		<link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css">
 		<!-- 引入组件库 -->
@@ -88,7 +89,13 @@
             methods: {
                 onSubmit() {
                     console.log('submit!');
-                },
+					var _this = this;
+					axios.post("/vuejsDemo/user/update.do",_this.user).then(function (response) {
+						_this.findAll();
+					}).catch(function (err) {
+					});
+
+				},
                 resetForm(formName) {
                     this.$refs[formName].resetFields();
                 },
