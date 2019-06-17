@@ -220,8 +220,8 @@
     var hasRequested = ""; //s
     var noticeAudio = "http://att.chinauui.com/day_151230/20151230_f29cb48ee8404b354fe4MUfUEi242m4v.mp3";
     var audio = new Audio(noticeAudio);
-    var wcsDomain = "http://47.100.250.212";
-    // var wcsDomain = "http://localhost";
+    // var wcsDomain = "http://47.100.250.212";
+    var wcsDomain = "http://localhost";
 
     function book(){
         $('#myModal').modal('show');
@@ -247,12 +247,6 @@
                 if(data == null || data == undefined){ //判断是否已经切换过机器 阻止弹层重复弹出
                     if(hasRequested != gwId || robotSelectedId != gwRobotId){
                         book();
-                        // $("#cname").html("");
-                        // $("#weight").html("**"+"KG");
-                        // $("#sendcode").html("");
-                        // $("#expresscode").html("");
-                        // $("#operation_time").html("");
-                        // $("#currRobot").html("");
                     }
                     hasRequested = gwId;
                     robotSelectedId = gwRobotId;
@@ -264,10 +258,10 @@
                 if(resid != gwId){
 
                     audio.play(); //播放
-                    $("#cname").html(data.order.tousername);
+                    $("#cname").html(data.gw.customer);
                     $("#weight").html(data.gw.weight+"KG");
-                    $("#sendcode").html(data.order.sendcode);
-                    $("#expresscode").html(data.order.expresscode);
+                    $("#sendcode").html(data.gw.palletid);
+                    $("#expresscode").html(data.gw.carrierId);
                     $("#operation_time").html(data.gw.createTime);
                     $("#currRobot").html(robotinfo.code);
                     gwId = resid;

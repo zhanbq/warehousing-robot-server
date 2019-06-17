@@ -163,9 +163,10 @@ public class RobotController extends BaseController {
         map.add("SOReference5",goodsWeightVO.getBarCode());
         map.add("Weigh",goodsWeightVO.getWeight().toString());
         HttpEntity<MultiValueMap<String, String>> request = new HttpEntity<>(map, headers);
-        ResponseEntity<String> response = restTemplate.postForEntity( url, request , String.class );
-        logger.info("称重回传wms res : {}",JSON.toJSONString(response.getBody()));
-        return goodsWeightResOne;
+//        ResponseEntity<String> response = restTemplate.postForEntity( url, request , String.class );
+//        logger.info("称重回传wms res : {}",JSON.toJSONString(response.getBody()));
+        apiResponse.success(update,"barcode 验证成功,并保存成功, 快递单号和重量成功推送到WMS");
+        return apiResponse;
 //        WMSServiceResponse<List<Order>> wmsServiceResponse = checkBarcode2Wms(barCode);
 //        logger.info("wms 快递单 验证 结果: {}",JSON.toJSONString(wmsServiceResponse));
 //        String rc = wmsServiceResponse.getRc();
@@ -284,26 +285,25 @@ public class RobotController extends BaseController {
             apiResponse.setData(null);
             return apiResponse;
         }
-
-        WMSServiceResponse<List<Order>> wmsServiceResponse = checkBarcode2Wms(goodsWeight.getBarCode());
-        logger.info("实时回显 快递单 验证 结果: {}",JSON.toJSONString(wmsServiceResponse));
-        String rc = wmsServiceResponse.getRc();
-        if(!"0000".equals(rc)){
-            apiResponse.setCode(HttpStatus.INTERNAL_SERVER_ERROR.value());
-            apiResponse.setServerMsg("实时回显 验证barcode失败 wms 状态码: "+rc+" msg: "+ wmsServiceResponse.getRm() );
-            logger.error("实时回显 快递单号验证失败:{}",JSON.toJSONString(wmsServiceResponse));
-            return apiResponse;
-        }
-        List<Order> res = wmsServiceResponse.getData();
-        if(CollectionUtils.isEmpty(res)){
-            apiResponse.setCode(HttpStatus.INTERNAL_SERVER_ERROR.value());
-            apiResponse.setServerMsg("实时回显 查询快递详情错误: "+rc+" msg: "+ wmsServiceResponse.getRm() );
-            logger.error("实时回显 查询快递详情错误:{}",JSON.toJSONString(wmsServiceResponse));
-            return apiResponse;
-        }
-        Order order = res.get(0);
+//        WMSServiceResponse<List<Order>> wmsServiceResponse = checkBarcode2Wms(goodsWeight.getBarCode());
+//        logger.info("实时回显 快递单 验证 结果: {}",JSON.toJSONString(wmsServiceResponse));
+//        String rc = wmsServiceResponse.getRc();
+//        if(!"0000".equals(rc)){
+//            apiResponse.setCode(HttpStatus.INTERNAL_SERVER_ERROR.value());
+//            apiResponse.setServerMsg("实时回显 验证barcode失败 wms 状态码: "+rc+" msg: "+ wmsServiceResponse.getRm() );
+//            logger.error("实时回显 快递单号验证失败:{}",JSON.toJSONString(wmsServiceResponse));
+//            return apiResponse;
+//        }
+//        List<Order> res = wmsServiceResponse.getData();
+//        if(CollectionUtils.isEmpty(res)){
+//            apiResponse.setCode(HttpStatus.INTERNAL_SERVER_ERROR.value());
+//            apiResponse.setServerMsg("实时回显 查询快递详情错误: "+rc+" msg: "+ wmsServiceResponse.getRm() );
+//            logger.error("实时回显 查询快递详情错误:{}",JSON.toJSONString(wmsServiceResponse));
+//            return apiResponse;
+//        }
+//        Order order = res.get(0);
         Map<Object, Object> resMap = new HashMap<>();
-        resMap.put("order",order);
+//        resMap.put("order",order);
         resMap.put("gw",goodsWeight);
 
         RobotInfo robotInfo = robotInfoService.getById(gwRobotId);
