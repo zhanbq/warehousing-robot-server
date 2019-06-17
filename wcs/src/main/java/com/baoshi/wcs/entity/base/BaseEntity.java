@@ -23,12 +23,12 @@ public class BaseEntity {
     /**
      * 创建人
      */
-    Integer creator;
+    protected Integer creator;
 
     /**
      * 修改人
      */
-    Integer modifier;
+    protected Integer modifier;
 
     /**
      * 版本号
@@ -61,22 +61,6 @@ public class BaseEntity {
     public void setModifyTime(Date modifyTime) {
         this.modifyTime = modifyTime;
     }
-//
-//    public Integer getCreator() {
-//        return creator;
-//    }
-//
-//    public void setCreator(Integer creator) {
-//        this.creator = creator;
-//    }
-//
-//    public Integer getModifier() {
-//        return modifier;
-//    }
-//
-//    public void setModifier(Integer modifier) {
-//        this.modifier = modifier;
-//    }
 
     public int getVersion() {
         return version;

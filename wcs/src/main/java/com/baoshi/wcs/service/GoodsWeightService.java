@@ -15,4 +15,5 @@ public interface GoodsWeightService extends IService<GoodsWeight> {
 
 
     GoodsWeight getLastGoodsweight(String robotKey);
+
 }

@@ -13,7 +13,13 @@
         <result column="weight" property="weight"/>
         <result column="modifier" property="modifier"/>
         <result column="gw_robot_id" property="gwRobotId"/>
+
+        <result column="palletid" property="palletid"/>
+        <result column="customer" property="customer"/>
+        <result column="consigneename" property="consigneename"/>
+        <result column="carrier_id" property="carrierId"/>
     </resultMap>
+
 
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
@@ -22,8 +28,9 @@
         modify_time,
         creator,
         version,
-        bar_code, weight, modifier,gw_robot_id
+        bar_code, weight, modifier,gw_robot_id,palletid, customer, consigneename, carrier_id
     </sql>
+
 
     <select id="getLastGoodsweight" parameterType="string" resultMap="BaseResultMap">
 
@@ -35,5 +42,4 @@
         </if>
         ORDER BY id DESC LIMIT 0,1
     </select>
-
 </mapper>

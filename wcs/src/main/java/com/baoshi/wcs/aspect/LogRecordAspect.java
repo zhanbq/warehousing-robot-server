@@ -2,6 +2,7 @@ package com.baoshi.wcs.aspect;
 
 import com.baoshi.wcs.common.enumeration.EventCodeEnum;
 import com.baoshi.wcs.common.enumeration.RequestorEnum;
+import com.baoshi.wcs.common.response.NewWMSResponse;
 import com.baoshi.wcs.common.response.WCSApiResponse;
 import com.baoshi.wcs.common.utils.DateUtil;
 import com.baoshi.wcs.entity.Requestor;
@@ -66,7 +67,9 @@ public class LogRecordAspect {
         }
 
 //        boolean saveRes = requestorService.save(requestor);
-
+        if(result instanceof NewWMSResponse){
+            return (NewWMSResponse) result;
+        }
         if (result instanceof WCSApiResponse) {
             //如果返回的类型是WCSApiResponse 则强转  代替之前声明的WCSApiResponse
             response = (WCSApiResponse) result;

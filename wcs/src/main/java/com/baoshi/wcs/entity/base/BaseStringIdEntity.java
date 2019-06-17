@@ -23,12 +23,12 @@ public class BaseStringIdEntity {
     /**
      * 创建人
      */
-    Integer creator;
+    protected Integer creator;
 
     /**
      * 修改人
      */
-    Integer modifier;
+    protected Integer modifier;
 
     /**
      * 版本号

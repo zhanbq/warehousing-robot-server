@@ -24,15 +24,21 @@ public class GoodsWeight extends BaseEntity {
      */
     private Double weight;
 
-    /**
-     * 修改人id
-     */
-    private Integer modifier;
+    String palletid;
 
+    String customer;
+
+    String consigneename;
+
+    String carrierId;
+
+    String taskId;
     /**
      * 扫码称重机id
      */
     String gwRobotId;
+
+    String orderNo;
 
     public String getBarCode() {
         return barCode;
@@ -64,12 +70,59 @@ public class GoodsWeight extends BaseEntity {
         this.gwRobotId = gwRobotId;
     }
 
-    @Override
-    public String toString() {
-        return "GoodsWeight{" +
-        "barCode=" + barCode +
-        ", weight=" + weight +
-        ", modifier=" + modifier +
-        "}";
+    public Integer getCreator() {
+        return creator;
+    }
+
+    public void setCreator(Integer creator) {
+        this.creator = creator;
+    }
+
+    public String getPalletid() {
+        return palletid;
+    }
+
+    public void setPalletid(String palletid) {
+        this.palletid = palletid;
+    }
+
+    public String getCustomer() {
+        return customer;
+    }
+
+    public void setCustomer(String customer) {
+        this.customer = customer;
+    }
+
+    public String getConsigneename() {
+        return consigneename;
+    }
+
+    public void setConsigneename(String consigneename) {
+        this.consigneename = consigneename;
+    }
+
+    public String getCarrierId() {
+        return carrierId;
+    }
+
+    public void setCarrierId(String carrierId) {
+        this.carrierId = carrierId;
+    }
+
+    public String getTaskId() {
+        return taskId;
+    }
+
+    public void setTaskId(String taskId) {
+        this.taskId = taskId;
+    }
+
+    public String getOrderNo() {
+        return orderNo;
+    }
+
+    public void setOrderNo(String orderNo) {
+        this.orderNo = orderNo;
     }
 }
