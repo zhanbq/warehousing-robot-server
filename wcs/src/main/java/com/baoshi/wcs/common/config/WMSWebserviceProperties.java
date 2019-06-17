@@ -18,4 +18,6 @@ public class WMSWebserviceProperties {
 
         WMSWebserviceProperties.url = url;
     }
+
+
 }

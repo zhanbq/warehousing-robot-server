@@ -50,7 +50,7 @@ public class OrderController extends BaseController {
             res.setCode("000");
             res.setMessage("正确接收");
         }else {
-            res.setFlag("w");
+            res.setFlag("W");
             res.setCode("999");
             res.setMessage("接受失敗 內部錯誤");
         }

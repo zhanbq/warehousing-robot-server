@@ -28,7 +28,7 @@
         modify_time,
         creator,
         version,
-        bar_code, weight, modifier,gw_robot_id,palletid, customer, consigneename, carrier_id
+        bar_code, weight, modifier,gw_robot_id,palletid, customer, consigneename, carrier_id,task_id,order_no
     </sql>
 
 

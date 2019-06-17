@@ -1,7 +1,11 @@
 package com.baoshi.wcs.web.controller;
 
 import com.alibaba.fastjson.JSON;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
+import com.baoshi.wcs.common.config.NewWMSHttpProp;
 import com.baoshi.wcs.common.config.WMSWebserviceProperties;
+import com.baoshi.wcs.common.response.NewWMSResponse;
 import com.baoshi.wcs.common.response.WCSApiResponse;
 import com.baoshi.wcs.common.utils.Xml2BeanUtil;
 import com.baoshi.wcs.common.wms.Order;
@@ -16,11 +20,14 @@ import org.apache.cxf.endpoint.Client;
 import org.apache.cxf.jaxws.endpoint.dynamic.JaxWsDynamicClientFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpStatus;
+import org.springframework.http.*;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.CollectionUtils;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.client.RestTemplate;
 
 import java.util.HashMap;
 import java.util.List;
@@ -50,6 +57,9 @@ public class RobotController extends BaseController {
     private String wmsServiceUnit;
 
     @Autowired
+    NewWMSHttpProp newWMSHttpProp;
+
+    @Autowired
     RobotInfoService robotInfoService;
 
     private static final String goodsWeightKey = "2C7FACD3AFC3FFE547FC54CDA076A25D";
@@ -77,23 +87,12 @@ public class RobotController extends BaseController {
     public Object weigt(@RequestBody GoodsWeightVO goodsWeightVO) throws InterruptedException, ExecutionException, TimeoutException {
         logger.info("扫码称重入参, goodsWeightVO: {}",JSON.toJSONString(goodsWeightVO));
         WCSApiResponse<Boolean> apiResponse = new WCSApiResponse<>();
+        NewWMSResponse<Object> newWMSResponse = new NewWMSResponse<>();
         if(StringUtils.isEmpty(goodsWeightVO)){
             apiResponse.setCode(HttpStatus.INTERNAL_SERVER_ERROR.value());
             apiResponse.setServerMsg("数据不能为空");
             return apiResponse;
         }
-        //TODO key值不校验
-//        if(StringUtils.isEmpty(goodsWeightVO.getKey())){
-//            apiResponse.setCode(HttpStatus.INTERNAL_SERVER_ERROR.value());
-//            apiResponse.setServerMsg("key不能为空");
-//            return apiResponse;
-//        }
-//        if(! goodsWeightKey.equals(goodsWeightVO.getKey())){
-//            apiResponse.setCode(HttpStatus.INTERNAL_SERVER_ERROR.value());
-//            apiResponse.setServerMsg("错误的key值");
-//            return apiResponse;
-//        }
-
 
         if(StringUtils.isEmpty(goodsWeightVO.getId())){
             apiResponse.setCode(HttpStatus.INTERNAL_SERVER_ERROR.value());
@@ -123,83 +122,117 @@ public class RobotController extends BaseController {
             return apiResponse;
         }
 
-        WMSServiceResponse<List<Order>> wmsServiceResponse = checkBarcode2Wms(barCode);
-        logger.info("wms 快递单 验证 结果: {}",JSON.toJSONString(wmsServiceResponse));
-        String rc = wmsServiceResponse.getRc();
-        if(!"0000".equals(rc)){
-            apiResponse.setCode(HttpStatus.INTERNAL_SERVER_ERROR.value());
-            apiResponse.setServerMsg("验证barcode失败 wms 状态码: "+rc+" msg: "+ wmsServiceResponse.getRm() );
-            logger.error("快递单号验证失败:{}",JSON.toJSONString(wmsServiceResponse));
-            return apiResponse;
+        //根据单号查询信息
+        QueryWrapper<GoodsWeight> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("bar_code",goodsWeightVO.getBarCode());
+        GoodsWeight goodsWeightResOne = goodsWeightService.getOne(queryWrapper);
+        //验证
+        if(null == goodsWeightResOne){
+            newWMSResponse.setCode("555");
+            newWMSResponse.setMessage("查询不到快递单号");
+            newWMSResponse.setFlag("W");
+            return newWMSResponse;
         }
 
-        GoodsWeight goodsWeight = new GoodsWeight();
-        goodsWeight.setBarCode(barCode);
-        goodsWeight.setWeight(goodsWeightVO.getWeight());
-        goodsWeight.setGwRobotId(goodsWeightVO.getId());
-        boolean saveRes = goodsWeightService.save(goodsWeight);
+        //更新
+        UpdateWrapper<GoodsWeight> goodsWeightUpdateWrapper = new UpdateWrapper<>();
+        goodsWeightUpdateWrapper.eq("version",goodsWeightResOne.getVersion());
+        goodsWeightUpdateWrapper.eq("bar_code",goodsWeightVO.getBarCode());
+        GoodsWeight goodsWeightParam = new GoodsWeight();
+        goodsWeightParam.setBarCode(barCode);
+        goodsWeightParam.setWeight(goodsWeightVO.getWeight());
+        goodsWeightParam.setGwRobotId(goodsWeightVO.getId());
+        goodsWeightParam.setVersion(goodsWeightResOne.getVersion()+1);
+        boolean update = goodsWeightService.update(goodsWeightParam, goodsWeightUpdateWrapper);
 
-        Callable<String> goodsWeight2WMS = new Callable<String>() {
-            @Override
-            public String call() throws Exception {
-//                JaxWsDynamicClientFactory dcf = JaxWsDynamicClientFactory.newInstance();
-//                String wsUrl = "http://test3.kucangbao.com/kcb-1.0/cxf/warehouse?wsdl";
-//                String wsUrl = wmsServiceUrl;
-//                Client client = dcf.createClient(wsUrl);
-                String method = "setOrderWeight";//webservice的方法名
-                Object[] result = null;
-                String reqXml = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>\n" +
-                        "<setOrderWeight>\n" +
-                        "<tid>20140318155513001</tid>\n" +
-                        "<cid>" + wmsServiceCid + "</cid>\n" +
-                        "<pwd>"+wmsServicePwd+"</pwd>\n" +
-                        "<warehouseid>"+wmsServiceWarehouseId+"</warehouseid>\n" +
-                        "<sendcode>"+barCode+"</sendcode>\n" +
-                        "<weight>"+weight+"</weight>\n" +
-                        "<unit>"+wmsServiceUnit+"</unit>\n" +
-                        "</setOrderWeight>";
-                logger.debug("推送重量 报文 ,{}",reqXml);
-                Object[] res = null;
-                try {
-                    //调用webservice
-                    res = client.invoke(method, reqXml);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                    logger.error("保存 wms 扫码称重 异常 :{}",e);
-                }
-
-                return res[0].toString();
-            }
-
-        };
-        if(saveRes) {
-
-            Future<String> future = executor.submit(goodsWeight2WMS);
-            String res = future.get(5, TimeUnit.SECONDS);
-            WMSServiceResponse resp = Xml2BeanUtil.getBaseWMSResp(res);
-            logger.info("推送快递单号重量返回：{}",JSON.toJSONString(resp));
-            if (resp != null) {
-                String goodsweihgtRc = resp.getRc();
-                if (!"0000".equals(goodsweihgtRc)) {
-                    apiResponse.setCode(HttpStatus.INTERNAL_SERVER_ERROR.value());
-                    apiResponse.setServerMsg("保存快递单号 重量失败  wms 状态码: " + rc + " msg: " + resp.getRm());
-                    logger.error("快单号-重量推送失败:{}",JSON.toJSONString(resp));
-                    return apiResponse;
-                }
-            }
-            apiResponse.success(saveRes,"barcode 验证成功,并保存成功, 快递单号和重量成功推送到WMS");
+        if(!update){
+            newWMSResponse.setCode("555");
+            newWMSResponse.setMessage("快递单号更新失败");
+            newWMSResponse.setFlag("W");
+            return newWMSResponse;
         }
-        return apiResponse;
+        goodsWeightResOne.setWeight(goodsWeightVO.getWeight());
+
+        //推送重量至wms
+        RestTemplate restTemplate = new RestTemplate();
+        String url = NewWMSHttpProp.orderUrl;
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON_UTF8);
+        MultiValueMap<String, String> map= new LinkedMultiValueMap<>();
+        map.add("TASKID", goodsWeightResOne.getTaskId());
+        map.add("SOReference5",goodsWeightVO.getBarCode());
+        map.add("Weigh",goodsWeightVO.getWeight().toString());
+        HttpEntity<MultiValueMap<String, String>> request = new HttpEntity<>(map, headers);
+        ResponseEntity<String> response = restTemplate.postForEntity( url, request , String.class );
+        logger.info("称重回传wms res : {}",JSON.toJSONString(response.getBody()));
+        return goodsWeightResOne;
+//        WMSServiceResponse<List<Order>> wmsServiceResponse = checkBarcode2Wms(barCode);
+//        logger.info("wms 快递单 验证 结果: {}",JSON.toJSONString(wmsServiceResponse));
+//        String rc = wmsServiceResponse.getRc();
+//        if(!"0000".equals(rc)){
+//            apiResponse.setCode(HttpStatus.INTERNAL_SERVER_ERROR.value());
+//            apiResponse.setServerMsg("验证barcode失败 wms 状态码: "+rc+" msg: "+ wmsServiceResponse.getRm() );
+//            logger.error("快递单号验证失败:{}",JSON.toJSONString(wmsServiceResponse));
+//            return apiResponse;
+//        }
+//
+//        GoodsWeight goodsWeight = new GoodsWeight();
+//        goodsWeight.setBarCode(barCode);
+//        goodsWeight.setWeight(goodsWeightVO.getWeight());
+//        goodsWeight.setGwRobotId(goodsWeightVO.getId());
+//        boolean saveRes = goodsWeightService.save(goodsWeight);
+//
+//        Callable<String> goodsWeight2WMS = new Callable<String>() {
+//            @Override
+//            public String call() throws Exception {
+//                String method = "setOrderWeight";//webservice的方法名
+//                Object[] result = null;
+//                String reqXml = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>\n" +
+//                        "<setOrderWeight>\n" +
+//                        "<tid>20140318155513001</tid>\n" +
+//                        "<cid>" + wmsServiceCid + "</cid>\n" +
+//                        "<pwd>"+wmsServicePwd+"</pwd>\n" +
+//                        "<warehouseid>"+wmsServiceWarehouseId+"</warehouseid>\n" +
+//                        "<sendcode>"+barCode+"</sendcode>\n" +
+//                        "<weight>"+weight+"</weight>\n" +
+//                        "<unit>"+wmsServiceUnit+"</unit>\n" +
+//                        "</setOrderWeight>";
+//                logger.debug("推送重量 报文 ,{}",reqXml);
+//                Object[] res = null;
+//                try {
+//                    //调用webservice
+//                    res = client.invoke(method, reqXml);
+//                } catch (Exception e) {
+//                    e.printStackTrace();
+//                    logger.error("保存 wms 扫码称重 异常 :{}",e);
+//                }
+//
+//                return res[0].toString();
+//            }
+//
+//        };
+//        if(saveRes) {
+//
+//            Future<String> future = executor.submit(goodsWeight2WMS);
+//            String res = future.get(5, TimeUnit.SECONDS);
+//            WMSServiceResponse resp = Xml2BeanUtil.getBaseWMSResp(res);
+//            logger.info("推送快递单号重量返回：{}",JSON.toJSONString(resp));
+//            if (resp != null) {
+//                String goodsweihgtRc = resp.getRc();
+//                if (!"0000".equals(goodsweihgtRc)) {
+//                    apiResponse.setCode(HttpStatus.INTERNAL_SERVER_ERROR.value());
+//                    apiResponse.setServerMsg("保存快递单号 重量失败  wms 状态码: " + rc + " msg: " + resp.getRm());
+//                    logger.error("快单号-重量推送失败:{}",JSON.toJSONString(resp));
+//                    return apiResponse;
+//                }
+//            }
+//            apiResponse.success(saveRes,"barcode 验证成功,并保存成功, 快递单号和重量成功推送到WMS");
+//        }
+//        return apiResponse;
     }
 
 
     private WMSServiceResponse<List<Order>>  checkBarcode2Wms(String barcode){
-//        JaxWsDynamicClientFactory dcf = JaxWsDynamicClientFactory.newInstance();
-//        String wsUrl = "http://demo.kucangbao.com/kcb-1.0/cxf/warehouse?wsdl";
-
-//        String wsUrl = "http://test3.kucangbao.com/kcb-1.0/cxf/warehouse?wsdl";
-//        String wsUrl = wmsServiceUrl;
-//        Client client = dcf.createClient(wsUrl);
         String method = "getOrders";//webservice的方法名
         Object[] result = null;
         String reqXml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" +
@@ -239,11 +272,6 @@ public class RobotController extends BaseController {
             apiResponse.setServerMsg("机器id 不能为空");
             return apiResponse;
         }
-//        if(StringUtils.isEmpty(gwId)){
-//            apiResponse.setCode(HttpStatus.INTERNAL_SERVER_ERROR.value());
-//            apiResponse.setServerMsg("扫码称重id 不能为空");
-//            return apiResponse;
-//        }
 
         /**
          * 根据robotId查询 对应机器最新的一条数据
