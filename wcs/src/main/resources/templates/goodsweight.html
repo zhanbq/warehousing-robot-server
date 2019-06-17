@@ -210,7 +210,36 @@
 </body>
 </html>
 
-
+<!--订单声音提示-->
+<script>
+// var playSound = function () {
+//     var borswer = window.navigator.userAgent.toLowerCase();
+//     if ( borswer.indexOf( "ie" ) >= 0 )
+//     {
+//         //IE内核浏览器
+//         var strEmbed = '<embed name="embedPlay" src="../../static/bling.mp3" autostart="true" hidden="true" loop="false"></embed>';
+//         if ( $( "body" ).find( "embed" ).length <= 0 )
+//             $( "body" ).append( strEmbed );
+//         var embed = document.embedPlay;
+//
+//         //浏览器不支持 audion，则使用 embed 播放
+//         embed.volume = 100;
+//     } else
+//     {
+//         //非IE内核浏览器
+//         var strAudio = "<audio id='audioPlay' src='/admin/images/30.wav' hidden='true'>";
+//
+//         if($("#audioPlay").length<=0){
+//             $( "body" ).append( strAudio );
+//         }
+//
+//         var audio = document.getElementById( "audioPlay" );
+//
+//         //浏览器支持 audio
+//         audio.play();
+//     }
+// }
+</script>
 
 
 <script>
@@ -218,7 +247,7 @@
     var gwRobotId = "";
     var robotSelectedId  = "" ; //是否有数据,用来提示是否已经提示过
     var hasRequested = ""; //s
-    var noticeAudio = "http://att.chinauui.com/day_151230/20151230_f29cb48ee8404b354fe4MUfUEi242m4v.mp3";
+    var noticeAudio = "http://att.chinauui.com/month_0701/TVNOusPT0c7zw==_ar2KDR70GtHB.mp3";
     var audio = new Audio(noticeAudio);
     // var wcsDomain = "http://47.100.250.212";
     var wcsDomain = "http://localhost";
@@ -229,10 +258,15 @@
             $("#myModal").modal("hide")
         },1200);
     }
+    
 
     var getLastGoodsweight = function () {
         gwRobotId = $("li.gw_robot_id.active").attr("data-value");
         var uri = "/robot/last_goodsweight?gwid="+gwId +"&gwRobotId="+gwRobotId;
+        if(gwRobotId == "" || gwRobotId == null){
+            book();
+            clearInterval(interval);
+        }
 
         $.ajax({
             url: wcsDomain + uri,
@@ -274,5 +308,9 @@
         });
     }
 
-    setInterval("getLastGoodsweight()",500);
+    let interval = setInterval("getLastGoodsweight()",500);
+
+    $(".gw_robot_id").click(function () {
+        setInterval("getLastGoodsweight()",500);
+    })
 </script>
