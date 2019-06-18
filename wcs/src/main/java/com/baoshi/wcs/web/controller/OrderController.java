@@ -31,16 +31,16 @@ public class OrderController extends BaseController {
     @ResponseBody
     public Object receiveShipmentOrderInfo(@RequestBody JSONObject orderVO4NewWms){
         logger.info(JSON.toJSONString(orderVO4NewWms));
-
+        JSONObject order = orderVO4NewWms.getJSONObject("request");
 
         GoodsWeight goodsWeight = new GoodsWeight();
-        goodsWeight.setBarCode(orderVO4NewWms.getString("SOReference5"));//快递单号
-        goodsWeight.setCarrierId(orderVO4NewWms.getString("CarrierID")); //承运商
-        goodsWeight.setConsigneename(orderVO4NewWms.getString("Consigneename")); //收货人姓名
-        goodsWeight.setCustomer(orderVO4NewWms.getString("Customer")); //货主
-        goodsWeight.setPalletid(orderVO4NewWms.getString("palletid"));//发货单号
-        goodsWeight.setTaskId(orderVO4NewWms.getString("TASKID"));//任务号
-        goodsWeight.setOrderNo(orderVO4NewWms.getString("Orderno"));//WMS 订单号
+        goodsWeight.setBarCode(order.getString("SOReference5"));//快递单号
+        goodsWeight.setCarrierId(order.getString("CarrierID")); //承运商
+        goodsWeight.setConsigneename(order.getString("Consigneename")); //收货人姓名
+        goodsWeight.setCustomer(order.getString("Customer")); //货主
+        goodsWeight.setPalletid(order.getString("palletid"));//发货单号
+        goodsWeight.setTaskId(order.getString("TASKID"));//任务号
+        goodsWeight.setOrderNo(order.getString("Orderno"));//WMS 订单号
 
         NewWMSResponse<Object> res = new NewWMSResponse<>();
         boolean save = goodsWeightService.save(goodsWeight);
