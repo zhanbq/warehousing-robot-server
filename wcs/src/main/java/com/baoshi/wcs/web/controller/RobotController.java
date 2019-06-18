@@ -185,5 +185,39 @@ public class RobotController extends BaseController {
         apiResponse.success(update,"barcode 验证成功,并保存成功, 快递单号和重量成功推送到WMS");
         return apiResponse;
     }
+    /**
+     * 查询最新的扫码重量数据,用于扫码量房界面 实时回显数据
+     * @return
+     */
+    @GetMapping("/last_goodsweight")
+    @ResponseBody
+    public Object getLastGoodsweight(String gwRobotId,String gwId){
+//        gwRobotId = "2C7FACD3AFC3FFE547FC54CDA076A25D";
+        WCSApiResponse<Object> apiResponse = new WCSApiResponse<>();
+        if(StringUtils.isEmpty(gwRobotId)){
+            apiResponse.setCode(HttpStatus.INTERNAL_SERVER_ERROR.value());
+            apiResponse.setServerMsg("机器id 不能为空");
+            return apiResponse;
+        }
 
+        /**
+         * 根据robotId查询 对应机器最新的一条数据
+         */
+        GoodsWeight goodsWeight = goodsWeightService.getLastGoodsweight(gwRobotId);
+
+        if(goodsWeight == null){
+            apiResponse.setCode(200);
+            apiResponse.setServerMsg("数据为空");
+            apiResponse.setData(null);
+            return apiResponse;
+        }
+        Map<Object, Object> resMap = new HashMap<>();
+        resMap.put("gw",goodsWeight);
+
+        RobotInfo robotInfo = robotInfoService.getById(gwRobotId);
+        resMap.put("robotInfo",robotInfo);
+        apiResponse.success(resMap);
+        return apiResponse;
+
+    }
 }
