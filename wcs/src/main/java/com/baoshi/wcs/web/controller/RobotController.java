@@ -5,25 +5,18 @@ import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.baoshi.wcs.common.config.NewWMSHttpProp;
-import com.baoshi.wcs.common.config.WMSWebserviceProperties;
 import com.baoshi.wcs.common.response.NewWMSResponse;
 import com.baoshi.wcs.common.response.WCSApiResponse;
-import com.baoshi.wcs.common.utils.Xml2BeanUtil;
-import com.baoshi.wcs.common.wms.Order;
-import com.baoshi.wcs.common.wms.WMSServiceResponse;
 import com.baoshi.wcs.entity.GoodsWeight;
 import com.baoshi.wcs.entity.RobotInfo;
 import com.baoshi.wcs.service.GoodsWeightService;
 import com.baoshi.wcs.service.RobotInfoService;
 import com.baoshi.wcs.vo.GoodsWeightVO;
 import com.baoshi.wcs.web.basic.BaseController;
-import org.apache.cxf.endpoint.Client;
-import org.apache.cxf.jaxws.endpoint.dynamic.JaxWsDynamicClientFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
 import org.springframework.stereotype.Controller;
-import org.springframework.util.CollectionUtils;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.util.StringUtils;
@@ -31,7 +24,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.concurrent.*;
 
@@ -69,15 +61,6 @@ public class RobotController extends BaseController {
             0L, TimeUnit.MILLISECONDS,
             new LinkedBlockingQueue<Runnable>());
 
-    private static Client client = null;
-    static {
-        client = initClient();
-    }
-    private static Client initClient(){
-        JaxWsDynamicClientFactory dcf = JaxWsDynamicClientFactory.newInstance();
-        Client client = dcf.createClient(WMSWebserviceProperties.getUrl());
-        return client;
-    }
     /**
      *
      * @param goodsWeightVO

@@ -1,9 +1,6 @@
 package com.baoshi.wcs.vo;
 
-import com.alibaba.fastjson.JSON;
 import com.baoshi.wcs.pojo.OrderDetailPojo;
-import org.apache.cxf.endpoint.Client;
-import org.apache.cxf.jaxws.endpoint.dynamic.JaxWsDynamicClientFactory;
 
 import java.io.Serializable;
 import java.util.ArrayList;

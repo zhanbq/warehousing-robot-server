@@ -2,71 +2,67 @@ package com.baoshi.wcs.entity;
 
 import com.baoshi.wcs.entity.base.BaseEntity;
 
-import java.math.BigDecimal;
-import java.util.Date;
-
 /**
  * <p>
- * 盛放包裹容器 上架入库/下架入库用 货架摆放装有包裹的容器
+ * 
  * </p>
  *
  * @author jobob
- * @since 2018-11-11
+ * @since 2019-06-25
  */
 public class Container extends BaseEntity {
 
     private static final long serialVersionUID = 1L;
 
     /**
-     * 编码
+     * 容器类型
+     */
+    private String typeName;
+
+    /**
+     * 容器类型编号
+     */
+    private String typeCode;
+
+    /**
+     * 容器编号
      */
     private String code;
 
     /**
-     * 容器类型(料筐,托盘)
+     * 长
      */
-    private String type;
+    private Double length;
 
     /**
-     * 长度
+     * 宽
      */
-    private BigDecimal length;
+    private Double high;
 
     /**
-     * 宽度
+     * 深
      */
-    private BigDecimal width;
+    private Double deep;
 
     /**
-     * 高度
+     * 格口数
      */
-    private BigDecimal height;
+    private Integer holeNum;
 
-    /**
-     * 容器内部长度
-     */
-    private BigDecimal internalLength;
+    public String getTypeName() {
+        return typeName;
+    }
 
-    /**
-     * 容器内部宽度
-     */
-    private BigDecimal internalWidth;
+    public void setTypeName(String typeName) {
+        this.typeName = typeName;
+    }
+    public String getTypeCode() {
+        return typeCode;
+    }
 
-    /**
-     * 容器的总体积
-     */
-    private BigDecimal totalVolume;
-
-    /**
-     * 内部可用的容纳包裹票的容积
-     */
-    private BigDecimal internalVolume;
-
-    /**
-     * 容器内部高度
-     */
-    private BigDecimal internalHeight;
-
+    public void setTypeCode(String typeCode) {
+        this.typeCode = typeCode;
+    }
     public String getCode() {
         return code;
     }
@@ -74,72 +70,47 @@ public class Container extends BaseEntity {
     public void setCode(String code) {
         this.code = code;
     }
-    public String getType() {
-        return type;
-    }
-
-    public void setType(String type) {
-        this.type = type;
-    }
-    public BigDecimal getLength() {
+    public Double getLength() {
         return length;
     }
 
-    public void setLength(BigDecimal length) {
+    public void setLength(Double length) {
         this.length = length;
     }
-    public BigDecimal getWidth() {
-        return width;
+
+    public Double getHigh() {
+        return high;
     }
 
-    public void setWidth(BigDecimal width) {
-        this.width = width;
-    }
-    public BigDecimal getHeight() {
-        return height;
+    public void setHigh(Double high) {
+        this.high = high;
     }
 
-    public void setHeight(BigDecimal height) {
-        this.height = height;
+    public Double getDeep() {
+        return deep;
     }
 
-    public BigDecimal getInternalLength() {
-        return internalLength;
+    public void setDeep(Double deep) {
+        this.deep = deep;
+    }
+    public Integer getHoleNum() {
+        return holeNum;
     }
 
-    public void setInternalLength(BigDecimal internalLength) {
-        this.internalLength = internalLength;
+    public void setHoleNum(Integer holeNum) {
+        this.holeNum = holeNum;
     }
 
-    public BigDecimal getInternalWidth() {
-        return internalWidth;
-    }
-
-    public void setInternalWidth(BigDecimal internalWidth) {
-        this.internalWidth = internalWidth;
-    }
-
-    public BigDecimal getInternalHeight() {
-        return internalHeight;
-    }
-
-    public void setInternalHeight(BigDecimal internalHeight) {
-        this.internalHeight = internalHeight;
-    }
-
-    public BigDecimal getTotalVolume() {
-        return totalVolume;
-    }
-
-    public void setTotalVolume(BigDecimal totalVolume) {
-        this.totalVolume = totalVolume;
-    }
-
-    public BigDecimal getInternalVolume() {
-        return internalVolume;
-    }
-
-    public void setInternalVolume(BigDecimal internalVolume) {
-        this.internalVolume = internalVolume;
+    @Override
+    public String toString() {
+        return "Container{" +
+        "typeName=" + typeName +
+        ", typeCode=" + typeCode +
+        ", code=" + code +
+        ", length=" + length +
+        ", high=" + high +
+        ", deep=" + deep +
+        ", holeNum=" + holeNum +
+        "}";
     }
 }

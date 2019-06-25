@@ -13,12 +13,12 @@ public class BaseEntity {
     /**
      * 创建时间
      */
-    Date createTime;
+    protected Date createTime;
 
     /**
      * 修改时间
      */
-    Date modifyTime;
+    protected Date modifyTime;
 
     /**
      * 创建人
@@ -33,7 +33,7 @@ public class BaseEntity {
     /**
      * 版本号
      */
-    int version;
+    protected int version;
 
     public BaseEntity() {
     }

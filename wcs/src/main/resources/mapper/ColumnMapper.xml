@@ -1,22 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.baoshi.wcs.dao.ContainerMapper">
+<mapper namespace="com.baoshi.wcs.dao.ColumnMapper">
 
     <!-- 通用查询映射结果 -->
-    <resultMap id="BaseResultMap" type="com.baoshi.wcs.entity.Container">
+    <resultMap id="BaseResultMap" type="com.baoshi.wcs.entity.Column">
     <result column="id" property="id" />
     <result column="creator" property="creator" />
     <result column="modifier" property="modifier" />
     <result column="version" property="version" />
     <result column="create_time" property="createTime" />
     <result column="modify_time" property="modifyTime" />
-        <result column="type_name" property="typeName" />
-        <result column="type_code" property="typeCode" />
-        <result column="code" property="code" />
-        <result column="length" property="length" />
-        <result column="high" property="high" />
-        <result column="deep" property="deep" />
-        <result column="hole_num" property="holeNum" />
+        <result column="column_num" property="columnNum" />
+        <result column="wide" property="wide" />
+        <result column="unit" property="unit" />
+        <result column="shelves_id" property="shelvesId" />
     </resultMap>
 
     <!-- 通用查询结果列 -->
@@ -27,7 +24,7 @@
         version,
         create_time,
         modify_time,
-        type_name, type_code, code, `length`, high, deep, hole_num
+        column_num, wide, unit, shelves_id
     </sql>
 
 </mapper>
