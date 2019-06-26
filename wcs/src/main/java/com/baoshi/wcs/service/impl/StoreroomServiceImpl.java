@@ -1,9 +1,9 @@
 package com.baoshi.wcs.service.impl;
 
+import com.baomidou.mybatisplus.extension.service.IService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.baoshi.wcs.dao.StoreroomMapper;
 import com.baoshi.wcs.entity.Storeroom;
-import com.baoshi.wcs.service.StoreroomService;
 import org.springframework.stereotype.Service;
 
 /**
@@ -15,6 +15,6 @@ import org.springframework.stereotype.Service;
  * @since 2018-11-11
  */
 @Service
-public class StoreroomServiceImpl extends ServiceImpl<StoreroomMapper, Storeroom> implements StoreroomService {
+public class StoreroomServiceImpl extends ServiceImpl<StoreroomMapper, Storeroom> implements IService<Storeroom> {
 
 }
