@@ -1,9 +1,10 @@
 package com.baoshi.wcs.web.controller;
 
 
-import org.springframework.web.bind.annotation.RequestMapping;
+import com.alibaba.fastjson.JSON;
+import com.baoshi.wcs.vo.ShelvesVO.ShelvesVO;
+import org.springframework.web.bind.annotation.*;
 
-import org.springframework.web.bind.annotation.RestController;
 import com.baoshi.wcs.web.basic.BaseController;
 
 /**
@@ -17,5 +18,15 @@ import com.baoshi.wcs.web.basic.BaseController;
 @RestController
 @RequestMapping("/shelves")
 public class ShelvesController extends BaseController {
+
+    @PostMapping("/add")
+    @ResponseBody
+    public Object add(@RequestBody ShelvesVO shelvesVO){
+
+        logger.info(JSON.toJSONString(shelvesVO));
+
+        return shelvesVO;
+
+    }
 
 }
