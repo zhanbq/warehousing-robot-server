@@ -1,5 +1,6 @@
 package com.baoshi.wcs.entity;
 
+import com.baomidou.mybatisplus.annotation.TableName;
 import com.baoshi.wcs.entity.base.BaseEntity;
 
 /**
@@ -10,6 +11,7 @@ import com.baoshi.wcs.entity.base.BaseEntity;
  * @author jobob
  * @since 2019-06-25
  */
+@TableName("t_column")
 public class Column extends BaseEntity {
 
     private static final long serialVersionUID = 1L;
@@ -23,6 +25,11 @@ public class Column extends BaseEntity {
      * 宽度
      */
     private Double wide;
+
+    /**
+     * 列深
+     */
+    private Double deep;
 
     /**
      * 单位 m
@@ -63,13 +70,11 @@ public class Column extends BaseEntity {
         this.shelvesId = shelvesId;
     }
 
-    @Override
-    public String toString() {
-        return "Column{" +
-        "columnNum=" + columnNum +
-        ", wide=" + wide +
-        ", unit=" + unit +
-        ", shelvesId=" + shelvesId +
-        "}";
+    public Double getDeep() {
+        return deep;
+    }
+
+    public void setDeep(Double deep) {
+        this.deep = deep;
     }
 }

@@ -13,7 +13,8 @@ public class WebMvcConfg implements WebMvcConfigurer {
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
         //静态资源 免 拦截
-        registry.addResourceHandler("/static/**","/static/**/**").addResourceLocations("classpath:/static/","/static/**/**");
+        registry.addResourceHandler("/static/**","/static/**/**","/static/fonts/**/**")
+                .addResourceLocations("classpath:/static/","classpath:/static/**/**/","classpath:/static/fonts/**/**/");
     }
 
 }
