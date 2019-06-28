@@ -6,9 +6,11 @@
     <script src="../../static/js/vuejs-2.5.16.js"></script>
     <script src="../../static/js/axios-0.18.0.js"></script>
     <!-- 引入样式 -->
-    <link rel="stylesheet" href="../../static/css/ele-theme-chalk-index.css">
+    <!--<link rel="stylesheet" href="../../static/css/ele-theme-chalk-index.css">-->
+    <link href="https://cdn.bootcss.com/element-ui/2.8.2/theme-chalk/index.css" rel="stylesheet">
     <!-- 引入组件库 -->
-    <script src="../../static/js/ele-index.js"></script>
+    <!--<script src="../../static/js/ele-index.js"></script>-->
+    <script src="https://cdn.bootcss.com/element-ui/2.8.2/index.js"></script>
 </head>
 <body>
 <div id="app">
@@ -39,8 +41,8 @@
 
 
         <el-form-item label="可承载容器" prop="containerType">
-            <el-checkbox-group v-model="form.containTypes">
-                <el-checkbox v-for="c of containerList" :label="c.typeName+'-'+c.code" :value="c.code"></el-checkbox>
+            <el-checkbox-group v-model="form.containerTypes">
+                <el-checkbox v-for="c of containerList" :key="c.code" :label="c.code" >{{c.typeName + "-" + c.code}}</el-checkbox>
             </el-checkbox-group>
         </el-form-item>
         <el-form-item label="层数">
@@ -128,7 +130,7 @@
             return {
                 form: {
                     name: '',
-                    containTypes: [],
+                    containerTypes: [],
                     //
                     type: "",
                     code: "",

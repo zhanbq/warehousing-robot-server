@@ -50,10 +50,12 @@ public class ShelvesController extends BaseController {
 
         Shelves shelves = new Shelves();
         BeanUtils.copyProperties(shelvesVO,shelves);
+        shelves.setContainerType(shelvesVO.getStringContainerTypes());
         boolean save = shelvesService.save(shelves);
         if(!save){
             res.failed("新增貨架失敗",logger);
         }
+
         List<Column> columns = shelvesVO.getColumns();
         boolean isColumnSaveSuccess = columnService.saveBatchColumns4Shelves(columns,shelves.getId());
         if(!isColumnSaveSuccess){
