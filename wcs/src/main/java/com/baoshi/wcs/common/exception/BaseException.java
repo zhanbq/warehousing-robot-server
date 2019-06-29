@@ -1,11 +1,13 @@
 package com.baoshi.wcs.common.exception;
 
 import com.fasterxml.jackson.databind.ser.Serializers;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.Serializable;
 
 public class BaseException extends RuntimeException implements Serializable {
-
+    protected final Logger logger = LoggerFactory.getLogger(this.getClass());
     private static final long serialVersionUID = -6060609260849161002L;
     /**
      * 状态码
@@ -23,7 +25,9 @@ public class BaseException extends RuntimeException implements Serializable {
      */
     private Object exData;
 
-    public BaseException() {
+    public BaseException(String msg) {
+        this.msg = msg;
+        logger.error(msg);
     }
 
     public String getCode() {

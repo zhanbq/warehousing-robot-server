@@ -30,7 +30,7 @@ public class ColumnServiceImpl extends ServiceImpl<ColumnMapper, Column> impleme
     ShelvesMapper shelvesMapper;
 
     @Override
-    public boolean saveBatchColumns4Shelves(List<Column> columns,Integer shelvesId) throws Exception {
+    public boolean saveBatchColumns4Shelves(List<Column> columns,Integer shelvesId){
         Shelves shelves = null;
         boolean isSuccess = false;
 
