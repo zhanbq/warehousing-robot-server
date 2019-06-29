@@ -171,6 +171,14 @@
                         console.log('submit!'+JSON.stringify(_this.form));
                         axios.post("/shelves/add",_this.form).then(function (response) {
                             console.log(response.data);
+                            var res = response.data;
+                            let code = res.code;
+                            if(code != 200 || code!='200'){
+                                _this.openMsg("设备创建成功","创建完成");
+                            }else{
+                                _this.openMsg("设备创建失败");
+                            }
+
                         }).catch(function (err) {
                             console.log(err);
                         });
@@ -216,6 +224,17 @@
                     console.log(_this.containerList);
                 }).catch(function (err) {
                     console.log(err);
+                });
+            },
+            openMsg: function(msg,title) {
+                this.$alert(msg, title, {
+                    confirmButtonText: '确定',
+                    callback: function (action) {
+                        this.$message({
+                            type: 'info',
+                            message: `action: ${action}`
+                        });
+                    }
                 });
             }
         },

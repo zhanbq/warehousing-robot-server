@@ -15,5 +15,4 @@ import java.util.List;
  */
 public interface LayerService extends IService<Layer> {
 
-    boolean saveBatchLayers4Shelves(List<Layer> layers, Integer shelvesId);
 }

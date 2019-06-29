@@ -1,7 +1,6 @@
 package com.baoshi.wcs.web.test;
 
 import com.baoshi.wcs.common.response.ApiResponse;
-import com.baoshi.wcs.common.exception.UserException;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -24,10 +23,4 @@ public class TestController {
         throw exception;
     }
 
-    @RequestMapping("/user")
-    @ResponseBody
-    public ApiResponse<String> testUser(){
-        UserException exception = new UserException();
-        throw exception;
-    }
 }

@@ -30,35 +30,4 @@ public class LayerServiceImpl extends ServiceImpl<LayerMapper, Layer> implements
     @Autowired
     ShelvesMapper shelvesMapper;
 
-    @Override
-    public boolean saveBatchLayers4Shelves(List<Layer> layers, Integer shelvesId) {
-
-        Shelves shelves = null;
-        boolean isSuccess = false;
-
-        for(Layer c : layers){
-            QueryWrapper<Layer> layerQueryWrapper = new QueryWrapper<>();
-            layerQueryWrapper.eq("height",c.getHeight());
-            //根据 深度 宽度 查询是否有相同数据,如果有 则不新增
-            Layer cRes = layerMapper.selectOne(layerQueryWrapper);
-            if(null == cRes){
-                int cId = layerMapper.insert(c);
-                if(cId < 0){
-                    return isSuccess;
-                }
-            }else{
-                c.setId(cRes.getId());
-            }
-            shelves = new Shelves();
-            shelves.setColumnsId(c.getId());
-            shelves.setId(shelvesId);
-            int i = shelvesMapper.updateById(shelves);
-            if(i<0){
-                return isSuccess;
-            }
-        }
-        isSuccess = true;
-        return isSuccess;
-
-    }
 }

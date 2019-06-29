@@ -47,18 +47,24 @@ public class ShelvesServiceImpl extends ServiceImpl<ShelvesMapper, Shelves> impl
             throw new Exception("新增货架设备失败");
         }
 
-        List<Column> columns = shelvesVO.getColumns();
-        boolean isColumnSaveSuccess = columnService.saveBatchColumns4Shelves(columns,shelves.getId());
-        if(!isColumnSaveSuccess){
-            throw new BaseException("新增货架设备失败, 批量保存 列 失败");
-        }
-
+        Integer shelvesId = shelves.getId();
         List<Layer> layers = shelvesVO.getLayers();
-        boolean isLayersSaveSuccess = layerService.saveBatchLayers4Shelves(layers, shelves.getId());
-        if(!isLayersSaveSuccess){
-            throw new BaseException("新增货架设备失败, 批量保存 层 失败");
+        for(Layer layer : layers){
+            layer.setShelvesId(shelvesId);
+        }
+        boolean saveBatchLayers = layerService.saveBatch(layers);
+        if(!saveBatchLayers){
+            throw new Exception("新增货架设备失败, 批量新增 层 失败");
         }
 
+        List<Column> columns = shelvesVO.getColumns();
+        for(Column column : columns){
+            column.setShelvesId(shelvesId);
+        }
+        boolean saveBatchColumns = columnService.saveBatch(columns);
+        if(!saveBatchColumns){
+            throw new Exception("新增货架设备失败, 批量新增 列 失败");
+        }
         isSucess = true;
         return isSucess;
     }

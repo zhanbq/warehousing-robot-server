@@ -54,7 +54,7 @@ public class ShelvesController extends BaseController {
         if(!save){
             res.failed("新增貨架失敗",logger);
         }
-        res.success("0","成功");
+        res.success("0","设备创建成功");
         return res;
 
     }
