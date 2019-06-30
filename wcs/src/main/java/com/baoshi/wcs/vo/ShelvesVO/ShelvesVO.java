@@ -4,9 +4,11 @@ import com.baoshi.wcs.entity.Column;
 import com.baoshi.wcs.entity.Layer;
 import com.baoshi.wcs.entity.Shelves;
 import org.springframework.util.CollectionUtils;
+import org.springframework.util.StringUtils;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class ShelvesVO extends Shelves implements Serializable {
@@ -37,6 +39,13 @@ public class ShelvesVO extends Shelves implements Serializable {
     }
 
     public List<String> getContainerTypes() {
+        String containerType = this.getContainerType();
+        if(StringUtils.isEmpty(containerType)){
+            return containerTypes;
+        }
+        String[] containerTypeArr = containerType.split(",");
+        List<String> containerTypeArrayList = new ArrayList<String>(Arrays.asList(containerTypeArr));
+        this.containerTypes.addAll(containerTypeArrayList);
         return containerTypes;
     }
 

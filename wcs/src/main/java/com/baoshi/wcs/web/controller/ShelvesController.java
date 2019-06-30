@@ -2,20 +2,26 @@ package com.baoshi.wcs.web.controller;
 
 
 import com.alibaba.fastjson.JSON;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baoshi.wcs.common.response.WCSApiResponse;
 import com.baoshi.wcs.entity.Column;
+import com.baoshi.wcs.entity.Layer;
 import com.baoshi.wcs.entity.Shelves;
 import com.baoshi.wcs.service.ColumnService;
 import com.baoshi.wcs.service.LayerService;
 import com.baoshi.wcs.service.ShelvesService;
 import com.baoshi.wcs.vo.ShelvesVO.ShelvesVO;
+import jdk.nashorn.internal.codegen.ObjectCreator;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.*;
 
 import com.baoshi.wcs.web.basic.BaseController;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 /**
  * <p>
@@ -58,5 +64,40 @@ public class ShelvesController extends BaseController {
         return res;
 
     }
+
+    @GetMapping("/all")
+    public Object findAll(){
+        List<Shelves> shelves = shelvesService.list(new QueryWrapper<Shelves>());
+
+        if(CollectionUtils.isEmpty(shelves)){
+            return null;
+        }
+        List<ShelvesVO> resShelvesList = new ArrayList<>();
+        for(Shelves shelve: shelves){
+            Integer shelveId = shelve.getId();
+            ShelvesVO shelvesVO = new ShelvesVO();
+            BeanUtils.copyProperties(shelve,shelvesVO);
+            QueryWrapper<Layer> layerQueryWrapper = new QueryWrapper<>();
+            layerQueryWrapper.eq("shelves_id",shelveId);
+            List<Layer> layers = layerService.list(layerQueryWrapper);
+            if(CollectionUtils.isEmpty(layers)){
+                continue;
+            }
+            shelvesVO.setLayers(layers);
+
+            QueryWrapper<Layer> columnsQueryWrapper = new QueryWrapper<>();
+            QueryWrapper<Column> columnQueryWrapper = new QueryWrapper<>();
+            columnQueryWrapper.eq("shelves_id",shelveId);
+            List<Column> columns = columnService.list(columnQueryWrapper);
+            if(CollectionUtils.isEmpty(columns)){
+                continue;
+            }
+            shelvesVO.setColumns(columns);
+
+            resShelvesList.add(shelvesVO);
+        }
+        return resShelvesList;
+    }
+
 
 }
