@@ -2,6 +2,7 @@ package com.baoshi.wcs.web.controller;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import com.baoshi.wcs.common.config.NewWMSHttpProp;
 import com.baoshi.wcs.common.config.WMSWebserviceProperties;
 import com.baoshi.wcs.common.response.WCSApiResponse;
 import com.baoshi.wcs.common.utils.Xml2BeanUtil;
@@ -20,6 +21,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.CollectionUtils;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
@@ -197,20 +200,18 @@ public class RobotController extends BaseController {
     }
 
     private void sendGoodsWeight2NewWcs(GoodsWeightVO goodsWeightVO) {
+
         RestTemplate restTemplate = new RestTemplate();
-        //设置Http Header
+        String url = "http://47.103.72.38:8081/robot/goods/weight";
         HttpHeaders headers = new HttpHeaders();
-        //设置请求媒体数据类型
         headers.setContentType(MediaType.APPLICATION_JSON_UTF8);
-        //设置返回媒体数据类型
-        headers.add("Accept", MediaType.APPLICATION_JSON_UTF8.getType());
+        MultiValueMap<String, JSONObject> map= new LinkedMultiValueMap<>();
         JSONObject jsonObject = new JSONObject();
         jsonObject.put("id",goodsWeightVO.getId());
         jsonObject.put("barCode",goodsWeightVO.getBarCode());
         jsonObject.put("weight",goodsWeightVO.getWeight());
-        HttpEntity<String> formEntity = new HttpEntity<String>(jsonObject.toString(), headers);
-        ResponseEntity<JSONObject> res = restTemplate.postForEntity("http://47.103.72.38:8081/robot/goods/weight", formEntity, JSONObject.class);
-        JSONObject body = res.getBody();
+        HttpEntity<MultiValueMap<String, JSONObject>> request = new HttpEntity<>(map, headers);
+        ResponseEntity<JSONObject> gwPostRes = restTemplate.postForEntity(url, request, JSONObject.class);
 
     }
 
