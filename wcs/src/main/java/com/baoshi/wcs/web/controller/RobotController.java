@@ -1,6 +1,7 @@
 package com.baoshi.wcs.web.controller;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 import com.baoshi.wcs.common.config.WMSWebserviceProperties;
 import com.baoshi.wcs.common.response.WCSApiResponse;
 import com.baoshi.wcs.common.utils.Xml2BeanUtil;
@@ -16,11 +17,12 @@ import org.apache.cxf.endpoint.Client;
 import org.apache.cxf.jaxws.endpoint.dynamic.JaxWsDynamicClientFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpStatus;
+import org.springframework.http.*;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.client.RestTemplate;
 
 import java.util.HashMap;
 import java.util.List;
@@ -133,6 +135,8 @@ public class RobotController extends BaseController {
             return apiResponse;
         }
 
+        sendGoodsWeight2NewWcs(goodsWeightVO);
+
         GoodsWeight goodsWeight = new GoodsWeight();
         goodsWeight.setBarCode(barCode);
         goodsWeight.setWeight(goodsWeightVO.getWeight());
@@ -190,6 +194,24 @@ public class RobotController extends BaseController {
             apiResponse.success(saveRes,"barcode 验证成功,并保存成功, 快递单号和重量成功推送到WMS");
         }
         return apiResponse;
+    }
+
+    private void sendGoodsWeight2NewWcs(GoodsWeightVO goodsWeightVO) {
+        RestTemplate restTemplate = new RestTemplate();
+        //设置Http Header
+        HttpHeaders headers = new HttpHeaders();
+        //设置请求媒体数据类型
+        headers.setContentType(MediaType.APPLICATION_JSON_UTF8);
+        //设置返回媒体数据类型
+        headers.add("Accept", MediaType.APPLICATION_JSON_UTF8.getType());
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("id",goodsWeightVO.getId());
+        jsonObject.put("barCode",goodsWeightVO.getBarCode());
+        jsonObject.put("weight",goodsWeightVO.getWeight());
+        HttpEntity<String> formEntity = new HttpEntity<String>(jsonObject.toString(), headers);
+        ResponseEntity<JSONObject> res = restTemplate.postForEntity("http://47.103.72.38:8081/robot/goods/weight", formEntity, JSONObject.class);
+        JSONObject body = res.getBody();
+
     }
 
 
