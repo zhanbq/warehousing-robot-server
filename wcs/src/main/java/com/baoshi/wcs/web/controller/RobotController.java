@@ -79,7 +79,7 @@ public class RobotController extends BaseController {
      */
     @RequestMapping(value = "/goods/weight", method = RequestMethod.POST)
     @ResponseBody
-    public Object weigt(@RequestBody GoodsWeightVO goodsWeightVO) throws InterruptedException, ExecutionException, TimeoutException {
+    public Object weigt(@RequestBody GoodsWeightVO goodsWeightVO) throws Exception {
         logger.info("扫码称重入参, goodsWeightVO: {}",JSON.toJSONString(goodsWeightVO));
         WCSApiResponse<Boolean> apiResponse = new WCSApiResponse<>();
         if(StringUtils.isEmpty(goodsWeightVO)){
@@ -199,20 +199,24 @@ public class RobotController extends BaseController {
         return apiResponse;
     }
 
-    private void sendGoodsWeight2NewWcs(GoodsWeightVO goodsWeightVO) {
+    private void sendGoodsWeight2NewWcs(GoodsWeightVO goodsWeightVO) throws Exception {
 
         RestTemplate restTemplate = new RestTemplate();
         String url = "http://47.103.72.38:8081/robot/goods/weight";
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON_UTF8);
-        MultiValueMap<String, Object> map= new LinkedMultiValueMap<>();
+        MultiValueMap<String, String> map= new LinkedMultiValueMap<>();
         JSONObject jsonObject = new JSONObject();
-        map.add("id",String.valueOf(goodsWeightVO.getId()));
-        map.add("barCode",goodsWeightVO.getBarCode());
-        map.add("weight",goodsWeightVO.getWeight());
-        HttpEntity<MultiValueMap<String, Object>> request = new HttpEntity<>(map, headers);
+        jsonObject.put("id",goodsWeightVO.getId());
+        jsonObject.put("barCode",goodsWeightVO.getBarCode());
+        jsonObject.put("weight",goodsWeightVO.getWeight());
+        HttpEntity<JSONObject> request = new HttpEntity<>(jsonObject, headers);
         ResponseEntity<JSONObject> gwPostRes = restTemplate.postForEntity(url, request, JSONObject.class);
-
+        JSONObject body = gwPostRes.getBody();
+        int code = body.getIntValue("code");
+        if(200!=code){
+            logger.error("同步新版wcs失败 : {}",body.getString("msg"));
+        }
     }
 
 
