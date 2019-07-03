@@ -128,6 +128,8 @@ public class RobotController extends BaseController {
             return apiResponse;
         }
 
+        sendGoodsWeight2NewWcs(goodsWeightVO);
+
         WMSServiceResponse<List<Order>> wmsServiceResponse = checkBarcode2Wms(barCode);
         logger.info("wms 快递单 验证 结果: {}",JSON.toJSONString(wmsServiceResponse));
         String rc = wmsServiceResponse.getRc();
@@ -137,8 +139,6 @@ public class RobotController extends BaseController {
             logger.error("快递单号验证失败:{}",JSON.toJSONString(wmsServiceResponse));
             return apiResponse;
         }
-
-        sendGoodsWeight2NewWcs(goodsWeightVO);
 
         GoodsWeight goodsWeight = new GoodsWeight();
         goodsWeight.setBarCode(barCode);
