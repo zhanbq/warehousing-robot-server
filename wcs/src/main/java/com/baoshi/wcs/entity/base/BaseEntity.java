@@ -69,4 +69,20 @@ public class BaseEntity {
     public void setVersion(int version) {
         this.version = version;
     }
+
+    public Integer getCreator() {
+        return creator;
+    }
+
+    public void setCreator(Integer creator) {
+        this.creator = creator;
+    }
+
+    public Integer getModifier() {
+        return modifier;
+    }
+
+    public void setModifier(Integer modifier) {
+        this.modifier = modifier;
+    }
 }

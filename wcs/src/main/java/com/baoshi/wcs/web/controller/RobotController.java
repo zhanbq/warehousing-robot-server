@@ -1,7 +1,9 @@
 package com.baoshi.wcs.web.controller;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baoshi.wcs.common.config.NewWMSHttpProp;
 import com.baoshi.wcs.common.config.WMSWebserviceProperties;
 import com.baoshi.wcs.common.response.WCSApiResponse;
@@ -9,8 +11,10 @@ import com.baoshi.wcs.common.utils.Xml2BeanUtil;
 import com.baoshi.wcs.common.wms.Order;
 import com.baoshi.wcs.common.wms.WMSServiceResponse;
 import com.baoshi.wcs.entity.GoodsWeight;
+import com.baoshi.wcs.entity.OldWmsOrder;
 import com.baoshi.wcs.entity.RobotInfo;
 import com.baoshi.wcs.service.GoodsWeightService;
+import com.baoshi.wcs.service.OldWmsOrderService;
 import com.baoshi.wcs.service.RobotInfoService;
 import com.baoshi.wcs.vo.GoodsWeightVO;
 import com.baoshi.wcs.web.basic.BaseController;
@@ -56,6 +60,9 @@ public class RobotController extends BaseController {
 
     @Autowired
     RobotInfoService robotInfoService;
+
+    @Autowired
+    OldWmsOrderService oldWmsOrderService;
 
     private static final String goodsWeightKey = "2C7FACD3AFC3FFE547FC54CDA076A25D";
 
@@ -139,6 +146,12 @@ public class RobotController extends BaseController {
             logger.error("快递单号验证失败:{}",JSON.toJSONString(wmsServiceResponse));
             return apiResponse;
         }
+        //验证成功后保存结果
+        OldWmsOrder oldWmsOrder = new OldWmsOrder();
+        oldWmsOrder.setBarCode(barCode);
+        oldWmsOrder.setOldWmsOrderJson(JSON.toJSONString(wmsServiceResponse.getData().get(0)));
+        oldWmsOrderService.save(oldWmsOrder);
+
 
         GoodsWeight goodsWeight = new GoodsWeight();
         goodsWeight.setBarCode(barCode);
@@ -284,23 +297,42 @@ public class RobotController extends BaseController {
             return apiResponse;
         }
 
-        WMSServiceResponse<List<Order>> wmsServiceResponse = checkBarcode2Wms(goodsWeight.getBarCode());
-        logger.info("实时回显 快递单 验证 结果: {}",JSON.toJSONString(wmsServiceResponse));
-        String rc = wmsServiceResponse.getRc();
-        if(!"0000".equals(rc)){
-            apiResponse.setCode(HttpStatus.INTERNAL_SERVER_ERROR.value());
-            apiResponse.setServerMsg("实时回显 验证barcode失败 wms 状态码: "+rc+" msg: "+ wmsServiceResponse.getRm() );
-            logger.error("实时回显 快递单号验证失败:{}",JSON.toJSONString(wmsServiceResponse));
-            return apiResponse;
+        Order order = new Order();
+
+        QueryWrapper<OldWmsOrder> oldWmsOrderQueryWrapper = new QueryWrapper<>();
+        oldWmsOrderQueryWrapper.eq("bar_code",goodsWeight.getBarCode());
+        OldWmsOrder oldWmsOrderRes = oldWmsOrderService.getOne(oldWmsOrderQueryWrapper);
+        if(null != oldWmsOrderRes){
+            String oldWmsOrderJson = oldWmsOrderRes.getOldWmsOrderJson();
+            if(!StringUtils.isEmpty(oldWmsOrderJson)){
+               order = JSON.parseObject(oldWmsOrderJson, Order.class);
+            }
+        }else{
+            WMSServiceResponse<List<Order>> wmsServiceResponse = checkBarcode2Wms(goodsWeight.getBarCode());
+            logger.info("实时回显 快递单 验证 结果: {}",JSON.toJSONString(wmsServiceResponse));
+            String rc = wmsServiceResponse.getRc();
+            if(!"0000".equals(rc)){
+                apiResponse.setCode(HttpStatus.INTERNAL_SERVER_ERROR.value());
+                apiResponse.setServerMsg("实时回显 验证barcode失败 wms 状态码: "+rc+" msg: "+ wmsServiceResponse.getRm() );
+                logger.error("实时回显 快递单号验证失败:{}",JSON.toJSONString(wmsServiceResponse));
+                return apiResponse;
+            }
+            List<Order> res = wmsServiceResponse.getData();
+            if(CollectionUtils.isEmpty(res)){
+                apiResponse.setCode(HttpStatus.INTERNAL_SERVER_ERROR.value());
+                apiResponse.setServerMsg("实时回显 查询快递详情错误: "+rc+" msg: "+ wmsServiceResponse.getRm() );
+                logger.error("实时回显 查询快递详情错误:{}",JSON.toJSONString(wmsServiceResponse));
+                return apiResponse;
+            }
+            order = res.get(0);
+            OldWmsOrder oldWmsOrder = new OldWmsOrder();
+            oldWmsOrder.setBarCode(goodsWeight.getBarCode());
+//                oldWmsOrder.setId(oldWmsOrderRes.getId());
+            oldWmsOrder.setOldWmsOrderJson(JSON.toJSONString(order));
+            oldWmsOrderService.saveOrUpdate(oldWmsOrder);
         }
-        List<Order> res = wmsServiceResponse.getData();
-        if(CollectionUtils.isEmpty(res)){
-            apiResponse.setCode(HttpStatus.INTERNAL_SERVER_ERROR.value());
-            apiResponse.setServerMsg("实时回显 查询快递详情错误: "+rc+" msg: "+ wmsServiceResponse.getRm() );
-            logger.error("实时回显 查询快递详情错误:{}",JSON.toJSONString(wmsServiceResponse));
-            return apiResponse;
-        }
-        Order order = res.get(0);
+
+
         Map<Object, Object> resMap = new HashMap<>();
         resMap.put("order",order);
         resMap.put("gw",goodsWeight);
