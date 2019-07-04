@@ -135,7 +135,7 @@ public class RobotController extends BaseController {
             return apiResponse;
         }
 
-        sendGoodsWeight2NewWcs(goodsWeightVO);
+        sendGoodsWeight2NewWcs(goodsWeightVO); // 新旧wms 数据隔离 不需要传参数了
 
         WMSServiceResponse<List<Order>> wmsServiceResponse = checkBarcode2Wms(barCode);
         logger.info("wms 快递单 验证 结果: {}",JSON.toJSONString(wmsServiceResponse));
