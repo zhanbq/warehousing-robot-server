@@ -8,8 +8,10 @@ import com.baoshi.wcs.common.config.NewWMSHttpProp;
 import com.baoshi.wcs.common.response.NewWMSResponse;
 import com.baoshi.wcs.common.response.WCSApiResponse;
 import com.baoshi.wcs.entity.GoodsWeight;
+import com.baoshi.wcs.entity.LastGoodsWeight;
 import com.baoshi.wcs.entity.RobotInfo;
 import com.baoshi.wcs.service.GoodsWeightService;
+import com.baoshi.wcs.service.LastGoodsWeightService;
 import com.baoshi.wcs.service.RobotInfoService;
 import com.baoshi.wcs.vo.GoodsWeightVO;
 import com.baoshi.wcs.web.basic.BaseController;
@@ -54,6 +56,9 @@ public class RobotController extends BaseController {
 
     @Autowired
     RobotInfoService robotInfoService;
+
+    @Autowired
+    LastGoodsWeightService lastGoodsWeightService;
 
     private static final String goodsWeightKey = "2C7FACD3AFC3FFE547FC54CDA076A25D";
 
@@ -116,6 +121,16 @@ public class RobotController extends BaseController {
             return apiResponse;
         }
 
+        //保存最新的快递单号 用于实时回显
+        LastGoodsWeight lastGoodsWeight = new LastGoodsWeight();
+        lastGoodsWeight.setLastBarCode(barCode);
+        lastGoodsWeight.setRobotId(goodsWeightVO.getId());
+        boolean lastGoodsWeightSave = lastGoodsWeightService.save(lastGoodsWeight);
+        if(!lastGoodsWeightSave){
+            apiResponse.failed("最新快递单号保存失败",logger);
+            return apiResponse;
+        }
+
         //更新
         UpdateWrapper<GoodsWeight> goodsWeightUpdateWrapper = new UpdateWrapper<>();
         goodsWeightUpdateWrapper.eq("version",goodsWeightResOne.getVersion());
@@ -134,37 +149,37 @@ public class RobotController extends BaseController {
         goodsWeightResOne.setWeight(goodsWeightVO.getWeight());
 
         //推送重量至wms
-        RestTemplate restTemplate = new RestTemplate();
-        String url = NewWMSHttpProp.orderUrl;
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_JSON_UTF8);
-        MultiValueMap<String, JSONObject> map= new LinkedMultiValueMap<>();
-        JSONObject jsonObject = new JSONObject();
-        jsonObject.put("TASKID", goodsWeightResOne.getTaskId());
-        jsonObject.put("SOReference5",goodsWeightVO.getBarCode());
-        jsonObject.put("Weigh",goodsWeightVO.getWeight().toString());
-        map.add("request",jsonObject);
-        HttpEntity<MultiValueMap<String, JSONObject>> request = new HttpEntity<>(map, headers);
-        ResponseEntity<JSONObject> gwPostRes = restTemplate.postForEntity(url, request, JSONObject.class);
-        if(null == gwPostRes){
-            apiResponse.failed("快递单号推送失败",logger);
-            return apiResponse;
-        }
-        JSONObject body = gwPostRes.getBody();
-        if(null == body){
-            apiResponse.failed("快递单号推送失败",logger);
-            return apiResponse;
-        }
-        JSONObject response = body.getJSONObject("response");
-        if(response == null){
-            apiResponse.failed("快递单号推送失败",logger);
-            return apiResponse;
-        }
-        String flag = response.getString("flag");
-        if(!"Y".equals(flag)){
-            apiResponse.failed("快递单号推送失败 : "+response.getString("message"),logger);
-            return apiResponse;
-        }
+//        RestTemplate restTemplate = new RestTemplate();
+//        String url = NewWMSHttpProp.orderUrl;
+//        HttpHeaders headers = new HttpHeaders();
+//        headers.setContentType(MediaType.APPLICATION_JSON_UTF8);
+//        MultiValueMap<String, JSONObject> map= new LinkedMultiValueMap<>();
+//        JSONObject jsonObject = new JSONObject();
+//        jsonObject.put("TASKID", goodsWeightResOne.getTaskId());
+//        jsonObject.put("SOReference5",goodsWeightVO.getBarCode());
+//        jsonObject.put("Weigh",goodsWeightVO.getWeight().toString());
+//        map.add("request",jsonObject);
+//        HttpEntity<MultiValueMap<String, JSONObject>> request = new HttpEntity<>(map, headers);
+//        ResponseEntity<JSONObject> gwPostRes = restTemplate.postForEntity(url, request, JSONObject.class);
+//        if(null == gwPostRes){
+//            apiResponse.failed("快递单号推送失败",logger);
+//            return apiResponse;
+//        }
+//        JSONObject body = gwPostRes.getBody();
+//        if(null == body){
+//            apiResponse.failed("快递单号推送失败",logger);
+//            return apiResponse;
+//        }
+//        JSONObject response = body.getJSONObject("response");
+//        if(response == null){
+//            apiResponse.failed("快递单号推送失败",logger);
+//            return apiResponse;
+//        }
+//        String flag = response.getString("flag");
+//        if(!"Y".equals(flag)){
+//            apiResponse.failed("快递单号推送失败 : "+response.getString("message"),logger);
+//            return apiResponse;
+//        }
         apiResponse.success(update,"barcode 验证成功,并保存成功, 快递单号和重量成功推送到WMS");
         return apiResponse;
     }
@@ -174,7 +189,7 @@ public class RobotController extends BaseController {
      */
     @GetMapping("/last_goodsweight")
     @ResponseBody
-    public Object getLastGoodsweight(String gwRobotId,String gwId){
+    public Object getLastGoodsweight(String gwRobotId){
 //        gwRobotId = "2C7FACD3AFC3FFE547FC54CDA076A25D";
         WCSApiResponse<Object> apiResponse = new WCSApiResponse<>();
         if(StringUtils.isEmpty(gwRobotId)){
@@ -183,10 +198,23 @@ public class RobotController extends BaseController {
             return apiResponse;
         }
 
+        QueryWrapper<LastGoodsWeight> lastGoodsWeightQueryWrapper = new QueryWrapper<>();
+        lastGoodsWeightQueryWrapper.eq("robot_id",gwRobotId);
+        lastGoodsWeightQueryWrapper.orderByDesc("id").last("limit 0,1");
+
+        LastGoodsWeight lastGoodsWeight = lastGoodsWeightService.getOne(lastGoodsWeightQueryWrapper);
+
+        if(lastGoodsWeight == null){
+            apiResponse.failed("没有最新称重数据",logger);
+            return apiResponse;
+        }
+
         /**
          * 根据robotId查询 对应机器最新的一条数据
          */
-        GoodsWeight goodsWeight = goodsWeightService.getLastGoodsweight(gwRobotId);
+        QueryWrapper<GoodsWeight> goodsWeightQueryWrapper = new QueryWrapper<>();
+        goodsWeightQueryWrapper.eq("bar_code",lastGoodsWeight.getLastBarCode());
+        GoodsWeight goodsWeight = goodsWeightService.getOne(goodsWeightQueryWrapper);
 
         if(goodsWeight == null){
             apiResponse.setCode(200);
