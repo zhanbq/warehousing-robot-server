@@ -117,9 +117,13 @@ public class RobotController extends BaseController {
         GoodsWeight goodsWeightResOne = goodsWeightService.getOne(queryWrapper);
         //验证
         if(null == goodsWeightResOne){
-            apiResponse.failed("查询不到快递单号",logger);
+            logger.error("查询不到快递单号,barcode : {}",barCode);
+            apiResponse.setCode(1003);
+            apiResponse.setMsg("单号 : ["+ barCode +"], 此快递单号 wms并无推送至wcs, 无法保存称重!");
             return apiResponse;
         }
+
+
 
         //保存最新的快递单号 用于实时回显
         LastGoodsWeight lastGoodsWeight = new LastGoodsWeight();
@@ -149,37 +153,37 @@ public class RobotController extends BaseController {
         goodsWeightResOne.setWeight(goodsWeightVO.getWeight());
 
         //推送重量至wms
-//        RestTemplate restTemplate = new RestTemplate();
-//        String url = NewWMSHttpProp.orderUrl;
-//        HttpHeaders headers = new HttpHeaders();
-//        headers.setContentType(MediaType.APPLICATION_JSON_UTF8);
-//        MultiValueMap<String, JSONObject> map= new LinkedMultiValueMap<>();
-//        JSONObject jsonObject = new JSONObject();
-//        jsonObject.put("TASKID", goodsWeightResOne.getTaskId());
-//        jsonObject.put("SOReference5",goodsWeightVO.getBarCode());
-//        jsonObject.put("Weigh",goodsWeightVO.getWeight().toString());
-//        map.add("request",jsonObject);
-//        HttpEntity<MultiValueMap<String, JSONObject>> request = new HttpEntity<>(map, headers);
-//        ResponseEntity<JSONObject> gwPostRes = restTemplate.postForEntity(url, request, JSONObject.class);
-//        if(null == gwPostRes){
-//            apiResponse.failed("快递单号推送失败",logger);
-//            return apiResponse;
-//        }
-//        JSONObject body = gwPostRes.getBody();
-//        if(null == body){
-//            apiResponse.failed("快递单号推送失败",logger);
-//            return apiResponse;
-//        }
-//        JSONObject response = body.getJSONObject("response");
-//        if(response == null){
-//            apiResponse.failed("快递单号推送失败",logger);
-//            return apiResponse;
-//        }
-//        String flag = response.getString("flag");
-//        if(!"Y".equals(flag)){
-//            apiResponse.failed("快递单号推送失败 : "+response.getString("message"),logger);
-//            return apiResponse;
-//        }
+        RestTemplate restTemplate = new RestTemplate();
+        String url = NewWMSHttpProp.orderUrl;
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON_UTF8);
+        MultiValueMap<String, JSONObject> map= new LinkedMultiValueMap<>();
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("TASKID", goodsWeightResOne.getTaskId());
+        jsonObject.put("SOReference5",goodsWeightVO.getBarCode());
+        jsonObject.put("Weigh",goodsWeightVO.getWeight().toString());
+        map.add("request",jsonObject);
+        HttpEntity<MultiValueMap<String, JSONObject>> request = new HttpEntity<>(map, headers);
+        ResponseEntity<JSONObject> gwPostRes = restTemplate.postForEntity(url, request, JSONObject.class);
+        if(null == gwPostRes){
+            apiResponse.failed("快递单号推送失败",logger);
+            return apiResponse;
+        }
+        JSONObject body = gwPostRes.getBody();
+        if(null == body){
+            apiResponse.failed("快递单号推送失败",logger);
+            return apiResponse;
+        }
+        JSONObject response = body.getJSONObject("response");
+        if(response == null){
+            apiResponse.failed("快递单号推送失败",logger);
+            return apiResponse;
+        }
+        String flag = response.getString("flag");
+        if(!"Y".equals(flag)){
+            apiResponse.failed("快递单号推送失败 : "+response.getString("message"),logger);
+            return apiResponse;
+        }
         apiResponse.success(update,"barcode 验证成功,并保存成功, 快递单号和重量成功推送到WMS");
         return apiResponse;
     }
@@ -217,9 +221,9 @@ public class RobotController extends BaseController {
         GoodsWeight goodsWeight = goodsWeightService.getOne(goodsWeightQueryWrapper);
 
         if(goodsWeight == null){
-            apiResponse.setCode(200);
-            apiResponse.setServerMsg("数据为空");
-            apiResponse.setData(null);
+            logger.error("查询不到快递单号,barcode : {}",lastGoodsWeight.getLastBarCode());
+            apiResponse.setCode(1003);
+            apiResponse.setMsg("单号 : ["+ lastGoodsWeight.getLastBarCode() +"], 此快递单号 wms并无推送至wcs, 无法保存称重, 无法查询[货主] [承运商]等信息!");
             return apiResponse;
         }
         Map<Object, Object> resMap = new HashMap<>();

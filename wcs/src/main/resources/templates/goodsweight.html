@@ -185,6 +185,27 @@
                         </div>
                     </div>
                 </div>
+
+                <div class="col-md-6 column ">
+                    <div class="list-group">
+                        <div class="list-group-item active ">
+                            提示信息:
+                        </div>
+                        <div class="list-group-item"></div>
+                        <div class="list-group-item">
+                            <h1 class="list-group-item-heading" id="resMsg">
+
+                            </h1>
+                            <p class="list-group-item-text">
+
+                            </p>
+                        </div>
+                        <div class="list-group-item"></div>
+                        <div class="list-group-item active">
+                        </div>
+                    </div>
+                </div>
+
             </div>
 
             </div>
@@ -201,7 +222,7 @@
         <div class="modal-content">
             <p class="text-center mb-0">
                 <i class="fa fa-check-circle text-success mr-1" aria-hidden="true"></i>
-                暂无数据
+                <span id="errMsg"></span>
             </p>
         </div>
     </div>
@@ -210,57 +231,46 @@
 </body>
 </html>
 
-<!--订单声音提示-->
 <script>
-// var playSound = function () {
-//     var borswer = window.navigator.userAgent.toLowerCase();
-//     if ( borswer.indexOf( "ie" ) >= 0 )
-//     {
-//         //IE内核浏览器
-//         var strEmbed = '<embed name="embedPlay" src="../../static/bling.mp3" autostart="true" hidden="true" loop="false"></embed>';
-//         if ( $( "body" ).find( "embed" ).length <= 0 )
-//             $( "body" ).append( strEmbed );
-//         var embed = document.embedPlay;
-//
-//         //浏览器不支持 audion，则使用 embed 播放
-//         embed.volume = 100;
-//     } else
-//     {
-//         //非IE内核浏览器
-//         var strAudio = "<audio id='audioPlay' src='/admin/images/30.wav' hidden='true'>";
-//
-//         if($("#audioPlay").length<=0){
-//             $( "body" ).append( strAudio );
-//         }
-//
-//         var audio = document.getElementById( "audioPlay" );
-//
-//         //浏览器支持 audio
-//         audio.play();
-//     }
-// }
-</script>
 
+    var $cname = $("#cname");
+    var $weight=$("#weight");
+    var $sendcode=$("#sendcode");
+    var $expresscode=$("#expresscode");
+    var $operation_time=$("#operation_time");
+    var $currRobot=$("#currRobot");
+    var $resMsg=$("#resMsg");
+</script>
 
 <script>
     var gwId = null;
+    var oldBarCode = null;
     var gwRobotId = "";
     var robotSelectedId  = "" ; //是否有数据,用来提示是否已经提示过
     var hasRequested = ""; //s
-    var noticeAudio = "http://att.chinauui.com/month_0701/TVNOusPT0c7zw==_ar2KDR70GtHB.mp3";
-    var audio = new Audio(noticeAudio);
+    // var noticeAudio = "http://att.chinauui.com/month_0701/TVNOusPT0c7zw==_ar2KDR70GtHB.mp3";
+    // var audio = new Audio(noticeAudio);
     // var wcsDomain = "http://47.100.250.212:80";
     var wcsDomain = "http://47.103.72.38:8081"; //新 wms
 
     // var wcsDomain = "http://localhost:8081";
 
     function book(){
+        $('#errMsg').text("暂无数据");
         $('#myModal').modal('show');
         setTimeout(function(){
             $("#myModal").modal("hide")
         },1200);
     }
-    
+
+    function bookMyMsg(msg){
+        $('#errMsg').text(msg);
+        $('#myModal').modal('show');
+        setTimeout(function(){
+            $('errMsg').html("");
+            $("#myModal").modal("hide")
+        },1200);
+    }
 
     var getLastGoodsweight = function () {
         gwRobotId = $("li.gw_robot_id.active").attr("data-value");
@@ -279,7 +289,16 @@
 
                 // console.log(JSON.stringify(res.data))
                 var data = res.data;
-
+                let code = res.code;
+                if(code == 1003 || code == "1003"){
+                    $cname.html('');
+                    $weight.html('');
+                    $sendcode.html('');
+                    $expresscode.html('');
+                    $operation_time.html('');
+                    $currRobot.html('');
+                    $resMsg.html(res.msg)
+                }
                 if(data == null || data == undefined){ //判断是否已经切换过机器 阻止弹层重复弹出
                     if(hasRequested != gwId || robotSelectedId != gwRobotId){
                         book();
@@ -289,19 +308,20 @@
                     return;
                 }
                 hasData = true;
-                var resid = data.gw.id;
+                var newBarCode = data.gw.barCode;
                 var robotinfo = data.robotInfo;
-                if(resid != gwId){
+                // if(newBarCode != oldBarCode){
 
-                    audio.play(); //播放
-                    $("#cname").html(data.gw.customer);
-                    $("#weight").html(data.gw.weight+"KG");
-                    $("#sendcode").html(data.gw.palletid);
-                    $("#expresscode").html(data.gw.carrierId);
-                    $("#operation_time").html(data.gw.createTime);
-                    $("#currRobot").html(robotinfo.code);
-                    gwId = resid;
-                }
+                    // audio.play(); //播放
+                    $cname.html(data.gw.customer);
+                    $weight.html(data.gw.weight+"KG");
+                    $sendcode.html(data.gw.palletid);
+                    $expresscode.html(data.gw.carrierId);
+                    $operation_time.html(data.gw.createTime);
+                    $currRobot.html(robotinfo.code);
+                    $resMsg.html(res.msg)
+                    oldBarCode = newBarCode;
+                // }
             },
             error:function (data) {
                 console.log(JSON.stringify(res.data))
