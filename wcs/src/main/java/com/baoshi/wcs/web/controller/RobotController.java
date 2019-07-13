@@ -1,10 +1,8 @@
 package com.baoshi.wcs.web.controller;
 
 import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.baoshi.wcs.common.config.NewWMSHttpProp;
 import com.baoshi.wcs.common.config.WMSWebserviceProperties;
 import com.baoshi.wcs.common.response.WCSApiResponse;
 import com.baoshi.wcs.common.utils.Xml2BeanUtil;
@@ -63,8 +61,6 @@ public class RobotController extends BaseController {
 
     @Autowired
     OldWmsOrderService oldWmsOrderService;
-
-    private static final String goodsWeightKey = "2C7FACD3AFC3FFE547FC54CDA076A25D";
 
     private static ExecutorService executor = new ThreadPoolExecutor(1, 1,
             0L, TimeUnit.MILLISECONDS,
@@ -162,10 +158,6 @@ public class RobotController extends BaseController {
         Callable<String> goodsWeight2WMS = new Callable<String>() {
             @Override
             public String call() throws Exception {
-//                JaxWsDynamicClientFactory dcf = JaxWsDynamicClientFactory.newInstance();
-//                String wsUrl = "http://test3.kucangbao.com/kcb-1.0/cxf/warehouse?wsdl";
-//                String wsUrl = wmsServiceUrl;
-//                Client client = dcf.createClient(wsUrl);
                 String method = "setOrderWeight";//webservice的方法名
                 Object[] result = null;
                 String reqXml = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>\n" +
@@ -234,12 +226,6 @@ public class RobotController extends BaseController {
 
 
     private WMSServiceResponse<List<Order>>  checkBarcode2Wms(String barcode){
-//        JaxWsDynamicClientFactory dcf = JaxWsDynamicClientFactory.newInstance();
-//        String wsUrl = "http://demo.kucangbao.com/kcb-1.0/cxf/warehouse?wsdl";
-
-//        String wsUrl = "http://test3.kucangbao.com/kcb-1.0/cxf/warehouse?wsdl";
-//        String wsUrl = wmsServiceUrl;
-//        Client client = dcf.createClient(wsUrl);
         String method = "getOrders";//webservice的方法名
         Object[] result = null;
         String reqXml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" +
@@ -272,18 +258,12 @@ public class RobotController extends BaseController {
     @GetMapping("/last_goodsweight")
     @ResponseBody
     public Object getLastGoodsweight(String gwRobotId,String gwId){
-//        gwRobotId = "2C7FACD3AFC3FFE547FC54CDA076A25D";
         WCSApiResponse<Object> apiResponse = new WCSApiResponse<>();
         if(StringUtils.isEmpty(gwRobotId)){
             apiResponse.setCode(HttpStatus.INTERNAL_SERVER_ERROR.value());
             apiResponse.setServerMsg("机器id 不能为空");
             return apiResponse;
         }
-//        if(StringUtils.isEmpty(gwId)){
-//            apiResponse.setCode(HttpStatus.INTERNAL_SERVER_ERROR.value());
-//            apiResponse.setServerMsg("扫码称重id 不能为空");
-//            return apiResponse;
-//        }
 
         /**
          * 根据robotId查询 对应机器最新的一条数据

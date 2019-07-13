@@ -14,6 +14,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.util.CollectionUtils;
 
 import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * @Description: 利用反射和JDOM解析xml成bean/List
@@ -23,6 +25,8 @@ public class Xml2BeanUtil {
 
     private static final Logger logger = LoggerFactory.getLogger(Xml2BeanUtil.class);
 
+    //可以在中括号内加上任何想要替换的字符
+    private static final String SPECIAL_SYMBOLS_$ = "&";
     public static WMSServiceResponse getBaseWMSResp(String xml) {
         WMSServiceResponse<List<Order>> wmsServiceResponse = new WMSServiceResponse<>();
         ArrayList<Order> orders4Resp = new ArrayList<>();
@@ -56,6 +60,11 @@ public class Xml2BeanUtil {
         ArrayList<Order> orders4Resp = new ArrayList<>();
         Document document = null;
         try {
+            Pattern p = Pattern.compile(SPECIAL_SYMBOLS_$);
+
+            Matcher m = p.matcher(xml);//这里把想要替换的字符串传进来
+
+            xml = m.replaceAll("").trim();
             // 将字符串转为XML
             document = DocumentHelper.parseText(xml);
             Element root = document.getRootElement();
@@ -140,6 +149,13 @@ public class Xml2BeanUtil {
         }
         wmsServiceResponse.setData(orders4Resp);
         return wmsServiceResponse;
+    }
+
+    public static String stripNonValidXMLChars(String str) {
+        if (str == null || "".equals(str)) {
+            return str;
+        }
+        return str.replaceAll("[\\x00-\\x08\\x0b-\\x0c\\x0e-\\x1f]", "");
     }
 
 //    public static void main(String[] args) {
