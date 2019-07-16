@@ -162,9 +162,11 @@ public class RobotController extends BaseController {
         jsonObject.put("TASKID", goodsWeightResOne.getTaskId());
         jsonObject.put("SOReference5",goodsWeightVO.getBarCode());
         jsonObject.put("Weigh",goodsWeightVO.getWeight().toString());
-        map.add("request",jsonObject);
-        HttpEntity<MultiValueMap<String, JSONObject>> request = new HttpEntity<>(map, headers);
-        ResponseEntity<JSONObject> gwPostRes = restTemplate.postForEntity(url, request, JSONObject.class);
+        JSONObject jsonObject1 = new JSONObject();
+        jsonObject1.put("request",jsonObject.toJSONString());
+//        map.add("request",jsonObject);
+//        HttpEntity<MultiValueMap<String, JSONObject>> request = new HttpEntity<>(map, headers);
+        ResponseEntity<JSONObject> gwPostRes = restTemplate.postForEntity(url, jsonObject1, JSONObject.class);
         if(null == gwPostRes){
             apiResponse.failed("快递单号推送失败",logger);
             return apiResponse;
