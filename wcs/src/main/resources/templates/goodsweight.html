@@ -112,12 +112,12 @@
                 <div class="col-md-6 column">
                     <div class="list-group">
                         <div class="list-group-item active">
-                            体积
+                            收件人
                         </div>
                         <div class="list-group-item"></div>
                         <div class="list-group-item">
-                            <h1 class="list-group-item-heading">
-                                ***m³
+                            <h1 class="list-group-item-heading" id="consigneename">
+
                             </h1>
                             <p class="list-group-item-text">
 
@@ -240,6 +240,7 @@
     var $operation_time=$("#operation_time");
     var $currRobot=$("#currRobot");
     var $resMsg=$("#resMsg");
+    var $consigneename=$("#consigneename");
 </script>
 
 <script>
@@ -253,7 +254,7 @@
     // var wcsDomain = "http://47.100.250.212:80";
     var wcsDomain = "http://47.103.72.38:8081"; //新 wms
 
-    // var wcsDomain = "http://localhost:8081";
+    // var wcsDomain = "http://localhost:80";
 
     function book(){
         $('#errMsg').text("暂无数据");
@@ -283,7 +284,7 @@
         $.ajax({
             url: wcsDomain + uri,
             type:'get',
-            dataType : "jsonp",
+            dataType : "json",
             cache:"false",
             success: function (res) {
 
@@ -297,6 +298,7 @@
                     $expresscode.html('');
                     $operation_time.html('');
                     $currRobot.html('');
+                    $consigneename.html('');
                     $resMsg.html(res.msg)
                 }
                 if(data == null || data == undefined){ //判断是否已经切换过机器 阻止弹层重复弹出
@@ -316,6 +318,7 @@
                     $cname.html(data.gw.customer);
                     $weight.html(data.gw.weight+"KG");
                     $sendcode.html(data.gw.palletid);
+                    $consigneename.html(data.gw.consigneename)
                     $expresscode.html(data.gw.carrierId);
                     $operation_time.html(data.gw.createTime);
                     $currRobot.html(robotinfo.code);
@@ -324,8 +327,7 @@
                 // }
             },
             error:function (data) {
-                console.log(JSON.stringify(res.data))
-
+                console.log(JSON.stringify(data))
             }
         });
     }

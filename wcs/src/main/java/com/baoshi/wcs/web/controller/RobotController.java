@@ -17,7 +17,12 @@ import com.baoshi.wcs.vo.GoodsWeightVO;
 import com.baoshi.wcs.web.basic.BaseController;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.*;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.HttpMessageConverter;
+import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
@@ -25,9 +30,9 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.*;
+import java.util.regex.Pattern;
 
 @Controller
 @RequestMapping("/robot")
@@ -65,7 +70,7 @@ public class RobotController extends BaseController {
     private static ExecutorService executor = new ThreadPoolExecutor(1, 1,
             0L, TimeUnit.MILLISECONDS,
             new LinkedBlockingQueue<Runnable>());
-
+    private static final Pattern p = Pattern.compile("\\s*|\t|\r|\n");
     /**
      *
      * @param goodsWeightVO
@@ -159,19 +164,19 @@ public class RobotController extends BaseController {
         headers.setContentType(MediaType.APPLICATION_JSON_UTF8);
         MultiValueMap<String, JSONObject> map= new LinkedMultiValueMap<>();
         JSONObject jsonObject = new JSONObject();
-        jsonObject.put("TASKID", goodsWeightResOne.getTaskId());
+        jsonObject.put("TASKID",goodsWeightResOne.getTaskId());
         jsonObject.put("SOReference5",goodsWeightVO.getBarCode());
         jsonObject.put("Weigh",goodsWeightVO.getWeight().toString());
         JSONObject jsonObject1 = new JSONObject();
-        jsonObject1.put("request",jsonObject.toJSONString());
+        jsonObject1.put("request",jsonObject);
 //        map.add("request",jsonObject);
-//        HttpEntity<MultiValueMap<String, JSONObject>> request = new HttpEntity<>(map, headers);
-        ResponseEntity<JSONObject> gwPostRes = restTemplate.postForEntity(url, jsonObject1, JSONObject.class);
+
+        ResponseEntity<String> gwPostRes = restTemplate.postForEntity(url, jsonObject1, String.class);
         if(null == gwPostRes){
             apiResponse.failed("快递单号推送失败",logger);
             return apiResponse;
         }
-        JSONObject body = gwPostRes.getBody();
+        JSONObject body = JSON.parseObject(gwPostRes.getBody());
         if(null == body){
             apiResponse.failed("快递单号推送失败",logger);
             return apiResponse;
