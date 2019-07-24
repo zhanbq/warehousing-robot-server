@@ -7,6 +7,7 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <script src="../../static/js/vuejs-2.5.16.js"></script>
     <script src="../../static/js/axios-0.18.0.js"></script>
+    <script src="../../static/js/model.js"></script>
     <!-- 引入样式 -->
     <link href="https://cdn.bootcss.com/element-ui/2.8.2/theme-chalk/index.css" rel="stylesheet">
     <!-- 引入组件库 -->
@@ -74,6 +75,61 @@
             </el-table-column>
         </el-table>
     </template>
+    <template>
+        <el-table
+                :data="shelvesList"
+                style="width: 100%">
+            <el-table-column type="expand">
+                <template slot-scope="props">
+                    <el-form label-position="left" inline class="demo-table-expand">
+                        <el-form-item label="商品名称">
+                            <span>{{ props.row.name }}</span>
+                        </el-form-item>
+                        <el-form-item label="所属店铺">
+                            <span>{{ props.row.shop }}</span>
+                        </el-form-item>
+                        <el-form-item label="商品 ID">
+                            <span>{{ props.row.id }}</span>
+                        </el-form-item>
+                        <el-form-item label="店铺 ID">
+                            <span>{{ props.row.shopId }}</span>
+                        </el-form-item>
+                        <el-form-item label="商品分类">
+                            <span>{{ props.row.category }}</span>
+                        </el-form-item>
+                        <el-form-item label="店铺地址">
+                            <span>{{ props.row.address }}</span>
+                        </el-form-item>
+                        <el-form-item label="商品描述">
+                            <span>{{ props.row.desc }}</span>
+                        </el-form-item>
+                    </el-form>
+                </template>
+            </el-table-column>
+            <el-table-column
+                    label="商品 ID"
+                    prop="id">
+            </el-table-column>
+            <el-table-column
+                    label="商品名称"
+                    prop="name">
+            </el-table-column>
+            <el-table-column
+                    label="描述"
+                    prop="desc">
+            </el-table-column>
+        </el-table>
+    </template>
+    </el-table>
+    <el-pagination
+            @size-change="handleSizeChange"
+            @current-change="handleCurrentChange"
+            :current-page="currentPage"
+            :page-sizes="[5, 10, 20, 40]"
+    :page-size="pagesize"
+    layout="total, sizes, prev, pager, next, jumper"
+    :total="tableData.length">
+    </el-pagination>
 </div>
 </body>
 <script>
@@ -81,6 +137,8 @@
     var Main = {
         data() {
             return {
+                currentPage:1, //初始页
+                pagesize:10,    //    每页的数据
                 tableData: [{
                     id: '12987122',
                     name: '好滋好味鸡蛋仔',
@@ -113,7 +171,36 @@
                     address: '上海市普陀区真北路',
                     shop: '王小虎夫妻店',
                     shopId: '10333'
-                }]
+                }],
+                shelvesList:[],
+            }
+        },
+        created() {
+            this.handleUserList()
+        },
+        methods: {
+            // 初始页currentPage、初始每页数据数pagesize和数据data
+            handleSizeChange: function (size) {
+                this.pagesize = size;
+                console.log(this.pagesize)  //每页下拉显示数据
+            },
+            handleCurrentChange: function(currentPage){
+                this.currentPage = currentPage;
+                console.log(this.currentPage)  //点击第几页
+            },
+            handleUserList() {
+                var _this = this;
+                axios.get("/shelves/all",{
+                    params:{
+                        current:this.currentPage,
+                        size:this.pagesize
+                    }
+                }).then(function (response) {
+                    _this.shelvesList = response.data.data;
+                    console.log('1111==='+JSON.stringify(_this.shelvesList));
+                }).catch(function (err) {
+                    console.log(err);
+                });
             }
         }
     }

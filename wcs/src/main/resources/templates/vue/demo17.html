@@ -176,7 +176,7 @@
                             console.log(response.data);
                             var res = response.data;
                             let code = res.code;
-                            if(code != 200 || code!='200'){
+                            if(code == 200 || code=='200'){
                                 _this.openMsg("设备创建成功","创建完成");
                             }else{
                                 _this.openMsg("设备创建失败");
