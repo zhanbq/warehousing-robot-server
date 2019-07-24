@@ -3,6 +3,8 @@ package com.baoshi.wcs.web.controller;
 
 import com.alibaba.fastjson.JSON;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baoshi.wcs.common.response.WCSApiResponse;
 import com.baoshi.wcs.entity.Column;
 import com.baoshi.wcs.entity.Layer;
@@ -66,7 +68,9 @@ public class ShelvesController extends BaseController {
     }
 
     @GetMapping("/all")
-    public Object findAll(){
+    public Object findAll(Page<Shelves> page){
+        IPage<Shelves> page1 = shelvesService.page(page, new QueryWrapper<Shelves>());
+        logger.info(JSON.toJSONString(page1));
         List<Shelves> shelves = shelvesService.list(new QueryWrapper<Shelves>());
 
         if(CollectionUtils.isEmpty(shelves)){
@@ -98,6 +102,7 @@ public class ShelvesController extends BaseController {
         }
         return resShelvesList;
     }
+
 
 
 }

@@ -1,33 +1,17 @@
-package com.baoshi.wcs.common.config.mybatisconfig;
+package com.baoshi.wcs.common.config.MybatisConfig;
 
 import com.baomidou.mybatisplus.extension.plugins.PaginationInterceptor;
-
 import com.baomidou.mybatisplus.extension.plugins.PerformanceInterceptor;
-
+import com.baomidou.mybatisplus.extension.plugins.pagination.optimize.JsqlParserCountOptimize;
 import org.mybatis.spring.annotation.MapperScan;
-
 import org.springframework.context.annotation.Bean;
-
 import org.springframework.context.annotation.Configuration;
 
 import java.util.Properties;
 
 @Configuration
-
 @MapperScan("com.baoshi.wcs.dao")
-
 public class MybatisPlusConfig {
-
-    /**
-     * 分页插件
-     */
-
-    @Bean
-    public PaginationInterceptor PaginationInterceptorpaginationInterceptor() {
-
-        return new PaginationInterceptor();
-
-    }
 
     /**
      * 打印 sql
@@ -49,5 +33,13 @@ public class MybatisPlusConfig {
         return performanceInterceptor;
 
     }
-
+    /**
+     * 分页插件
+     */
+    @Bean
+    public PaginationInterceptor paginationInterceptor() {
+        PaginationInterceptor paginationInterceptor = new PaginationInterceptor();
+        paginationInterceptor.setDialectType("mysql");
+        return paginationInterceptor;
+    }
 }
