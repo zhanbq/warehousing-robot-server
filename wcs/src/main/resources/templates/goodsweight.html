@@ -17,7 +17,7 @@
     <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
     <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
     <script src="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script>
-
+    <script src="../static/js/common.js" ></script>
     <![endif]-->
 </head>
 <body>
@@ -320,7 +320,7 @@
                     $sendcode.html(data.gw.palletid);
                     $consigneename.html(data.gw.consigneename)
                     $expresscode.html(data.gw.carrierId);
-                    $operation_time.html(data.gw.createTime);
+                    $operation_time.html(data.gw.modifyTime);
                     $currRobot.html(robotinfo.code);
                     $resMsg.html(res.msg)
                     oldBarCode = newBarCode;
