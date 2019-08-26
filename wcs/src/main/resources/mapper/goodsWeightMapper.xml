@@ -5,9 +5,9 @@
     <!-- 通用查询映射结果 -->
     <resultMap id="BaseResultMap" type="com.baoshi.wcs.entity.GoodsWeight">
         <result column="id" property="id"/>
-        <result column="create_time" property="createTime"/>
-        <result column="modify_time" property="modifyTime"/>
-        <result column="creator" property="creator"/>
+        <result column="create_time" property="createTime" jdbcType="TIMESTAMP"/>
+        <result column="modify_time" property="modifyTime" jdbcType="TIMESTAMP"/>
+        <result column="creator" property="creator" />
         <result column="version" property="version"/>
         <result column="bar_code" property="barCode"/>
         <result column="weight" property="weight"/>

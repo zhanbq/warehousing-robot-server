@@ -24,8 +24,8 @@ public class WebMvcConfg implements WebMvcConfigurer {
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
         //静态资源 免 拦截
-        registry.addResourceHandler("/static/**","/static/**/**","/static/fonts/**/**")
-                .addResourceLocations("classpath:/static/","classpath:/static/**/**/","classpath:/static/fonts/**/**/");
+        registry.addResourceHandler("/static/**","/static/**/**","/static/fonts/**/**","/static/fonts/**")
+                .addResourceLocations("classpath:/static/","classpath:/static/**/**/","classpath:/static/fonts/**/**/","classpath:/static/fonts/**");
     }
     @Override
     public void addCorsMappings(CorsRegistry registry) {

@@ -9,14 +9,14 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class IndexController {
 
-    @GetMapping("/")
-    @ResponseBody
-    public WCSApiResponse index(){
-        WCSApiResponse<Object> response = new WCSApiResponse();
-        response.setMsg("欢迎使用WCS系统");
-        response.setCode(HttpStatus.OK.value());
-        return response;
-    }
+//    @GetMapping("/")
+//    @ResponseBody
+//    public WCSApiResponse index(){
+//        WCSApiResponse<Object> response = new WCSApiResponse();
+//        response.setMsg("欢迎使用WCS系统");
+//        response.setCode(HttpStatus.OK.value());
+//        return response;
+//    }
 
     @GetMapping("/csrf")
     public WCSApiResponse csrf(){
