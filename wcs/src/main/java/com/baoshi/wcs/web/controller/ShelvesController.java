@@ -67,17 +67,24 @@ public class ShelvesController extends BaseController {
 
     }
 
+    /**
+     * 分页
+     * @param page
+     * @return
+     */
     @GetMapping("/all")
     public Object findAll(Page<Shelves> page){
-        IPage<Shelves> page1 = shelvesService.page(page, new QueryWrapper<Shelves>());
-        logger.info(JSON.toJSONString(page1));
-        List<Shelves> shelves = shelvesService.list(new QueryWrapper<Shelves>());
+        IPage<Shelves> shelves = shelvesService.page(page, new QueryWrapper<Shelves>());
+        logger.info(JSON.toJSONString(shelves));
+        if(shelves == null){
+            return null;
+        }
 
-        if(CollectionUtils.isEmpty(shelves)){
+        if(CollectionUtils.isEmpty(shelves.getRecords())){
             return null;
         }
         List<ShelvesVO> resShelvesList = new ArrayList<>();
-        for(Shelves shelve: shelves){
+        for(Shelves shelve: shelves.getRecords()){
             Integer shelveId = shelve.getId();
             ShelvesVO shelvesVO = new ShelvesVO();
             BeanUtils.copyProperties(shelve,shelvesVO);
@@ -100,7 +107,10 @@ public class ShelvesController extends BaseController {
 
             resShelvesList.add(shelvesVO);
         }
-        return resShelvesList;
+        IPage<ShelvesVO> shelvesPageList = new Page<ShelvesVO>();
+        BeanUtils.copyProperties(shelves,shelvesPageList,"records");
+        shelvesPageList.setRecords(resShelvesList);
+        return shelvesPageList;
     }
 
 

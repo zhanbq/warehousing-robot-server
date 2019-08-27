@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8"/>
+    <title>wcs设备制作</title>
+    <script src="../../static/js/vuejs-2.5.16.js"></script>
+    <script src="../../static/js/axios-0.18.0.js"></script>
+    <!-- 引入样式 -->
+    <link href="https://cdn.bootcss.com/element-ui/2.8.2/theme-chalk/index.css" rel="stylesheet">
+    <!-- 引入组件库 -->
+    <script src="https://cdn.bootcss.com/element-ui/2.8.2/index.js"></script>
+
+    <style>
+
+    </style>
+</head>
+<body>
+<div id="app">
+    <el-form ref="form" :rules="rules" :label-position="labelPosition" :model="form" label-width="80px" size="small ">
+        <el-form-item label="设备类型">
+            <el-select v-model="form.type" placeholder="请选择设备类型">
+                <el-option label="分播墙" value="1"></el-option>
+                <el-option label="自动立库" value="2"></el-option>
+                <!--<el-option v-for="c of containerList" :label="c.typeName+'-'+c.code" :value="c.code"></el-option>-->
+            </el-select>
+        </el-form-item>
+        <el-form-item label="设备名称" prop="name">
+            <el-input v-model="form.name"></el-input>
+        </el-form-item>
+        <el-form-item label="设备编号">
+            <el-input v-model="form.code"></el-input>
+        </el-form-item>
+
+        <el-form-item label="仓库">
+            <el-input v-model="form.warehouseId"></el-input>
+        </el-form-item>
+        <el-form-item label="库区">
+            <el-input v-model="form.warehouseAreaId"></el-input>
+        </el-form-item>
+        <el-form-item label="巷道">
+            <el-input v-model="form.roadwayNo"></el-input>
+        </el-form-item>
+        <el-form-item label="容器堆叠">
+            <el-input v-model="form.stackNum"></el-input>
+        </el-form-item>
+
+        <el-form-item label="可承载容器" prop="containerType">
+            <el-checkbox-group v-model="form.containerTypes">
+                <el-checkbox v-for="c of containerList" :key="c.code" :label="c.code" >{{c.typeName + "-" + c.code}}</el-checkbox>
+            </el-checkbox-group>
+        </el-form-item>
+        <el-form-item label="层数">
+            <el-input v-model="form.pliesNum"></el-input>
+
+        </el-form-item>
+
+        <el-form-item
+                v-for="(domain, index) in form.layers"
+                :label="'层高' + (index+1)"
+                :key="domain.key"
+                :prop="'layers.' + index + '.height'"
+                :rules="{ required: true, message: '层高不能为空', trigger: 'blur'}"
+        >
+            <el-input v-model="domain.height"></el-input>
+            <el-button @click.prevent="removeLayer(domain)">删除</el-button>
+
+        </el-form-item>
+
+
+        <el-form-item>
+            <el-button @click="addLayer">添加层高</el-button>
+        </el-form-item>
+
+        <!-- =======================================================================================================================-->
+
+        <el-form-item label="列数">
+            <el-input v-model="form.columnsNum"></el-input>
+
+        </el-form-item>
+        <el-form-item
+                v-for="(c, index) in form.columns"
+                :label="'列' + (index+1)"
+                :key="c.id">
+            <el-row>
+                <el-col :span="6">
+                    <el-form-item :prop="'columns.' + index + '.wide'" :rules="{ required: true, message: '列宽不能为空', trigger: 'blur' }">
+                        <el-input :span="12" v-model="c.wide" placeholder="列宽:m" >
+
+                        </el-input>
+                    </el-form-item>
+                </el-col>
+
+                <el-col  :offset="1" :span="6">
+                    <el-form-item :prop="'columns.' + index + '.deep'" :rules="{ required: true, message: '列深不能为空', trigger: 'blur' }">
+                        <el-input :span="12" v-model="c.deep" placeholder="列深:m"></el-input>
+                    </el-form-item>
+                </el-col>
+            </el-row>
+            <el-button @click.prevent="removeColumn(c)">删除</el-button>
+
+        </el-form-item>
+        <el-form-item>
+            <el-button @click="addColumu">添加列数</el-button>
+        </el-form-item>
+        <!-- ================================================================================================================================= -->
+        <el-form-item>
+            <el-button type="primary" @click="onSubmit('form')">立即创建</el-button>
+            <el-button @click="resetForm('form')">重置</el-button>
+            <el-button>取消</el-button>
+        </el-form-item>
+    </el-form>
+</div>
+</body>
+<script>
+    var Main = {
+        data() {
+
+            var checkAge = function(rule, value, callback){
+                var errMsg = "";
+                if (!value) {
+                    return callback(new Error('列不能为空'));
+                }
+                if (!Number.isInteger(value)) {
+                    callback(new Error('请输入数字值'));
+                } else {
+                    if (value < 18) {
+                        callback(new Error('必须年满18岁'));
+                    } else {
+                        callback();
+                    }
+                }
+            };
+
+            return {
+                form: {
+                    name: '',
+                    containerTypes: [],
+                    //
+                    type: "",
+                    code: "",
+                    warehouseAreaId: "",
+                    warehouseId: "",
+                    stackNum: "", //容器堆叠
+                    containerType: "",
+                    roadwayNo: "",
+                    pliesNum: "",
+                    columnsNum: "",
+                    layerId:"",
+                    layers: [{
+						height:""
+                    }],
+                    columnsId: "",
+                    columns: [{
+                        wide:"",
+                        deep:""
+                    }]
+                },
+                containerList: [],
+
+                labelPosition: 'left',
+                rules: {
+                    name: [
+                        { required: true, message: '请输入活动名称', trigger: 'blur' },
+                        { min: 3, max: 5, message: '长度在 3 到 5 个字符', trigger: 'blur' }
+                    ]
+                }
+            }
+        },
+        methods: {
+            onSubmit(formName){
+                var _this = this;
+                this.$refs[formName].validate(function (valid){
+                    if(valid) {
+                        console.log('submit!'+JSON.stringify(_this.form));
+                        axios.post("/shelves/add",_this.form).then(function (response) {
+                            console.log(response.data);
+                            var res = response.data;
+                            let code = res.code;
+                            if(code == 200 || code=='200'){
+                                _this.openMsg("设备创建成功","创建完成");
+                                _this.resetForm('form');
+                            }else{
+                                _this.openMsg("设备创建失败");
+                            }
+
+                        }).catch(function (err) {
+                            console.log(err);
+                        });
+
+
+                    } else {
+                        console.log('error submit!!');
+                        return false;
+                    }
+                });
+            },
+            resetForm(formName) {
+                this.$refs[formName].resetFields();
+            },
+            addLayer() {
+                this.form.layers.push({
+                    value: '',
+                    key: Date.now()
+                });
+            },
+            removeLayer(item) {
+                var index = this.form.layers.indexOf(item)
+                if (index !== -1) {
+                    this.form.layers.splice(index, 1)
+                }
+            },
+            addColumu() {
+                this.form.columns.push({
+                    value: '',
+                    key: Date.now()
+                });
+            },
+            removeColumn(item) {
+                var index = this.form.columns.indexOf(item)
+                if (index !== -1) {
+                    this.form.columns.splice(index, 1)
+                }
+            },
+            findAllContainers: function () {
+                var _this = this;
+                axios.get("/container/all").then(function (response) {
+                    _this.containerList = response.data.data;
+                    console.log(_this.containerList);
+                }).catch(function (err) {
+                    console.log(err);
+                });
+            },
+            openMsg: function(msg,title) {
+                this.$alert(msg, title, {
+                    confirmButtonText: '确定',
+                    callback: function (action) {
+                        this.$message({
+                            type: 'info',
+                            message: `action: ${action}`
+                        });
+                    }
+                });
+            }
+        },
+        created() {
+            this.findAllContainers();
+        }
+    }
+    var Ctor = Vue.extend(Main)
+    new Ctor().$mount('#app')
+</script>
+</html>

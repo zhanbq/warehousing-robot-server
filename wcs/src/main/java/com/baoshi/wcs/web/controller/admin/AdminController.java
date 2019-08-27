@@ -34,4 +34,9 @@ public class AdminController {
     public String vue(@PathVariable("name")String name){
         return "vue/" + name;
     }
+
+    @RequestMapping("/data/{name}")
+    public String admin(@PathVariable("name")String name){
+        return "admin/" + name;
+    }
 }
