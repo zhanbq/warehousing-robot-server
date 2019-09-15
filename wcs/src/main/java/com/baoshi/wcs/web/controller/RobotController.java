@@ -5,6 +5,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.baoshi.wcs.common.config.NewWMSHttpProp;
+import com.baoshi.wcs.common.response.ApiResponse;
 import com.baoshi.wcs.common.response.NewWMSResponse;
 import com.baoshi.wcs.common.response.WCSApiResponse;
 import com.baoshi.wcs.entity.GoodsWeight;
@@ -24,6 +25,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.stereotype.Controller;
+import org.springframework.stereotype.Repository;
+import org.springframework.util.CollectionUtils;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.util.StringUtils;
@@ -241,5 +244,65 @@ public class RobotController extends BaseController {
         apiResponse.success(resMap);
         return apiResponse;
 
+    }
+
+    /**
+     * 批量推送单号
+     * @param begin
+     * @param end
+     * @return
+     */
+
+    @GetMapping("/goodsweight/batchpush")
+    @ResponseBody
+    public Object BatchPushGoodsweightData2Wms(String begin, String end){
+
+        ApiResponse<Object> res = new ApiResponse<>();
+        QueryWrapper<GoodsWeight> batchGWQuery = new QueryWrapper<>();
+        QueryWrapper<GoodsWeight> goodsWeightQueryWrapper = batchGWQuery.between("create_time", begin, end);
+        List<GoodsWeight> goodsWeightList = goodsWeightService.list(goodsWeightQueryWrapper);
+        if(CollectionUtils.isEmpty(goodsWeightList)){
+            res.failed("此时间段没有单子 , begin: " + begin + " || end: " + end);
+            return res;
+        }
+        RestTemplate restTemplate = new RestTemplate();
+        String url = NewWMSHttpProp.orderUrl;
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON_UTF8);
+        for(GoodsWeight gw : goodsWeightList){
+            //推送重量至wms
+
+            MultiValueMap<String, JSONObject> map= new LinkedMultiValueMap<>();
+            JSONObject jsonObject = new JSONObject();
+            jsonObject.put("TASKID",gw.getTaskId());
+            jsonObject.put("SOReference5",gw.getBarCode());
+            jsonObject.put("Weigh",gw.getWeight().toString());
+            JSONObject jsonObject1 = new JSONObject();
+            jsonObject1.put("request",jsonObject);
+//        map.add("request",jsonObject);
+
+            ResponseEntity<String> gwPostRes = restTemplate.postForEntity(url, jsonObject1, String.class);
+            if(null == gwPostRes){
+                res.failed("快递单号推送失败",logger);
+                return res;
+            }
+            JSONObject body = JSON.parseObject(gwPostRes.getBody());
+            if(null == body){
+                res.failed("快递单号推送失败",logger);
+                return res;
+            }
+            JSONObject response = body.getJSONObject("response");
+            if(response == null){
+                res.failed("快递单号推送失败",logger);
+                return res;
+            }
+            String flag = response.getString("flag");
+            if(!"Y".equals(flag)){
+                res.failed("快递单号推送失败 : "+response.getString("message"),logger);
+                return res;
+            }
+        }
+        res.success("","批量推送成功.");
+        return res;
     }
 }
