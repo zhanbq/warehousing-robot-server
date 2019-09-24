@@ -30,25 +30,25 @@
 </head>
 <body>
 <div id="app">
-    <el-button type="text" @click="dialogShelvesSearchFormVisible = true">按照时间搜索</el-button>
-    <el-dialog title="按照时间搜索" :visible.sync="dialogShelvesSearchFormVisible">
-        <el-form :model="shelvesSearchForm">
-            <el-form-item label="开始时间">
-                <el-col :span="8">
-                    <el-date-picker type="date" placeholder="选择日期" v-model="shelvesSearchForm.begin" style="width: 100%;"></el-date-picker>
-                </el-col>
-            </el-form-item>
-            <el-form-item label="结束时间">
-                <el-col :span="8">
-                    <el-date-picker type="date" placeholder="选择日期" v-model="shelvesSearchForm.end" style="width: 100%;"></el-date-picker>
-                </el-col>
-            </el-form-item>
-        </el-form>
-        <div slot="footer" class="dialog-footer">
-            <el-button @click="dialogShelvesSearchFormVisible = false">取 消</el-button>
-            <el-button type="primary" @click="dialogShelvesSearchFormVisible = false">确 定</el-button>
-        </div>
-    </el-dialog>
+    <!--<el-button type="text" @click="dialogShelvesSearchFormVisible = true">按照时间搜索</el-button>-->
+    <!--<el-dialog title="按照时间搜索" :visible.sync="dialogShelvesSearchFormVisible">-->
+        <!--<el-form :model="shelvesSearchForm">-->
+            <!--<el-form-item label="开始时间">-->
+                <!--<el-col :span="8">-->
+                    <!--<el-date-picker type="date" placeholder="选择日期" v-model="shelvesSearchForm.begin" style="width: 100%;"></el-date-picker>-->
+                <!--</el-col>-->
+            <!--</el-form-item>-->
+            <!--<el-form-item label="结束时间">-->
+                <!--<el-col :span="8">-->
+                    <!--<el-date-picker type="date" placeholder="选择日期" v-model="shelvesSearchForm.end" style="width: 100%;"></el-date-picker>-->
+                <!--</el-col>-->
+            <!--</el-form-item>-->
+        <!--</el-form>-->
+        <!--<div slot="footer" class="dialog-footer">-->
+            <!--<el-button @click="dialogShelvesSearchFormVisible = false">取 消</el-button>-->
+            <!--<el-button type="primary" @click="dialogShelvesSearchFormVisible = false">确 定</el-button>-->
+        <!--</div>-->
+    <!--</el-dialog>-->
     <template>
         <el-table
                 :data="shelvesList.records"

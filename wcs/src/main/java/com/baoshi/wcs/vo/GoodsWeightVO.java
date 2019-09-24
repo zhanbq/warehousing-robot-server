@@ -20,6 +20,24 @@ public class GoodsWeightVO implements Serializable {
     @NotEmpty(groups = {GoodsWeightValidator.class})
     Double weight;
 
+    /**
+     * 包裹长度 计算体积用
+     */
+    @NotEmpty(groups = {GoodsWeightValidator.class})
+    Double length;
+
+    /**
+     * 包裹宽度 计算体积用
+     */
+    @NotEmpty(groups = {GoodsWeightValidator.class})
+    Double width;
+
+    /**
+     * 包裹高度 计算体积用
+     */
+    @NotEmpty(groups = {GoodsWeightValidator.class})
+    Double height;
+
     String key;
 
     String id;
@@ -54,6 +72,30 @@ public class GoodsWeightVO implements Serializable {
 
     public void setId(String id) {
         this.id = id;
+    }
+
+    public Double getLength() {
+        return length;
+    }
+
+    public void setLength(Double length) {
+        this.length = length;
+    }
+
+    public Double getWidth() {
+        return width;
+    }
+
+    public void setWidth(Double width) {
+        this.width = width;
+    }
+
+    public Double getHeight() {
+        return height;
+    }
+
+    public void setHeight(Double height) {
+        this.height = height;
     }
 
     public interface GoodsWeightValidator{

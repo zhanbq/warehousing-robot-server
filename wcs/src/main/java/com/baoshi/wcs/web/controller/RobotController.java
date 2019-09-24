@@ -40,7 +40,10 @@ import java.util.regex.Pattern;
 @Controller
 @RequestMapping("/robot")
 public class RobotController extends BaseController {
-
+    /**
+     * 对于计算密集型的任务，一个有Ncpu个处理器的系统通常通过使用一个Ncpu + 1个线程的线程池来获得最优的利用率
+     */
+    private static final int N_CPUS = Runtime.getRuntime().availableProcessors();
     @Autowired
     private GoodsWeightService goodsWeightService;
 
@@ -70,7 +73,7 @@ public class RobotController extends BaseController {
 
     private static final String goodsWeightKey = "2C7FACD3AFC3FFE547FC54CDA076A25D";
 
-    private static ExecutorService executor = new ThreadPoolExecutor(1, 1,
+    private static ExecutorService THREAD_4_PUSH_GOODSWEIGHT_DATA = new ThreadPoolExecutor(2, 2,
             0L, TimeUnit.MILLISECONDS,
             new LinkedBlockingQueue<Runnable>());
     private static final Pattern p = Pattern.compile("\\s*|\t|\r|\n");
@@ -96,6 +99,8 @@ public class RobotController extends BaseController {
             apiResponse.setServerMsg("robotId 数据不能为空");
             return apiResponse;
         }
+
+        
 
         RobotInfo robotInfo = robotInfoService.getById(goodsWeightVO.getId());
 
@@ -265,43 +270,51 @@ public class RobotController extends BaseController {
             res.failed("此时间段没有单子 , begin: " + begin + " || end: " + end);
             return res;
         }
-        RestTemplate restTemplate = new RestTemplate();
-        String url = NewWMSHttpProp.orderUrl;
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_JSON_UTF8);
-        for(GoodsWeight gw : goodsWeightList){
-            //推送重量至wms
+        Callable<Object> callable = new Callable<Object>() {
+            @Override
+            public Object call() throws Exception {
+                RestTemplate restTemplate = new RestTemplate();
+                String url = NewWMSHttpProp.orderUrl;
+                HttpHeaders headers = new HttpHeaders();
+                headers.setContentType(MediaType.APPLICATION_JSON_UTF8);
+                for(GoodsWeight gw : goodsWeightList){
+                    //推送重量至wms
 
-            MultiValueMap<String, JSONObject> map= new LinkedMultiValueMap<>();
-            JSONObject jsonObject = new JSONObject();
-            jsonObject.put("TASKID",gw.getTaskId());
-            jsonObject.put("SOReference5",gw.getBarCode());
-            jsonObject.put("Weigh",gw.getWeight().toString());
-            JSONObject jsonObject1 = new JSONObject();
-            jsonObject1.put("request",jsonObject);
+                    MultiValueMap<String, JSONObject> map= new LinkedMultiValueMap<>();
+                    JSONObject jsonObject = new JSONObject();
+                    jsonObject.put("TASKID",gw.getTaskId());
+                    jsonObject.put("SOReference5",gw.getBarCode());
+                    jsonObject.put("Weigh",gw.getWeight().toString());
+                    JSONObject jsonObject1 = new JSONObject();
+                    jsonObject1.put("request",jsonObject);
 //        map.add("request",jsonObject);
 
-            ResponseEntity<String> gwPostRes = restTemplate.postForEntity(url, jsonObject1, String.class);
-            if(null == gwPostRes){
-                res.failed("快递单号推送失败",logger);
-                return res;
+                    ResponseEntity<String> gwPostRes = restTemplate.postForEntity(url, jsonObject1, String.class);
+                    if(null == gwPostRes){
+                        res.failed("快递单号推送失败",logger);
+                        return res;
+                    }
+                    JSONObject body = JSON.parseObject(gwPostRes.getBody());
+                    if(null == body){
+                        res.failed("快递单号推送失败",logger);
+                        return res;
+                    }
+                    JSONObject response = body.getJSONObject("response");
+                    if(response == null){
+                        res.failed("快递单号推送失败",logger);
+                        return res;
+                    }
+                    String flag = response.getString("flag");
+                    if(!"Y".equals(flag)){
+                        res.failed("快递单号推送失败 : "+response.getString("message"),logger);
+                        return res;
+                    }
+                }
+                return null;
             }
-            JSONObject body = JSON.parseObject(gwPostRes.getBody());
-            if(null == body){
-                res.failed("快递单号推送失败",logger);
-                return res;
-            }
-            JSONObject response = body.getJSONObject("response");
-            if(response == null){
-                res.failed("快递单号推送失败",logger);
-                return res;
-            }
-            String flag = response.getString("flag");
-            if(!"Y".equals(flag)){
-                res.failed("快递单号推送失败 : "+response.getString("message"),logger);
-                return res;
-            }
-        }
+        };
+        THREAD_4_PUSH_GOODSWEIGHT_DATA.submit(callable);
+        THREAD_4_PUSH_GOODSWEIGHT_DATA.shutdown();
         res.success("","批量推送成功.");
         return res;
     }
