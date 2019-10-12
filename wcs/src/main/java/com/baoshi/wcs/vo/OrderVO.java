@@ -91,7 +91,7 @@ public class OrderVO implements Serializable {
 //                "<cid>33d231fa134e47e3bc112ae06eaedc5c</cid>\n" +
 //                "<pwd>37de5907f2964e52846d9d2213eea3b4</pwd>\n" +
 //                "<warehouseid>fac5d7fd03e044698a9df1dcaab08006</warehouseid>\n" +
-//                "<sendcode>75161282090521</sendcode>\n" +
+//                "<sendcode>260376918982</sendcode>\n" +
 //                "</getOrders>";
 ////        String reqXml = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>\n" +
 ////                "<setOrderWeight>\n" +
