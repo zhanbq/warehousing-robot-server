@@ -18,6 +18,11 @@
         <result column="customer" property="customer"/>
         <result column="consigneename" property="consigneename"/>
         <result column="carrier_id" property="carrierId"/>
+        <result column="length" property="length"/>
+        <result column="width" property="width"/>
+        <result column="height" property="height"/>
+        <result column="volume" property="volume"/>
+        <result column="carton_name" property="cartonName"/>
     </resultMap>
 
 
@@ -28,7 +33,7 @@
         modify_time,
         creator,
         version,
-        bar_code, weight, modifier,gw_robot_id,palletid, customer, consigneename, carrier_id,task_id,order_no
+        bar_code, weight, modifier,gw_robot_id,palletid, customer, consigneename, carrier_id,task_id,order_no,length,width,height,carton_name,volume
     </sql>
 
 

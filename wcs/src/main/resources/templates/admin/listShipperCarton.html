@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>快递包裹信息</title>
+    <title>货主纸箱导入工具</title>
     <script src="../../static/js/vuejs-2.5.16.js"></script>
     <script src="../../static/js/axios-0.18.0.js"></script>
     <!-- 引入样式 -->
@@ -12,72 +12,29 @@
 </head>
 <body>
 <div id="app">
-
-
-    <el-form :inline="true" :model="formInline" class="demo-form-inline">
-        <el-form-item label="快递单号">
-            <el-input v-model="formInline.barcode" placeholder="根据快递单号查询"></el-input>
-        </el-form-item>
-        <el-form-item label="根据机器Id查询">
-            <el-select v-model="formInline.gwId" placeholder="活动区域">
-                <el-option label="一号机" value="00C94707275"></el-option>
-                <el-option label="二号机" value="00C66186367"></el-option>
-                <el-option label="三号机" value="00C66186389"></el-option>
-                <el-option label="四号机" value="00C94707265"></el-option>
-                <el-option label="五号机" value="00C94707266"></el-option>
-                <el-option label="六号机" value="00C58515100"></el-option>
-            </el-select>
-        </el-form-item>
-        <el-form-item>
-            <el-button type="primary" @click="onSubmit">查询</el-button>
-        </el-form-item>
-    </el-form>
-    <!--<el-upload-->
-            <!--class="upload-demo"-->
-            <!--ref="upload"-->
-            <!--:action=host-->
-            <!--:on-preview="handlePreview"-->
-            <!--:on-remove="handleRemove"-->
-            <!--:file-list="fileList"-->
-            <!--:limit="1"-->
-            <!--:auto-upload="false"-->
-            <!--:before-upload="handleBeforeUpload"-->
-    <!--&gt;-->
-        <!--<el-button slot="trigger" size="small" type="primary">选取货主纸箱数据导入</el-button>-->
-        <!--<el-button style="margin-left: 10px;" size="small" type="success" @click="submitUpload">上传到服务器</el-button>-->
-        <!--<div slot="tip" class="el-upload__tip">只能上传xls/xlxs文件,每次上传一个文件</div>-->
-    <!--</el-upload>-->
+    <el-upload
+            class="upload-demo"
+            ref="upload"
+            :action=host
+            :on-preview="handlePreview"
+            :on-remove="handleRemove"
+            :file-list="fileList"
+            :limit="1"
+            :auto-upload="false"
+            :before-upload="handleBeforeUpload"
+    >
+        <el-button slot="trigger" size="small" type="primary">选取货主纸箱数据导入</el-button>
+        <el-button style="margin-left: 10px;" size="small" type="success" @click="submitUpload">上传到服务器</el-button>
+        <div slot="tip" class="el-upload__tip">只能上传xls/xlxs文件,每次上传一个文件</div>
+    </el-upload>
     <template>
         <el-table
-                :data="goodsWeightList.records"
+                :data="shipperCartonList.records"
                 style="width: 100%"
                 :row-class-name="tableRowClassName">
             <el-table-column
-                    prop="barCode"
-                    label="包裹单号"
-                    width="180">
-            </el-table-column>
-            <el-table-column
-                    prop="weight"
-                    label="包裹重量"
-                    width="180">
-            </el-table-column>
-            <el-table-column
-                    prop="length"
-                    label="长(cm)">
-            </el-table-column>
-            <el-table-column
-                    prop="width"
-                    label="宽(cm)">
-            </el-table-column>
-            <el-table-column
-                    prop="height"
-                    label="高(cm)">
-            </el-table-column>
-
-            <el-table-column
-                    prop="customer"
-                    label="货主"
+                    prop="shipperName"
+                    label="货主名称"
                     width="180">
             </el-table-column>
             <el-table-column
@@ -86,16 +43,17 @@
                     width="180">
             </el-table-column>
             <el-table-column
-                    prop="consigneename"
-                    label="收件人"
-                    width="180">
+                    prop="cartonLength"
+                    label="长(cm)">
             </el-table-column>
             <el-table-column
-                    prop="modifyTime"
-                    label="称重时间"
-                    width="180">
+                    prop="cartonWidth"
+                    label="宽(cm)">
             </el-table-column>
-
+            <el-table-column
+                    prop="cartonHeight"
+                    label="高(cm)">
+            </el-table-column>
         </el-table>
     </template>
     <el-pagination
@@ -105,7 +63,7 @@
             :page-sizes="[5, 10, 20, 40]"
             :page-size="pagesize"
             layout="total, sizes, prev, pager, next, jumper"
-            :total="goodsWeightList.total">
+            :total="shipperCartonList.total">
     </el-pagination>
 
     <el-dialog
@@ -133,14 +91,10 @@
                 formLabelWidth: '120px',
                 currentPage:1, //初始页
                 pagesize:10,    //    每页的数据
-                goodsWeightList:{},
+                shipperCartonList:{},
+                shelvesSearchForm:{},
                 dialogVisible:false, //控制弹窗效果
                 dialogMsg:'1',//弹窗提示信息
-
-                formInline: {
-                    gwId: '',
-                    barcode: ''
-                }
             }
         },
         created() {
@@ -186,20 +140,17 @@
             },
             searchAll() {
                 var _this = this;
-                axios.get("/goodsweight/list",{
+                axios.get("/shipper_carton/list",{
                     params:{
                         current:this.currentPage,
                         size:this.pagesize
                     }
                 }).then(function (response) {
-                    _this.goodsWeightList = response.data.data;
-                    console.log('1111==='+JSON.stringify(_this.goodsWeightList));
+                    _this.shipperCartonList = response.data.data;
+                    // console.log('1111==='+JSON.stringify(_this.shipperCartonList));
                 }).catch(function (err) {
                     console.log('err'+err);
                 });
-            },
-            onSubmit() {
-                console.log('submit!');
             }
         }
     }

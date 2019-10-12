@@ -40,6 +40,28 @@ public class GoodsWeight extends BaseEntity {
 
     String orderNo;
 
+    /**
+     * 包裹长度 用于计算体积
+     */
+    Double length;
+
+    /**
+     * 包裹宽度 用于计算体积
+     */
+    Double width;
+
+    /**
+     * 包裹高度 用于计算体积
+     */
+    Double height;
+
+    Double volume;
+
+    /**
+     * 纸箱名称
+     */
+    String cartonName;
+
     public String getBarCode() {
         return barCode;
     }
@@ -47,6 +69,7 @@ public class GoodsWeight extends BaseEntity {
     public void setBarCode(String barCode) {
         this.barCode = barCode;
     }
+
     public Double getWeight() {
         return weight;
     }
@@ -54,6 +77,7 @@ public class GoodsWeight extends BaseEntity {
     public void setWeight(Double weight) {
         this.weight = weight;
     }
+
     public Integer getModifier() {
         return modifier;
     }
@@ -124,5 +148,45 @@ public class GoodsWeight extends BaseEntity {
 
     public void setOrderNo(String orderNo) {
         this.orderNo = orderNo;
+    }
+
+    public Double getLength() {
+        return length;
+    }
+
+    public void setLength(Double length) {
+        this.length = length;
+    }
+
+    public Double getWidth() {
+        return width;
+    }
+
+    public void setWidth(Double width) {
+        this.width = width;
+    }
+
+    public Double getHeight() {
+        return height;
+    }
+
+    public void setHeight(Double height) {
+        this.height = height;
+    }
+
+    public Double getVolume() {
+        return volume;
+    }
+
+    public void setVolume(Double volume) {
+        this.volume = volume;
+    }
+
+    public String getCartonName() {
+        return cartonName;
+    }
+
+    public void setCartonName(String cartonName) {
+        this.cartonName = cartonName;
     }
 }

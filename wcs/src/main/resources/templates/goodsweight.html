@@ -52,6 +52,7 @@
                             <li class="gw_robot_id" data-value="00C66186389"><a  href="#ejb" tabindex="-1" data-toggle="tab" >poshy3</a></li>
                             <li class="gw_robot_id" data-value="00C94707265"><a  href="#ejb" tabindex="-1" data-toggle="tab" >poshy4</a></li>
                             <li class="gw_robot_id" data-value="00C94707266"><a  href="#ejb" tabindex="-1" data-toggle="tab" >poshy5</a></li>
+                            <li class="gw_robot_id" data-value="00C58515100"><a  href="#ejb" tabindex="-1" data-toggle="tab" >poshy6</a></li>
                         </ul>
                     </li>
                 </ul>
@@ -165,7 +166,41 @@
                         </div>
                     </div>
                 </div>
+                <div class="col-md-6 column">
+                    <div class="list-group">
+                        <div class="list-group-item active">
+                            纸箱名称
+                        </div>
+                        <div class="list-group-item"></div>
+                        <div class="list-group-item">
+                            <h1 class="list-group-item-heading" id="cartonName">
 
+                            </h1>
+                            <p class="list-group-item-text">
+                            </p>
+                        </div>
+                        <div class="list-group-item"></div>
+                        <div class="list-group-item active">
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6 column">
+                    <div class="list-group">
+                        <div class="list-group-item active" >
+                            扫描体积
+                        </div>
+                        <div class="list-group-item"></div>
+                        <div class="list-group-item">
+                            <h1 class="list-group-item-heading">
+                                <span class="" id="volume"></span>
+                            </h1>
+
+                        </div>
+                        <div class="list-group-item"></div>
+                        <div class="list-group-item active">
+                        </div>
+                    </div>
+                </div>
                 <div class="col-md-6 column">
                     <div class="list-group">
                         <div class="list-group-item active">
@@ -241,6 +276,8 @@
     var $currRobot=$("#currRobot");
     var $resMsg=$("#resMsg");
     var $consigneename=$("#consigneename");
+    var $cartonName = $("#cartonName")
+    var $volume = $("#volume")
 </script>
 
 <script>
@@ -299,6 +336,8 @@
                     $operation_time.html('');
                     $currRobot.html('');
                     $consigneename.html('');
+                    $cartonName.html('');
+                    $volume.html('');
                     $resMsg.html(res.msg)
                 }
                 if(data == null || data == undefined){ //判断是否已经切换过机器 阻止弹层重复弹出
@@ -322,6 +361,8 @@
                     $expresscode.html(data.gw.carrierId);
                     $operation_time.html(data.gw.modifyTime);
                     $currRobot.html(robotinfo.code);
+                    $cartonName.html(data.gw.cartonName);
+                    $volume.html(data.gw.volume + " (立方CM)");
                     $resMsg.html(res.msg)
                     oldBarCode = newBarCode;
                 // }

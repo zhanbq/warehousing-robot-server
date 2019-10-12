@@ -98,6 +98,17 @@ public class GoodsWeightVO implements Serializable {
         this.height = height;
     }
 
+    /**
+     * 获取包裹体积
+     * @return
+     */
+//    public double getVolume() {
+//        BigDecimal lengthDecimal = new BigDecimal(this.length);
+//        BigDecimal widthDecimal = new BigDecimal(this.width);
+//        BigDecimal heightDecimal = new BigDecimal(this.height);
+//        return lengthDecimal.multiply(widthDecimal).multiply(heightDecimal).setScale(2, BigDecimal.ROUND_HALF_DOWN).doubleValue();
+//    }
+
     public interface GoodsWeightValidator{
 
     }

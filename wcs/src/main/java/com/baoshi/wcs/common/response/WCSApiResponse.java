@@ -1,7 +1,9 @@
 package com.baoshi.wcs.common.response;
 
+import com.alibaba.fastjson.JSON;
 import com.baoshi.wcs.entity.Requestor;
 import com.baoshi.wcs.vo.Requestor4ResponseVO;
+import org.springframework.util.StringUtils;
 
 import java.io.Serializable;
 import java.util.Date;
@@ -43,5 +45,15 @@ public class WCSApiResponse<T> extends ApiResponse<T> implements Serializable {
 
     public void setServerMsg(String serverMsg) {
         this.serverMsg = serverMsg;
+    }
+
+    public <T> void setServerMsg(String serverMsg, T... data) {
+        this.serverMsg = serverMsg;
+        if(!StringUtils.isEmpty(data)){
+            for(T d:data){
+                this.serverMsg+=" | "+d.getClass().getDeclaredFields()[0] + " : ";
+                this.serverMsg+=d.toString();
+            }
+        }
     }
 }

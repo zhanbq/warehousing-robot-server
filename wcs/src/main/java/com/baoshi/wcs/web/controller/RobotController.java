@@ -8,14 +8,19 @@ import com.baoshi.wcs.common.config.NewWMSHttpProp;
 import com.baoshi.wcs.common.response.ApiResponse;
 import com.baoshi.wcs.common.response.NewWMSResponse;
 import com.baoshi.wcs.common.response.WCSApiResponse;
+import com.baoshi.wcs.common.utils.ExpressMathUtil;
 import com.baoshi.wcs.entity.GoodsWeight;
 import com.baoshi.wcs.entity.LastGoodsWeight;
 import com.baoshi.wcs.entity.RobotInfo;
+import com.baoshi.wcs.entity.ShipperCarton;
+import com.baoshi.wcs.pojo.ShipperCartonPojo;
 import com.baoshi.wcs.service.GoodsWeightService;
 import com.baoshi.wcs.service.LastGoodsWeightService;
 import com.baoshi.wcs.service.RobotInfoService;
+import com.baoshi.wcs.service.ShipperCartonService;
 import com.baoshi.wcs.vo.GoodsWeightVO;
 import com.baoshi.wcs.web.basic.BaseController;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
@@ -33,6 +38,7 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 
+import java.math.BigDecimal;
 import java.util.*;
 import java.util.concurrent.*;
 import java.util.regex.Pattern;
@@ -62,6 +68,9 @@ public class RobotController extends BaseController {
     @Value("${com.wcs.wms.unit}")
     private String wmsServiceUnit;
 
+    @Value("${wcs.shipper_carton.digital.error.value}")
+    private String shpperCartonDigitalErrorValue;
+
     @Autowired
     NewWMSHttpProp newWMSHttpProp;
 
@@ -70,6 +79,9 @@ public class RobotController extends BaseController {
 
     @Autowired
     LastGoodsWeightService lastGoodsWeightService;
+
+    @Autowired
+    ShipperCartonService shipperCartonService;
 
     private static final String goodsWeightKey = "2C7FACD3AFC3FFE547FC54CDA076A25D";
 
@@ -87,10 +99,10 @@ public class RobotController extends BaseController {
     public Object weigt(@RequestBody GoodsWeightVO goodsWeightVO) throws InterruptedException, ExecutionException, TimeoutException {
         logger.info("扫码称重入参, goodsWeightVO: {}",JSON.toJSONString(goodsWeightVO));
         WCSApiResponse<Boolean> apiResponse = new WCSApiResponse<>();
-        NewWMSResponse<Object> newWMSResponse = new NewWMSResponse<>();
+//        NewWMSResponse<Object> newWMSResponse = new NewWMSResponse<>();
         if(StringUtils.isEmpty(goodsWeightVO)){
             apiResponse.setCode(HttpStatus.INTERNAL_SERVER_ERROR.value());
-            apiResponse.setServerMsg("数据不能为空");
+            apiResponse.setServerMsg("数据不能为空 ");
             return apiResponse;
         }
 
@@ -100,8 +112,7 @@ public class RobotController extends BaseController {
             return apiResponse;
         }
 
-        
-
+        //验证机器id是否有效
         RobotInfo robotInfo = robotInfoService.getById(goodsWeightVO.getId());
 
         if(robotInfo == null){
@@ -110,13 +121,15 @@ public class RobotController extends BaseController {
             apiResponse.setServerMsg("机器id错误");
             return apiResponse;
         }
-
+        //**********************
+        //验证单号是否有效
         String barCode = goodsWeightVO.getBarCode();
         if(StringUtils.isEmpty(barCode)){
             apiResponse.setCode(HttpStatus.INTERNAL_SERVER_ERROR.value());
             apiResponse.setServerMsg("barcode 不能为空");
             return apiResponse;
         }
+        //快递单号不能为空
         Double weight = goodsWeightVO.getWeight();
         if(null == weight){
             apiResponse.setCode(HttpStatus.INTERNAL_SERVER_ERROR.value());
@@ -136,8 +149,6 @@ public class RobotController extends BaseController {
             return apiResponse;
         }
 
-
-
         //保存最新的快递单号 用于实时回显
         LastGoodsWeight lastGoodsWeight = new LastGoodsWeight();
         lastGoodsWeight.setLastBarCode(barCode);
@@ -156,6 +167,40 @@ public class RobotController extends BaseController {
         goodsWeightParam.setBarCode(barCode);
         goodsWeightParam.setWeight(goodsWeightVO.getWeight());
         goodsWeightParam.setGwRobotId(goodsWeightVO.getId());
+        if(goodsWeightVO.getLength()!=null&&goodsWeightVO.getWidth()!=null&&goodsWeightVO.getHeight()!=null){
+            //长宽高 都不为空时,排序 取体积
+            ExpressMathUtil.sortAndGetLengthAndWidthAndHeight(goodsWeightVO,goodsWeightVO.getLength(),goodsWeightVO.getWidth(),goodsWeightVO.getHeight());
+            goodsWeightParam.setLength(goodsWeightVO.getLength());
+            goodsWeightParam.setWidth(goodsWeightVO.getWidth());
+            goodsWeightParam.setHeight(goodsWeightVO.getHeight());
+            //计算体积
+            goodsWeightParam.setVolume(ExpressMathUtil.getVolume(goodsWeightVO.getLength(),goodsWeightVO.getWidth(),goodsWeightVO.getHeight()));//计算
+
+            //计算 长宽高 体积 误差
+            QueryWrapper<ShipperCarton> shipperCartonQueryWrapper = new QueryWrapper<>();
+            //根据货主查询纸箱
+            shipperCartonQueryWrapper.eq("shipper_name",goodsWeightResOne.getCustomer());
+            if(!StringUtils.isEmpty(goodsWeightResOne.getCustomer())){
+                List<ShipperCarton> shipperCartonlist = shipperCartonService.list(shipperCartonQueryWrapper);
+
+                if(!CollectionUtils.isEmpty(shipperCartonlist)){
+                    //查询到货主的所有纸箱 不能为空
+                    List<ShipperCartonPojo> shipperCartonPojoList = ExpressMathUtil.sortAscShipperCartonList(shipperCartonlist
+                            , goodsWeightVO.getLength()
+                            , ExpressMathUtil.LENGTH);
+
+                    if(!CollectionUtils.isEmpty(shipperCartonPojoList)){
+                        ShipperCartonPojo mixShipperCarton = shipperCartonPojoList.get(0);
+
+                        //保存纸箱名称,即纸箱编码
+                        goodsWeightParam.setCartonName(mixShipperCarton.getCartonName());
+                    }
+                }
+
+            }
+
+        }
+
         goodsWeightParam.setVersion(goodsWeightResOne.getVersion()+1);
         boolean update = goodsWeightService.update(goodsWeightParam, goodsWeightUpdateWrapper);
 
@@ -184,7 +229,8 @@ public class RobotController extends BaseController {
             apiResponse.failed("快递单号推送失败",logger);
             return apiResponse;
         }
-        JSONObject body = JSON.parseObject(gwPostRes.getBody());
+        String body1 = gwPostRes.getBody();
+        JSONObject body = JSON.parseObject(body1);
         if(null == body){
             apiResponse.failed("快递单号推送失败",logger);
             return apiResponse;
@@ -202,6 +248,7 @@ public class RobotController extends BaseController {
         apiResponse.success(update,"barcode 验证成功,并保存成功, 快递单号和重量成功推送到WMS");
         return apiResponse;
     }
+
     /**
      * 查询最新的扫码重量数据,用于扫码量房界面 实时回显数据
      * @return
