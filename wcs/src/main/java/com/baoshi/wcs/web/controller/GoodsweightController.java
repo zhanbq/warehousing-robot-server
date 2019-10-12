@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
@@ -25,7 +26,7 @@ public class GoodsweightController {
 
     @GetMapping("/list")
     @ResponseBody
-    public Object all(Page<GoodsWeightSearchVO> page,GoodsWeightVO goodsWeightVO){
+    public Object all(Page<GoodsWeightSearchVO> page, GoodsWeightVO goodsWeightVO){
 
         WCSApiResponse<Object> res = new WCSApiResponse<>();
         Page<GoodsWeight> gwPage = new Page<>();

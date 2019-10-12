@@ -15,11 +15,16 @@
 
 
     <el-form :inline="true" :model="formInline" class="demo-form-inline">
-        <el-form-item label="快递单号">
+        <el-form-item label="快递单号" prop="validateRobotId">
             <el-input v-model="formInline.barcode" placeholder="根据快递单号查询"></el-input>
         </el-form-item>
-        <el-form-item label="根据机器Id查询">
-            <el-select v-model="formInline.gwId" placeholder="活动区域">
+        <el-form-item>
+            <el-button type="primary" @click="onSubmit">查询</el-button>
+        </el-form-item>
+    </el-form>
+    <el-form :inline="true" :model="formInline" class="demo-form-inline">
+        <el-form-item label="根据机器Id查询" prop="validateRobotId">
+            <el-select v-model="formInline.gwId" placeholder="选择机器ID">
                 <el-option label="一号机" value="00C94707275"></el-option>
                 <el-option label="二号机" value="00C66186367"></el-option>
                 <el-option label="三号机" value="00C66186389"></el-option>
@@ -124,23 +129,25 @@
 </body>
 <script>
     var Main = {
-        data() {
+        data: function () {
+
             return {
-                host:"/shipper_carton/import/excel",
+                host: "/shipper_carton/import/excel",
                 fileList: [],
                 dialogTableVisible: false,
                 dialogShelvesSearchFormVisible: false,
                 formLabelWidth: '120px',
-                currentPage:1, //初始页
-                pagesize:10,    //    每页的数据
-                goodsWeightList:{},
-                dialogVisible:false, //控制弹窗效果
-                dialogMsg:'1',//弹窗提示信息
+                currentPage: 1, //初始页
+                pagesize: 10,    //    每页的数据
+                goodsWeightList: {},
+                dialogVisible: false, //控制弹窗效果
+                dialogMsg: '1',//弹窗提示信息
 
                 formInline: {
                     gwId: '',
                     barcode: ''
                 }
+
             }
         },
         created() {
@@ -189,7 +196,9 @@
                 axios.get("/goodsweight/list",{
                     params:{
                         current:this.currentPage,
-                        size:this.pagesize
+                        size:this.pagesize,
+                        id:this.formInline.gwId,
+                        barCode:this.formInline.barcode
                     }
                 }).then(function (response) {
                     _this.goodsWeightList = response.data.data;
@@ -200,6 +209,7 @@
             },
             onSubmit() {
                 console.log('submit!');
+                this.searchAll();
             }
         }
     }
