@@ -104,6 +104,8 @@
             submitUpload() {
                 var a = this.$refs.upload.submit();
                 this.$message({type: 'success', message: '上传成功！'});
+                var int=self.setInterval("location.reload()",2500);
+                // location.reload();
             },
             handleBeforeUpload(file) {//文件过滤，html用了accept，不过不考虑兼容下面可以不要
                 var FileExt = file.name.replace(/.+\./, "");
