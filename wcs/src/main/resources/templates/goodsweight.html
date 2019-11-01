@@ -286,8 +286,15 @@
     var gwRobotId = "";
     var robotSelectedId  = "" ; //是否有数据,用来提示是否已经提示过
     var hasRequested = ""; //s
-    // var noticeAudio = "http://att.chinauui.com/month_0701/TVNOusPT0c7zw==_ar2KDR70GtHB.mp3";
-    // var audio = new Audio(noticeAudio);
+    var noticeAudio = "/express_voice/";
+    var baishi_audio = new Audio(noticeAudio+"baishi");
+
+    var shunfeng_audio = new Audio(noticeAudio+"shunfeng");
+    var youzheng_audio = new Audio(noticeAudio+"youzheng");
+    var yuantong_audio = new Audio(noticeAudio+"yuantong");
+    var yunda_audio = new Audio(noticeAudio+"yunda");
+
+    var zhongtong_audio = new Audio(noticeAudio+"zhongtong");
     // var wcsDomain = "http://47.100.250.212:80";
     var wcsDomain = "http://47.103.72.38:8081"; //新 wms
 
@@ -308,6 +315,25 @@
             $('errMsg').html("");
             $("#myModal").modal("hide")
         },1200);
+    }
+
+    function audioPlay(carrierId) {
+        if(carrierId == "ZTO" || carrierId =="ZTKY"){
+            zhongtong_audio.play();
+        }else if(carrierId == "EMS"){
+            youzheng_audio.play();
+        }else if(carrierId == "YTO"){
+            yuantong_audio.play();
+        }else if(carrierId == "YUNDA"){
+            yunda_audio.play()
+        }else if(carrierId == "SF"){
+            shunfeng_audio.play()
+        }else if(carrierId == "EMS"){
+
+        }else if(carrierId == "EMS"){
+
+        }
+
     }
 
     var getLastGoodsweight = function () {
@@ -351,9 +377,8 @@
                 hasData = true;
                 var newBarCode = data.gw.barCode;
                 var robotinfo = data.robotInfo;
-                // if(newBarCode != oldBarCode){
-
-                    // audio.play(); //播放
+                if(newBarCode != oldBarCode){
+                    audioPlay(data.gw.carrierId);
                     $cname.html(data.gw.customer);
                     $weight.html(data.gw.weight+"KG");
                     $sendcode.html(data.gw.palletid);
@@ -365,7 +390,7 @@
                     $volume.html(data.gw.volume + " (立方CM)");
                     $resMsg.html(res.msg)
                     oldBarCode = newBarCode;
-                // }
+                }
             },
             error:function (data) {
                 console.log(JSON.stringify(data))

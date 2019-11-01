@@ -3,6 +3,7 @@ package com.baoshi.wcs.interceptor.config;
 import com.alibaba.fastjson.serializer.SerializerFeature;
 import com.alibaba.fastjson.support.config.FastJsonConfig;
 import com.alibaba.fastjson.support.spring.FastJsonHttpMessageConverter;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.MediaType;
 import org.springframework.http.converter.HttpMessageConverter;
@@ -21,11 +22,15 @@ import java.util.List;
 @EnableWebMvc
 public class WebMvcConfg implements WebMvcConfigurer {
 
+    @Value("${wcs.express-voice.path}")
+    private String expressVoicePath;
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
         //静态资源 免 拦截
         registry.addResourceHandler("/static/**","/static/**/**","/static/fonts/**/**","/static/fonts/**")
                 .addResourceLocations("classpath:/static/","classpath:/static/**/**/","classpath:/static/fonts/**/**/","classpath:/static/fonts/**");
+
+        registry.addResourceHandler(expressVoicePath);
     }
     @Override
     public void addCorsMappings(CorsRegistry registry) {
