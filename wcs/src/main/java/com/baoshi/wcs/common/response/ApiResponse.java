@@ -39,7 +39,10 @@ public class ApiResponse<T> implements Serializable {
         this.data = data;
         this.msg = "成功";
     }
-
+    public void success(String msg){
+        this.code = HttpStatus.OK.value();
+        this.msg = "成功";
+    }
     public void failed(String msg){
         this.code = HttpStatus.INTERNAL_SERVER_ERROR.value();
         this.msg = msg;
