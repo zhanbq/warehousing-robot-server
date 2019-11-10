@@ -20,7 +20,7 @@ public class ExpressVoiceController {
 
 
     @GetMapping("/{voice_name}")
-    public Object getExpressVoice(HttpServletRequest request, HttpServletResponse response
+    public void getExpressVoice(HttpServletRequest request, HttpServletResponse response
             , @PathVariable("voice_name")String expressVoiceName){
         String fileName = expressVoiceName+".mp3";// 文件名
         if (fileName != null) {
@@ -40,9 +40,10 @@ public class ExpressVoiceController {
                     int i = bis.read(buffer);
                     while (i != -1) {
                         os.write(buffer, 0, i);
+                        os.flush();
                         i = bis.read(buffer);
                     }
-                    return "下载成功";
+//                    return "下载成功";
                 } catch (Exception e) {
                     e.printStackTrace();
                 } finally {
@@ -63,6 +64,6 @@ public class ExpressVoiceController {
                 }
             }
         }
-        return "下载失败";
+//        return "下载失败";
     }
 }
