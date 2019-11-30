@@ -19,9 +19,9 @@
                 <el-form-item label="快递单号" prop="">
                     <el-input v-model="formInline.barcode" placeholder="根据快递单号查询"></el-input>
                 </el-form-item>
-                <el-form-item>
-                    <el-button type="primary" @click="onSubmit">查询</el-button>
-                </el-form-item>
+                <!--<el-form-item>-->
+                    <!--<el-button type="primary" @click="onSubmit">查询</el-button>-->
+                <!--</el-form-item>-->
             </el-form>
         </el-col>
         <el-col :span="10">
@@ -36,9 +36,9 @@
                         <el-option label="六号机" value="00C58515100"></el-option>
                     </el-select>
                 </el-form-item>
-                <el-form-item>
-                    <el-button type="primary" @click="onSubmit">查询</el-button>
-                </el-form-item>
+                <!--<el-form-item>-->
+                    <!--<el-button type="primary" @click="onSubmit">查询</el-button>-->
+                <!--</el-form-item>-->
             </el-form>
         </el-col>
     </el-row>
@@ -53,9 +53,9 @@
                                             start-placeholder="开始日期" end-placeholder="结束日期" value-format="yyyy-MM-dd HH:mm:ss"	 >
                             </el-date-picker>
                         </el-form-item>
-                        <el-form-item>
-                            <el-button type="primary" @click="onSubmit">查询</el-button>
-                        </el-form-item>
+                        <!--<el-form-item>-->
+                            <!--<el-button type="primary" @click="onSubmit">查询</el-button>-->
+                        <!--</el-form-item>-->
                     </div>
                 </template>
 
@@ -68,6 +68,9 @@
             <el-form :inline="true" :model="formInline" class="demo-form-inline">
                 <template>
                     <div class="">
+                        <el-form-item>
+                            <el-button type="primary" @click="onSubmit">查询</el-button>
+                        </el-form-item>
                         <el-form-item>
                             <el-button type="primary" @click="exportExcel">导出当前查询结果</el-button>
                         </el-form-item>
@@ -237,21 +240,26 @@
             },
             exportExcel() {
                 var _this = this;
-                axios.get("/goodsweight/excel/export", {
-                    params: {
-                        // current: this.currentPage,
-                        // size: this.pagesize,
-                        id: this.formInline.gwId,
-                        barCode: this.formInline.barcode,
-                        beginTime:this.formInline.timeRange[0],
-                        endTime:this.formInline.timeRange[1]
-                    },
-                    responseType: 'blob'
-                }).then(function (response) {
-                    // this.download(response)
-                }).catch(function (err) {
-                    console.log('err' + err);
-                });
+                var url = "/goodsweight/excel/export?";
+                var uri = url;
+                if(this.formInline.gwId != ''){
+                    url += "&id="+this.formInline.gwId;
+                }
+                if(this.formInline.barcode != ''){
+                    url+= "&barCode="+this.formInline.barcode;
+                }
+
+                if( (null != this.formInline.timeRange[1]) && (null != this.formInline.timeRange[0])){
+                    url+="&beginTime=" + this.formInline.timeRange[0] + "&endTime=" + this.formInline.timeRange[1];
+                }
+                if(uri == url ){
+                    this.$message({
+                        message: '请输入搜索条件查询出结果,再点击导出.',
+                        type: 'warning'
+                    });
+                    return;
+                }
+                window.location.href = url;
             },
             download (data) {
                 if (!data) {

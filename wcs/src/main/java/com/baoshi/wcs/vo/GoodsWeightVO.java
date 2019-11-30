@@ -51,6 +51,12 @@ public class GoodsWeightVO implements Serializable {
 
     @DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss")
     Date endTime;
+
+    /**
+     * 纸箱名称
+     */
+    String cartonName;
+
     public String getKey() {
         return key;
     }
@@ -121,6 +127,14 @@ public class GoodsWeightVO implements Serializable {
 
     public void setEndTime(Date endTime) {
         this.endTime = endTime;
+    }
+
+    public String getCartonName() {
+        return cartonName;
+    }
+
+    public void setCartonName(String cartonName) {
+        this.cartonName = cartonName;
     }
 
     /**

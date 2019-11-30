@@ -52,6 +52,7 @@ public class ApiResponse<T> implements Serializable {
         this.msg = msg;
         logger.error(msg);
     }
+
     @Override
     public String toString() {
         return JSON.toJSONString(this);

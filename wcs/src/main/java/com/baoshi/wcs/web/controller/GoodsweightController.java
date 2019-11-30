@@ -65,6 +65,15 @@ public class GoodsweightController extends BaseController {
 
     @GetMapping("/excel/export")
     public void downloadGoodsweightExcel(HttpServletResponse response,Page<GoodsWeightSearchVO> page, GoodsWeightVO goodsWeightVO) throws IOException {
+        if(null == goodsWeightVO){
+            // 重置response
+            response.reset();
+            response.setContentType("application/json");
+            response.setCharacterEncoding("utf-8");
+            WCSApiResponse<Object> res = new WCSApiResponse<>();
+            res.failed("无法全量导出,请输入搜索条件.",logger);
+            response.getWriter().println(JSON.toJSONString(res));
+        }
         try {
             // 这里注意 有同学反应使用swagger 会导致各种问题，请直接用浏览器或者用postman
 //            response.setContentType("application/vnd.ms-excel");
@@ -79,9 +88,6 @@ public class GoodsweightController extends BaseController {
             response.reset();
             response.setContentType("application/json");
             response.setCharacterEncoding("utf-8");
-//            Map<String, String> map = new HashMap<String, String>();
-//            map.put("status", "failure");
-//            map.put("message", "下载文件失败" + e.getMessage());
             WCSApiResponse<Object> res = new WCSApiResponse<>();
             res.failed("数据文件下载失败",logger);
             response.getWriter().println(JSON.toJSONString(res));
@@ -89,26 +95,10 @@ public class GoodsweightController extends BaseController {
     }
 
     public List<GoodsWeight4ExcelExportPOJO> getGoodsWeight(GoodsWeightVO goodsWeightVO){
-//        QueryWrapper<GoodsWeight> gwQuerryWrapper = new QueryWrapper<>();
-//        if(goodsWeightVO!=null){
-//            if(!StringUtils.isEmpty(goodsWeightVO.getBarCode())){
-//                //查询快递单号
-//                gwQuerryWrapper.eq("bar_code",goodsWeightVO.getBarCode());
-//            }
-//            if(!StringUtils.isEmpty(goodsWeightVO.getId())){
-//                //根据机器id查询
-//                gwQuerryWrapper.eq("gw_robot_id",goodsWeightVO.getId());
-//            }
-//            if(goodsWeightVO.getBeginTime()!=null && goodsWeightVO.getEndTime()!=null){
-//                gwQuerryWrapper.between("modify_time",goodsWeightVO.getBeginTime(),goodsWeightVO.getEndTime());
-//            }
-//        }
         ArrayList<GoodsWeight4ExcelExportPOJO> goodsWeights = new ArrayList<>();
         long pageSize = 500L;
         Page<GoodsWeight4ExcelExportPOJO> gwPage = new Page<GoodsWeight4ExcelExportPOJO>(1L,pageSize);
-//        gwPage.setOptimizeCountSql(false);
         Page<GoodsWeight4ExcelExportPOJO> resPage = goodsWeightService.pageGoodsWeightAndRobot(gwPage, goodsWeightVO);
-//        IPage<GoodsWeight> resPage = goodsWeightService.page(gwPage, gwQuerryWrapper);
         if(resPage == null){
             return goodsWeights;
         }
@@ -125,11 +115,11 @@ public class GoodsweightController extends BaseController {
             if((total%pageSize)>0 ){
                 times+=1;
             }
+            goodsWeights.addAll(resPage.getRecords());
             for(long i = 0 ;i<times;i++){
                 //已经查询过一次 , 从第二页开始
                 gwPage.setCurrent(i+2);
                 IPage<GoodsWeight4ExcelExportPOJO> tmpPageGW = goodsWeightService.pageGoodsWeightAndRobot(gwPage, goodsWeightVO);
-//                IPage<GoodsWeight> tmpPageGW = goodsWeightService.page(gwPage, gwQuerryWrapper);
                 if(tmpPageGW== null){
                     break;
                 }
@@ -140,6 +130,39 @@ public class GoodsweightController extends BaseController {
         }
 
         return goodsWeights;
+    }
+
+
+    @PostMapping("/add")
+    @ResponseBody
+    public Object addGoodsWeight(@RequestBody GoodsWeightVO goodsWeightVO){
+        WCSApiResponse<Object> res = new WCSApiResponse<>();
+        if(null == goodsWeightVO){
+            res.failed("查询条件不能为空.",logger);
+            return res;
+        }
+        if(StringUtils.isEmpty(goodsWeightVO.getBarCode())){
+            res.failed("快递单号不能为空",logger);
+            return res;
+        }
+
+        if(StringUtils.isEmpty(goodsWeightVO.getWeight())){
+            res.failed("重量不能为空.",logger);
+            return res;
+        }
+
+        GoodsWeight goodsWeight4Add = new GoodsWeight();
+        goodsWeight4Add.setBarCode(goodsWeightVO.getBarCode());
+        goodsWeight4Add.setWeight(goodsWeightVO.getWeight());
+        goodsWeight4Add.setCartonName(goodsWeightVO.getCartonName());
+        boolean isSuccess = goodsWeightService.saveOrUpdate(goodsWeight4Add);
+        if(!isSuccess){
+            logger.info("称重数据手动录入失败,参数:{}",JSON.toJSONString(goodsWeightVO));
+            res.failed("称重数据手动录入失败");
+            return res;
+        }
+        res.success("手动录入数据成功");
+        return res;
     }
 
 }
