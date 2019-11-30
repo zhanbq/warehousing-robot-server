@@ -13,45 +13,71 @@
 <body>
 <div id="app">
 
+    <el-row :gutter="20">
+        <el-col :span="10">
+            <el-form :inline="true" :model="formInline" class="demo-form-inline">
+                <el-form-item label="快递单号" prop="">
+                    <el-input v-model="formInline.barcode" placeholder="根据快递单号查询"></el-input>
+                </el-form-item>
+                <el-form-item>
+                    <el-button type="primary" @click="onSubmit">查询</el-button>
+                </el-form-item>
+            </el-form>
+        </el-col>
+        <el-col :span="10">
+            <el-form :inline="true" :model="formInline" class="demo-form-inline">
+                <el-form-item label="根据机器Id查询" prop="validateRobotId">
+                    <el-select v-model="formInline.gwId" placeholder="选择机器ID">
+                        <el-option label="一号机" value="00C94707275"></el-option>
+                        <el-option label="二号机" value="00C66186367"></el-option>
+                        <el-option label="三号机" value="00C66186389"></el-option>
+                        <el-option label="四号机" value="00C94707265"></el-option>
+                        <el-option label="五号机" value="00C94707266"></el-option>
+                        <el-option label="六号机" value="00C58515100"></el-option>
+                    </el-select>
+                </el-form-item>
+                <el-form-item>
+                    <el-button type="primary" @click="onSubmit">查询</el-button>
+                </el-form-item>
+            </el-form>
+        </el-col>
+    </el-row>
+    <el-row :gutter="20">
+        <el-col :span="10">
+            <el-form :inline="true" :model="formInline" class="demo-form-inline">
+                <template>
+                    <div class="">
+                        <el-form-item label="根据时间范围筛选" >
+                            <!--<span class="demonstration el-form-item__label">根据时间范围筛选</span>-->
+                            <el-date-picker v-model="formInline.timeRange" type="datetimerange" range-separator="至"
+                                            start-placeholder="开始日期" end-placeholder="结束日期" value-format="yyyy-MM-dd HH:mm:ss"	 >
+                            </el-date-picker>
+                        </el-form-item>
+                        <el-form-item>
+                            <el-button type="primary" @click="onSubmit">查询</el-button>
+                        </el-form-item>
+                    </div>
+                </template>
 
-    <el-form :inline="true" :model="formInline" class="demo-form-inline">
-        <el-form-item label="快递单号" prop="validateRobotId">
-            <el-input v-model="formInline.barcode" placeholder="根据快递单号查询"></el-input>
-        </el-form-item>
-        <el-form-item>
-            <el-button type="primary" @click="onSubmit">查询</el-button>
-        </el-form-item>
-    </el-form>
-    <el-form :inline="true" :model="formInline" class="demo-form-inline">
-        <el-form-item label="根据机器Id查询" prop="validateRobotId">
-            <el-select v-model="formInline.gwId" placeholder="选择机器ID">
-                <el-option label="一号机" value="00C94707275"></el-option>
-                <el-option label="二号机" value="00C66186367"></el-option>
-                <el-option label="三号机" value="00C66186389"></el-option>
-                <el-option label="四号机" value="00C94707265"></el-option>
-                <el-option label="五号机" value="00C94707266"></el-option>
-                <el-option label="六号机" value="00C58515100"></el-option>
-            </el-select>
-        </el-form-item>
-        <el-form-item>
-            <el-button type="primary" @click="onSubmit">查询</el-button>
-        </el-form-item>
-    </el-form>
-    <!--<el-upload-->
-            <!--class="upload-demo"-->
-            <!--ref="upload"-->
-            <!--:action=host-->
-            <!--:on-preview="handlePreview"-->
-            <!--:on-remove="handleRemove"-->
-            <!--:file-list="fileList"-->
-            <!--:limit="1"-->
-            <!--:auto-upload="false"-->
-            <!--:before-upload="handleBeforeUpload"-->
-    <!--&gt;-->
-        <!--<el-button slot="trigger" size="small" type="primary">选取货主纸箱数据导入</el-button>-->
-        <!--<el-button style="margin-left: 10px;" size="small" type="success" @click="submitUpload">上传到服务器</el-button>-->
-        <!--<div slot="tip" class="el-upload__tip">只能上传xls/xlxs文件,每次上传一个文件</div>-->
-    <!--</el-upload>-->
+            </el-form>
+        </el-col>
+    </el-row>
+
+    <el-row :gutter="20">
+        <el-col :span="10">
+            <el-form :inline="true" :model="formInline" class="demo-form-inline">
+                <template>
+                    <div class="">
+                        <el-form-item>
+                            <el-button type="primary" @click="exportExcel">导出当前查询结果</el-button>
+                        </el-form-item>
+                    </div>
+                </template>
+
+            </el-form>
+        </el-col>
+    </el-row>
+
     <template>
         <el-table
                 :data="goodsWeightList.records"
@@ -64,7 +90,7 @@
             </el-table-column>
             <el-table-column
                     prop="weight"
-                    label="包裹重量"
+                    label="包裹重量(KG)"
                     width="180">
             </el-table-column>
             <el-table-column
@@ -142,10 +168,10 @@
                 goodsWeightList: {},
                 dialogVisible: false, //控制弹窗效果
                 dialogMsg: '1',//弹窗提示信息
-
                 formInline: {
                     gwId: '',
-                    barcode: ''
+                    barcode: '',
+                    timeRange:[],
                 }
 
             }
@@ -186,26 +212,58 @@
                 console.log(this.pagesize)  //每页下拉显示数据
                 this.searchAll();
             },
-            handleCurrentChange: function(currentPage){
+            handleCurrentChange: function (currentPage) {
                 this.currentPage = currentPage;
                 console.log(this.currentPage)  //点击第几页
                 this.searchAll();
             },
             searchAll() {
                 var _this = this;
-                axios.get("/goodsweight/list",{
-                    params:{
-                        current:this.currentPage,
-                        size:this.pagesize,
-                        id:this.formInline.gwId,
-                        barCode:this.formInline.barcode
+                axios.get("/goodsweight/list", {
+                    params: {
+                        current: this.currentPage,
+                        size: this.pagesize,
+                        id: this.formInline.gwId,
+                        barCode: this.formInline.barcode,
+                        beginTime:this.formInline.timeRange[0],
+                        endTime:this.formInline.timeRange[1]
                     }
                 }).then(function (response) {
                     _this.goodsWeightList = response.data.data;
-                    console.log('1111==='+JSON.stringify(_this.goodsWeightList));
+                    console.log('1111===' + JSON.stringify(_this.goodsWeightList));
                 }).catch(function (err) {
-                    console.log('err'+err);
+                    console.log('err' + err);
                 });
+            },
+            exportExcel() {
+                var _this = this;
+                axios.get("/goodsweight/excel/export", {
+                    params: {
+                        // current: this.currentPage,
+                        // size: this.pagesize,
+                        id: this.formInline.gwId,
+                        barCode: this.formInline.barcode,
+                        beginTime:this.formInline.timeRange[0],
+                        endTime:this.formInline.timeRange[1]
+                    },
+                    responseType: 'blob'
+                }).then(function (response) {
+                    // this.download(response)
+                }).catch(function (err) {
+                    console.log('err' + err);
+                });
+            },
+            download (data) {
+                if (!data) {
+                    return
+                }
+                let url = window.URL.createObjectURL(new Blob([data]))
+                let link = document.createElement('a')
+                link.style.display = 'none'
+                link.href = url
+                link.setAttribute('download', 'excel.xlsx')
+                document.body.appendChild(link)
+                link.click()
             },
             onSubmit() {
                 console.log('submit!');

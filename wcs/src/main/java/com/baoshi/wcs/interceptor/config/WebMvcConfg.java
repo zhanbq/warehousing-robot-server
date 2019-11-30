@@ -3,6 +3,8 @@ package com.baoshi.wcs.interceptor.config;
 import com.alibaba.fastjson.serializer.SerializerFeature;
 import com.alibaba.fastjson.support.config.FastJsonConfig;
 import com.alibaba.fastjson.support.spring.FastJsonHttpMessageConverter;
+import org.springframework.boot.autoconfigure.jackson.Jackson2ObjectMapperBuilderCustomizer;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.MediaType;
 import org.springframework.http.converter.HttpMessageConverter;
@@ -15,6 +17,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.TimeZone;
 
 
 @Configuration
@@ -31,6 +34,11 @@ public class WebMvcConfg implements WebMvcConfigurer {
     public void addCorsMappings(CorsRegistry registry) {
         registry.addMapping("/**");
     }
+
+    /**
+     * 时间转换
+     * @param converters
+     */
     @Override
     public void configureMessageConverters(List<HttpMessageConverter<?>> converters) {
         FastJsonHttpMessageConverter fastConverter = new FastJsonHttpMessageConverter();
@@ -46,8 +54,11 @@ public class WebMvcConfg implements WebMvcConfigurer {
         fastMediaTypes.add(MediaType.APPLICATION_JSON_UTF8);
         fastMediaTypes.add(MediaType.parseMediaType(MediaType.TEXT_HTML_VALUE + ";charset=ISO-8859-1"));
         fastConverter.setSupportedMediaTypes(fastMediaTypes);
-
         converters.add(fastConverter);
     }
-
+//    @Bean
+//    public Jackson2ObjectMapperBuilderCustomizer jacksonObjectMapperCustomization() {
+//        return jacksonObjectMapperBuilder ->
+//                jacksonObjectMapperBuilder.timeZone(TimeZone.getTimeZone("GMT+8"));
+//    }
 }

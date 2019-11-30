@@ -1,7 +1,11 @@
 package com.baoshi.wcs.vo;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+import org.springframework.format.annotation.DateTimeFormat;
+
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.util.Date;
 
 import javax.validation.constraints.NotEmpty;
 
@@ -42,6 +46,11 @@ public class GoodsWeightVO implements Serializable {
 
     String id;
 
+    @DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss")
+    Date beginTime;
+
+    @DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss")
+    Date endTime;
     public String getKey() {
         return key;
     }
@@ -96,6 +105,22 @@ public class GoodsWeightVO implements Serializable {
 
     public void setHeight(Double height) {
         this.height = height;
+    }
+
+    public Date getBeginTime() {
+        return beginTime;
+    }
+
+    public void setBeginTime(Date beginTime) {
+        this.beginTime = beginTime;
+    }
+
+    public Date getEndTime() {
+        return endTime;
+    }
+
+    public void setEndTime(Date endTime) {
+        this.endTime = endTime;
     }
 
     /**
