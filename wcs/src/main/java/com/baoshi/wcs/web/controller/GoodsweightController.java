@@ -151,11 +151,27 @@ public class GoodsweightController extends BaseController {
             return res;
         }
 
+        QueryWrapper<GoodsWeight> getOneWrapper = new QueryWrapper<>();
+        getOneWrapper.eq("bar_code",goodsWeightVO.getBarCode());
+        GoodsWeight goodsWeight = goodsWeightService.getOne(getOneWrapper);
+
+
         GoodsWeight goodsWeight4Add = new GoodsWeight();
         goodsWeight4Add.setBarCode(goodsWeightVO.getBarCode());
         goodsWeight4Add.setWeight(goodsWeightVO.getWeight());
         goodsWeight4Add.setCartonName(goodsWeightVO.getCartonName());
-        boolean isSuccess = goodsWeightService.saveOrUpdate(goodsWeight4Add);
+        goodsWeight4Add.setVersion(1);//有称重数据 version 变为1,防止被称重列表分页查询过滤掉
+        boolean isSuccess = false;
+        if(null != goodsWeight){
+            //存在 更新
+            goodsWeight.setWeight(goodsWeightVO.getWeight());
+            goodsWeight.setVersion(goodsWeight.getVersion()+1);
+            isSuccess = goodsWeightService.updateById(goodsWeight);
+        }else{
+            //不存在新增
+            isSuccess = goodsWeightService.save(goodsWeight4Add);
+        }
+
         if(!isSuccess){
             logger.info("称重数据手动录入失败,参数:{}",JSON.toJSONString(goodsWeightVO));
             res.failed("称重数据手动录入失败");

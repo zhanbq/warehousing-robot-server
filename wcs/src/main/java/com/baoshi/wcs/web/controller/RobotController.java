@@ -196,9 +196,7 @@ public class RobotController extends BaseController {
                         goodsWeightParam.setCartonName(mixShipperCarton.getCartonName());
                     }
                 }
-
             }
-
         }
 
         goodsWeightParam.setVersion(goodsWeightResOne.getVersion()+1);
