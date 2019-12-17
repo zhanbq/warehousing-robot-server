@@ -20,7 +20,7 @@ public class ShipperVO implements Serializable {
     /**
      * 是否参与计数Y参与/N不参与
      */
-    private String whetherTheCount;
+    private String whetherTheCount = "N";
 
     List<ShipperCarton> shipperCartonList = new ArrayList<ShipperCarton>();
 

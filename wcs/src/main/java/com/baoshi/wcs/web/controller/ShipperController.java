@@ -1,6 +1,7 @@
 package com.baoshi.wcs.web.controller;
 
 
+import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baoshi.wcs.common.enumeration.YesOrNoEnum;
 import com.baoshi.wcs.common.response.WCSApiResponse;
@@ -14,13 +15,11 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.StringUtils;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
-import org.springframework.web.bind.annotation.RestController;
 import com.baoshi.wcs.web.basic.BaseController;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -100,4 +99,70 @@ public class ShipperController extends BaseController {
         return res;
     }
 
+    /**
+     * 设置货主是否参与纸箱计数
+     * @param shipperVO
+     * @return
+     */
+    @PostMapping("/shipperCartonCount")
+    @ResponseBody
+    public Object shipperCartonCount(@RequestBody ShipperVO shipperVO){
+        WCSApiResponse<Object> res = new WCSApiResponse<>();
+        if(null == shipperVO){
+            logger.info("入参为空");
+            res.failed("入参为空");
+            return res;
+        }
+        if(StringUtils.isEmpty(shipperVO.getShipperName())){
+            logger.info("货主名为空,请填写货主名");
+            res.failed("货主名为空,请填写货主名");
+            return res;
+        }
+
+        if(StringUtils.isEmpty(shipperVO.getWhetherTheCount())){
+            logger.info("是否计数名为空,请选择是否计数");
+            res.failed("是否计数名为空,请选择是否计数");
+            return res;
+        }
+        QueryWrapper<Shipper> shipperQuery = new QueryWrapper<>();
+        shipperQuery.eq("shipper_name",shipperVO.getShipperName());
+        Shipper shipperRes = shipperService.getOne(shipperQuery);
+        if(null == shipperRes){
+            logger.info("货主不存在,请填写正确的货主名/货主编号");
+            res.failed("货主不存在,请填写正确的货主名/货主编号");
+            return res;
+        }
+//        Shipper shipperParam = new Shipper();
+//        shipperRes.setShipperName(shipperVO.getShipperName());
+        shipperRes.setWhetherTheCount(shipperVO.getWhetherTheCount());
+        boolean save = shipperService.updateById(shipperRes);
+        if(!save){
+            logger.info("保存失败,请重试或联系技术.");
+            res.failed("保存失败,请重试或联系技术.");
+            return res;
+        }
+        res.success("保存成功.");
+        return res;
+    }
+
+
+    /**
+     * 查询所有
+     * @return
+     */
+    @GetMapping("/list")
+    public Object list(){
+        WCSApiResponse<Object> res = new WCSApiResponse<>();
+
+        List<Shipper> shipperList = shipperService.list(new QueryWrapper<Shipper>());
+
+        List<JSONObject> list = new ArrayList<>();
+        shipperList.forEach(shipper -> {
+            JSONObject jsonObject = new JSONObject();
+            jsonObject.put("value",shipper.getShipperName()); //组装成前端需要的json 结构
+            list.add(jsonObject);
+        });
+        res.setData(list);
+        return res;
+    }
 }

@@ -22,7 +22,7 @@ public class Shipper extends BaseEntity {
     /**
      * 是否参与计数Y参与/N不参与
      */
-    private String whetherTheCount;
+    private String whetherTheCount = "N";
 
     public String getShipperName() {
         return shipperName;
