@@ -71,42 +71,6 @@
                                 <li><a href="#">设备列表</a></li>
                             </ul>
                         </li>
-                        <!--<li class="store">-->
-                            <!--<a href="#">Store</a>-->
-                            <!--<ul>-->
-                                <!--<li>-->
-                                    <!--<a href="#">Clothes</a>-->
-                                    <!--<ul>-->
-                                        <!--<li>-->
-                                            <!--<a href="#">Women's Clothing</a>-->
-                                            <!--<ul>-->
-                                                <!--<li><a href="#">Tops</a></li>-->
-                                            <!--</ul>-->
-                                        <!--</li>-->
-                                        <!--<li>-->
-                                            <!--<a href="#">Men's Clothing</a>-->
-                                            <!--<ul>-->
-                                                <!--<li><a href="#">Shirts</a></li>-->
-                                                <!--<li><a href="#">Trousers</a></li>-->
-                                                <!--<li><a href="#">Shoes</a></li>-->
-                                                <!--<li><a href="#">Sale</a></li>-->
-                                            <!--</ul>-->
-                                        <!--</li>-->
-                                    <!--</ul>-->
-                                <!--</li>-->
-                                <!--<li>-->
-                                    <!--<a href="#">Jewelry</a>-->
-                                <!--</li>-->
-                                <!--<li>-->
-                                    <!--<a href="#">Music</a>-->
-                                <!--</li>-->
-                                <!--<li>-->
-                                    <!--<a href="#">Grocery</a>-->
-                                <!--</li>-->
-                            <!--</ul>-->
-                        <!--</li>-->
-                        <!--<li class="collections"><a href="#">Collections</a></li>-->
-                        <!--<li class="credits"><a href="#">Credits</a></li>-->
                     </ul>
 
                 </nav>
@@ -139,26 +103,31 @@
 
                 <div class="content">
 
-                    <h4>基本设置</h4>
+                    <h4>工作台</h4>
 
                     <div class="actions">
 
-                        <div><a href="#" data-demo="{side:'left'}" class="button active">左边打开导航</a></div>
+                        <!--<div><a href="#" data-demo="{side:'left'}" class="button active">左边打开导航</a></div>-->
 
-                        <div><a href="#" data-demo="{side:'right'}" class="button">右边打开导航</a></div>
+                        <!--<div><a href="#" data-demo="{side:'right'}" class="button">右边打开导航</a></div>-->
 
+                        <div><a href="http://47.100.250.212/admin/goodsweight"  class="button" target="_blank">老版WCS实时称重面板</a></div>
+                        <div><a href="/admin/goodsweight"  class="button" target="_blank">新版WCS实时称重面板</a></div>
                     </div>
 
-                    <h4>导航展开方式</h4>
+                    <h4>数据管理</h4>
 
                     <div class="actions">
 
-                        <div><a href="#" data-demo="{levelOpen:'overlap', levelSpacing:40}" class="button ">水平重叠</a></div>
+                        <!--<div><a href="#" data-demo="{levelOpen:'overlap', levelSpacing:40}" class="button ">水平重叠</a></div>-->
 
-                        <div><a href="#" data-demo="{levelOpen:'expand', levelSpacing:25}" class="button active">水平扩展</a></div>
+                        <!--<div><a href="#" data-demo="{levelOpen:'expand', levelSpacing:25}" class="button active">水平扩展</a></div>-->
 
-                        <div><a href="#" data-demo="{levelOpen:false, levelSpacing:25}" class="button">全部展开</a></div>
-
+                        <!--<div><a href="#" data-demo="{levelOpen:false, levelSpacing:25}" class="button">全部展开</a></div>-->
+                        <div><a href="/admin/data/listGoodsWeight" target="_blank" class="button ">快递单号列表</a></div>
+                        <div><a href="/admin/data/addGoodsWeight" target="_blank" class="button ">快递单号录入</a></div>
+                        <div><a href="/admin/data/listShipperCarton" target="_blank" class="button ">纸箱数据列表</a></div>
+                        <div><a href="/admin/data/shipperCartonCount" target="_blank" class="button ">货主纸箱计数配置</a></div>
                     </div>
 
                 </div>
@@ -244,14 +213,14 @@
             // run first demo
             initNav({levelOpen: "expand", levelSpacing: 25});
 
-            $('.actions').find('a').on('click', function (e) {
-                e.preventDefault();
-
-                var $this = $(this).addClass('active');
-                var $siblings = $this.parent().siblings().children('a').removeClass('active');
-
-                initNav(eval('(' + $this.data('demo') + ')'));
-            });
+            // $('.actions').find('a').on('click', function (e) {
+            //     e.preventDefault();
+            //
+            //     var $this = $(this).addClass('active');
+            //     var $siblings = $this.parent().siblings().children('a').removeClass('active');
+            //
+            //     initNav(eval('(' + $this.data('demo') + ')'));
+            // });
         })(jQuery);
     </script>
 
