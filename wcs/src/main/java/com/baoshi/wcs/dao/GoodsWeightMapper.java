@@ -1,7 +1,10 @@
 package com.baoshi.wcs.dao;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baoshi.wcs.entity.GoodsWeight;
+import com.baoshi.wcs.pojo.GoodsWeight4ExcelExportPOJO;
+import com.baoshi.wcs.vo.GoodsWeightVO;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
 
@@ -17,4 +20,6 @@ import org.springframework.stereotype.Repository;
 public interface GoodsWeightMapper extends BaseMapper<GoodsWeight> {
 
     GoodsWeight getLastGoodsweight(@Param("gwRobotId") String robotKey);
+
+    Page<GoodsWeight4ExcelExportPOJO> pageGoodsWeightAndRobot(Page<GoodsWeight4ExcelExportPOJO> gwPage, @Param("gwVO")GoodsWeightVO goodsWeightVO);
 }

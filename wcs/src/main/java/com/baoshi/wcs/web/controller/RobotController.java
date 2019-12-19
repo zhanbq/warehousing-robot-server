@@ -196,9 +196,7 @@ public class RobotController extends BaseController {
                         goodsWeightParam.setCartonName(mixShipperCarton.getCartonName());
                     }
                 }
-
             }
-
         }
 
         goodsWeightParam.setVersion(goodsWeightResOne.getVersion()+1);
@@ -220,6 +218,9 @@ public class RobotController extends BaseController {
         jsonObject.put("TASKID",goodsWeightResOne.getTaskId());
         jsonObject.put("SOReference5",goodsWeightVO.getBarCode());
         jsonObject.put("Weigh",goodsWeightVO.getWeight().toString());
+        jsonObject.put("Addwho","EDI");
+        jsonObject.put("Package",goodsWeightParam.getCartonName());//纸箱名称 2019.12.17 添加纸箱计数
+        jsonObject.put("Addtime",System.currentTimeMillis());
         JSONObject jsonObject1 = new JSONObject();
         jsonObject1.put("request",jsonObject);
 //        map.add("request",jsonObject);
@@ -299,6 +300,7 @@ public class RobotController extends BaseController {
     }
 
     /**
+     *
      * 批量推送单号
      * @param begin
      * @param end
@@ -334,7 +336,6 @@ public class RobotController extends BaseController {
                     jsonObject.put("Weigh",gw.getWeight().toString());
                     JSONObject jsonObject1 = new JSONObject();
                     jsonObject1.put("request",jsonObject);
-//        map.add("request",jsonObject);
 
                     ResponseEntity<String> gwPostRes = restTemplate.postForEntity(url, jsonObject1, String.class);
                     if(null == gwPostRes){

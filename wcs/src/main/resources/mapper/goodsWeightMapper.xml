@@ -35,7 +35,14 @@
         version,
         bar_code, weight, modifier,gw_robot_id,palletid, customer, consigneename, carrier_id,task_id,order_no,length,width,height,carton_name,volume
     </sql>
-
+    <sql id="pageGoodsWeightAndRobot_Column_List">
+        goods_weight.id,
+        create_time,
+        modify_time,
+        creator,
+        version,
+        bar_code, weight, modifier,gw_robot_id,palletid, customer, consigneename, carrier_id,task_id,order_no,length,width,height,carton_name,volume
+    </sql>
 
     <select id="getLastGoodsweight" parameterType="string" resultMap="BaseResultMap">
 
@@ -46,5 +53,29 @@
           where gw_robot_id = #{gwRobotId}
         </if>
         ORDER BY id DESC LIMIT 0,1
+    </select>
+
+    <select id="pageGoodsWeightAndRobot" parameterType="com.baoshi.wcs.vo.GoodsWeightVO" resultType="com.baoshi.wcs.pojo.GoodsWeight4ExcelExportPOJO">
+
+        select
+        <include refid="pageGoodsWeightAndRobot_Column_List"></include>
+        ,robot_info.id as robot_info_id
+        ,robot_info.name as gwRobotName
+        FROM goods_weight
+        INNER JOIN robot_info
+        ON goods_weight.gw_robot_id = robot_info.id
+        <where>
+            1=1
+            <if test=" gwVO.id != null and gwVO.id != '' ">
+                and gw_robot_id = #{gwVO.id}
+            </if>
+            <if test=" gwVO.barCode != null and gwVO.barCode != '' ">
+                and barCode = #{gwVO.barCode}
+            </if>
+            <if test=" gwVO.beginTime != null and gwVO.endTime != null">
+                and modify_time between  #{gwVO.beginTime} and #{gwVO.endTime}
+            </if>
+        </where>
+
     </select>
 </mapper>
