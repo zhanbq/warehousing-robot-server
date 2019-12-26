@@ -3,6 +3,8 @@ package com.baoshi.wcs.web.controller;
 
 import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baoshi.wcs.common.enumeration.YesOrNoEnum;
 import com.baoshi.wcs.common.response.WCSApiResponse;
 import com.baoshi.wcs.common.validator.ShipperValidationGroup;
@@ -20,6 +22,7 @@ import org.springframework.web.bind.annotation.*;
 import com.baoshi.wcs.web.basic.BaseController;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -164,5 +167,48 @@ public class ShipperController extends BaseController {
         });
         res.setData(list);
         return res;
+    }
+
+    /**
+     * 分页查询货主数据
+     * @param page
+     * @return
+     */
+    @GetMapping("/pagelist")
+    public Object list(Page<Shipper> page){
+        WCSApiResponse<Object> res = new WCSApiResponse<>();
+        IPage<Shipper> shipperCartonIPage = shipperService.page(page, new QueryWrapper<Shipper>());
+        res.setData(shipperCartonIPage);
+        return res;
+    }
+
+    @PostMapping("/batch/changeIsCount")
+    @ResponseBody
+    public Object batchChangeIsCount(@RequestBody  ArrayList<Shipper> shippers){
+        WCSApiResponse<Object> res = new WCSApiResponse<>();
+        shippers.forEach(shipper -> {
+            if(YesOrNoEnum.YES.equalsIgnoreCase(shipper.getWhetherTheCount())){
+                shipper.setWhetherTheCount(YesOrNoEnum.NO.toUpperCase());
+            }else if(YesOrNoEnum.NO.equalsIgnoreCase(shipper.getWhetherTheCount())){
+                shipper.setWhetherTheCount(YesOrNoEnum.YES.toUpperCase());
+            }
+            shipper.setVersion(shipper.getVersion()+1);
+            shipper.setModifyTime(new Date());
+        });
+        boolean save = false;
+        try {
+            save = shipperService.updateBatchById(shippers);
+        } catch (Exception e) {
+            logger.info("修改失败:",e);
+            res.failed("修改失败");
+        } finally {
+            if(save){
+                res.success("修改成功");
+            }else {
+                res.failed("修改失败");
+            }
+            return res;
+        }
+
     }
 }

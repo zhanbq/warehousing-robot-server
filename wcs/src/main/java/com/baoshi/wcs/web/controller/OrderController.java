@@ -49,9 +49,8 @@ public class OrderController extends BaseController {
 
         NewWMSResponse<Object> res = new NewWMSResponse<>();
 
-        QueryWrapper<Shipper> shipperQuery = new QueryWrapper<>();
         if(!StringUtils.isEmpty(goodsWeight.getCustomer())){
-
+            QueryWrapper<Shipper> shipperQuery = new QueryWrapper<>();
             shipperQuery.eq("shipper_name",goodsWeight.getCustomer());
             Shipper shipperRes = shipperService.getOne(shipperQuery);
             if(null == shipperRes){

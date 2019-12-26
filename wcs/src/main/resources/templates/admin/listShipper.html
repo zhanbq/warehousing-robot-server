@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>货主纸箱导入工具</title>
+    <script src="../../static/js/vuejs-2.5.16.js"></script>
+    <script src="../../static/js/axios-0.18.0.js"></script>
+    <!-- 引入样式 -->
+    <link href="https://cdn.bootcss.com/element-ui/2.8.2/theme-chalk/index.css" rel="stylesheet">
+    <!-- 引入组件库 -->
+    <script src="https://cdn.bootcss.com/element-ui/2.8.2/index.js"></script>
+</head>
+<body>
+<div id="app">
+
+    <template>
+        <el-table
+                ref="multipleTable"
+                @selection-change="handleSelectionChange"
+                :data="shipperList.records"
+                style="width: 100%"
+                :row-class-name="tableRowClassName">
+            <el-table-column
+                    type="selection"
+                    width="55">
+            </el-table-column>
+            <el-table-column
+
+                    prop="shipperName"
+                    label="货主名称"
+                    width="180">
+            </el-table-column>
+            <el-table-column
+                    prop="whetherTheCount"
+                    label="是否计数"
+                    :formatter="formatWhetherTheCount"
+                    width="180">
+            </el-table-column>
+            <el-table-column
+                    prop="createTime"
+                    label="创建时间">
+            </el-table-column>
+            <el-table-column
+                    prop="modifyTime"
+                    label="修改时间">
+            </el-table-column>
+        </el-table>
+    </template>
+    <el-pagination
+            @size-change="handleSizeChange"
+            @current-change="handleCurrentChange"
+            :current-page="currentPage"
+            :page-sizes="[5, 10, 20, 40]"
+            :page-size="pagesize"
+            layout="total, sizes, prev, pager, next, jumper"
+            :total="shipperList.total">
+    </el-pagination>
+    <div style="margin-top: 20px">
+        <!--<el-button @click="toggleSelection([shipperList.records[0], shipperList.records[1]])">切换第二、第三行的选中状态</el-button>-->
+        <el-button @click="batchChangeIsCount()">批量修改纸箱计数设置</el-button>
+        <el-button @click="toggleSelection()">取消</el-button>
+    </div>
+    <el-dialog
+            title="提示"
+            :visible.sync="dialogVisible"
+            width="30%"
+    >
+        <span>{{dialogMsg}}</span>
+        <span slot="footer" class="dialog-footer">
+    <!--<el-button @click="dialogVisible = false">取 消</el-button>-->
+    <el-button type="primary" @click="dialogVisible = false">确 定</el-button>
+  </span>
+    </el-dialog>
+
+</div>
+</body>
+<script>
+    var Main = {
+        data() {
+            return {
+                // host:"/shipper_carton/import/excel",
+                fileList: [],
+                formLabelWidth: '120px',
+                currentPage:1, //初始页
+                pagesize:10,    //    每页的数据
+                shipperList:{},
+                shelvesSearchForm:{},
+                dialogVisible:false, //控制弹窗效果
+                dialogMsg:'1',//弹窗提示信息
+            }
+        },
+        created() {
+            this.searchAll()
+        },
+        methods: {
+
+            tableRowClassName({row, rowIndex}) {
+                if (rowIndex === 1) {
+                    return 'warning-row';
+                } else if (rowIndex === 3) {
+                    return 'success-row';
+                }
+                return '';
+            },
+            // 初始页currentPage、初始每页数据数pagesize和数据data
+            handleSizeChange: function (size) {
+                this.pagesize = size;
+                console.log(this.pagesize)  //每页下拉显示数据
+                this.searchAll();
+            },
+            handleCurrentChange: function(currentPage){
+                this.currentPage = currentPage;
+                console.log(this.currentPage)  //点击第几页
+                this.searchAll();
+            },
+            searchAll() {
+                var _this = this;
+                axios.get("/shipper/pagelist",{
+                    params:{
+                        current:this.currentPage,
+                        size:this.pagesize
+                    }
+                }).then(function (response) {
+                    _this.shipperList = response.data.data;
+                    // console.log('1111==='+JSON.stringify(_this.shipperList));
+                }).catch(function (err) {
+                    console.log('err'+err);
+                });
+            },
+            toggleSelection(rows) {
+                if (rows) {
+                    rows.forEach(row => {
+                        this.$refs.multipleTable.toggleRowSelection(row);
+                    });
+                } else {
+                    this.$refs.multipleTable.clearSelection();
+                }
+            },
+            batchChangeIsCount:function(){
+                var _this = this;
+                if(_this.$refs.multipleTable.selection.length == 0){
+                    _this.openMsg("请勾选要设置的数据","提示");
+                    return;
+                }
+                axios.post("/shipper/batch/changeIsCount",_this.$refs.multipleTable.selection).then(function (response) {
+                    console.log(response.data);
+                    var res = response.data;
+                    let code = res.code;
+                    if(code == 200 || code=='200'){
+                        _this.openMsg("批量设置成功","提示");
+                        // _this.resetForm('form');
+                    }else{
+                        _this.openMsg("批量设置失败","错误");
+                    }
+                    _this.searchAll();
+                }).catch(function (err) {
+                    console.log(err);
+                    _this.openMsg("批量设置失败","错误");
+                });
+            },
+            handleSelectionChange:function(val) {
+                this.multipleSelection = val;
+            },
+            formatWhetherTheCount:function(row, column, cellValue){
+                if (cellValue === "Y"){
+                    return '参与计数';
+                }else if (cellValue === "N"){
+                    return '不参与计数';
+                }
+            },
+            openMsg: function(msg,title) {
+                this.$alert(msg, title, {
+                    confirmButtonText: '确定',
+                    callback: function (action) {
+                        this.$message({
+                            type: 'info',
+                            message: `action: ${action}`
+                        });
+                    }
+                });
+            }
+        }
+    }
+    var Ctor = Vue.extend(Main)
+    new Ctor().$mount('#app')
+</script>
+</html>
